@@ -5,7 +5,7 @@ langgraph-checkpoint-sqlite
 langsmith>=0.7.31
 langchain-community
 langchain-core>=1.2.28
-langchain-openai
+langchain-google-genai
 notebook
 langchain-tavily
 wikipedia

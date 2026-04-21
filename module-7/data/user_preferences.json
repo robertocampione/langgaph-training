@@ -1,0 +1,21 @@
+{
+  "locations": [
+    "Netherlands",
+    "Limburg",
+    "Maastricht",
+    "Borgharen"
+  ],
+  "preferred_categories": [
+    "local",
+    "economy",
+    "finance",
+    "events",
+    "bitcoin"
+  ],
+  "languages": [
+    "en",
+    "it",
+    "nl"
+  ],
+  "family_friendly_priority": true
+}

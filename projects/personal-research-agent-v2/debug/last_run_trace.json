@@ -1,0 +1,164 @@
+{
+  "run_id": "v2-20260421151314",
+  "timestamp": "2026-04-21T15:13:14.157224Z",
+  "trace_events": [
+    {
+      "stage": "planner",
+      "message": "Plan generated",
+      "plan": {
+        "focus_areas": [
+          "General News",
+          "Technology"
+        ],
+        "location_focus": [
+          "Netherlands",
+          "Limburg",
+          "Maastricht",
+          "Borgharen"
+        ],
+        "languages": [
+          "en",
+          "it",
+          "nl"
+        ],
+        "include_events": true,
+        "include_bitcoin": true,
+        "max_items_per_section": 5
+      }
+    },
+    {
+      "stage": "create_analysts",
+      "message": "Prepared 3 analysts"
+    },
+    {
+      "stage": "search_web",
+      "beat": "news",
+      "queries": [
+        "Netherlands Limburg news economic social policy technology trends",
+        "Netherlands news today last 24 hours Netherlands, Limburg, Maastricht, Borgharen economy taxes finance",
+        "Netherlands regional news last 3 days Limburg Maastricht Borgharen economy, events, bitcoin"
+      ],
+      "result_count": 9
+    },
+    {
+      "stage": "search_web",
+      "beat": "news",
+      "queries": [
+        "Netherlands news today last 24 hours Limburg Maastricht Borgharen economy taxes finance",
+        "Netherlands news today last 24 hours Netherlands, Limburg, Maastricht, Borgharen economy taxes finance",
+        "Netherlands regional news last 3 days Limburg Maastricht Borgharen economy, events, bitcoin"
+      ],
+      "result_count": 8
+    },
+    {
+      "stage": "map_results_to_candidates",
+      "beat": "news",
+      "candidate_count": 8
+    },
+    {
+      "stage": "search_web",
+      "beat": "events",
+      "queries": [
+        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
+        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
+        "Eventbrite Meetup Maastricht Limburg this weekend"
+      ],
+      "result_count": 8
+    },
+    {
+      "stage": "search_web",
+      "beat": "events",
+      "queries": [
+        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
+        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
+        "Eventbrite Meetup Maastricht Limburg this weekend"
+      ],
+      "result_count": 8
+    },
+    {
+      "stage": "map_results_to_candidates",
+      "beat": "events",
+      "candidate_count": 8
+    },
+    {
+      "stage": "search_web",
+      "beat": "bitcoin",
+      "queries": [
+        "Bitcoin leading indicators on-chain data institutional flow metrics market sentiment price direction",
+        "Bitcoin market update last 7 days",
+        "Bitcoin technical protocol BIP updates last 7 days"
+      ],
+      "result_count": 12
+    },
+    {
+      "stage": "search_web",
+      "beat": "bitcoin",
+      "queries": [
+        "Bitcoin market update last 7 days",
+        "Bitcoin market update last 7 days",
+        "Bitcoin technical protocol BIP updates last 7 days"
+      ],
+      "result_count": 8
+    },
+    {
+      "stage": "map_results_to_candidates",
+      "beat": "bitcoin",
+      "candidate_count": 8
+    },
+    {
+      "stage": "collect_interview_outputs",
+      "section_count": 0,
+      "candidate_count": 24
+    },
+    {
+      "stage": "validator",
+      "candidate_count": 24,
+      "valid_count": 1,
+      "rejected_count": 23,
+      "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
+    },
+    {
+      "stage": "personalizer",
+      "scored_count": 1,
+      "selected": {
+        "news": 0,
+        "events": 1,
+        "bitcoin": 0
+      }
+    },
+    {
+      "stage": "output",
+      "report_len": 1012,
+      "newsletter_len": 1149
+    },
+    {
+      "stage": "recap",
+      "status": "ok"
+    }
+  ],
+  "scoring_preview": [
+    {
+      "item_id": "bb525c0c047bd1d096bf73f2a61902eced6d94bdaede8f797a8b607dc694d67c",
+      "domain": "events",
+      "title": "Events & Things To Do in Maastricht in April 2026 | AllEvents",
+      "source": "allevents.in",
+      "url": "https://allevents.in/maastricht/april",
+      "summary": "# Events in April in Maastricht. ### Events in April in Maastricht. ### Events in April in Maastricht. ### Ra:dius Festival - Kingsday 2026. ### Trending Events in Maastricht. ## Upcoming Events in April in Maastricht. | 25 Apr 2026 | **Native Tone presents Camelphat** | Complex Maastricht |. | 24 Apr 2026 | **Complex presents Somewhen BYORN N00M1 Oniver b2b KeyKey** | Complex Maastricht |. | 24...",
+      "category": "events",
+      "classification": "event",
+      "score_total": 0.8875,
+      "recency_score": 1.0,
+      "trust_score": 0.55,
+      "geo_score": 1.0,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    }
+  ],
+  "counts": {
+    "candidate_items": 24,
+    "validated_items": 1,
+    "rejected_items": 23,
+    "scored_items": 1
+  }
+}

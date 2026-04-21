@@ -1,0 +1,211 @@
+{
+  "rejected_items": [
+    {
+      "item_id": "df2d90666d4fee6964be639ca7277f501641d6e97593a07f851f6b36fd46e051",
+      "domain": "news",
+      "title": "Combination of key enabling technologies and growth markets focus of new Dutch industrial policy - Holland High Tech",
+      "source": "www.hollandhightech.nl",
+      "url": "https://www.hollandhightech.nl/en/news-calendar/news/combination-of-key-enabling-technologies-and-growth-markets-focus-of-new-dutch-industrial-policy",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "11d90a658d4ee5eca937a715ae76d3ef51c868446e4d9c0d99443faa760a5db0",
+      "domain": "news",
+      "title": "New trend monitor tracks societal changes | Tilburg University",
+      "source": "www.tilburguniversity.edu",
+      "url": "https://www.tilburguniversity.edu/current/news/trend-monitor-societal-transitions",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "9d0c9d3887fb54b957236e1cced0093e2defa8f9debe7f2e98ae59f3c41c4dcb",
+      "domain": "news",
+      "title": "Dutch Report Calls for $176 Billion Tech Spend, Jobless Benefit Cuts",
+      "source": "www.globalbankingandfinance.com",
+      "url": "https://www.globalbankingandfinance.com/netherlands-economy",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "f7ba388f44047afc361e88ca692ffaab8a457a1b0c312955b4d1324d2e328ee7",
+      "domain": "news",
+      "title": "The Netherlands falls behind in global tech race, new initiative aims ...",
+      "source": "nltimes.nl",
+      "url": "https://nltimes.nl/2025/03/14/netherlands-falls-behind-global-tech-race-new-initiative-aims-close-gap",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "ca250935819174b1f8ae2499258f91fc7d967014092a08361b3598e8cad2566c",
+      "domain": "news",
+      "title": "New tax breaks to be introduced in the Netherlands due to rising fuel ...",
+      "source": "iz.ru",
+      "url": "https://iz.ru/en/2082198/2026-04-20/new-tax-breaks-be-introduced-netherlands-due-rising-fuel-prices",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "17b074e7331e004b570968ae45ea6eb3f7e93aef2c86878a4be6bb6eae735f87",
+      "domain": "news",
+      "title": "Dutch Economy news | Breaking News & Top Stories | NewsNow",
+      "source": "www.newsnow.co.uk",
+      "url": "https://www.newsnow.co.uk/h/World+News/Europe/Western+Europe/Netherlands/Economy",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "80d1413cbb45da5b5f331315cb2a2bcd94ef44a84ca80187d0ae333bdb6fecdf",
+      "domain": "news",
+      "title": "Netherlands | Financial Times",
+      "source": "www.ft.com",
+      "url": "https://www.ft.com/netherlands",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "dd3451bc184cfaf503f110fde9e0b516f4be3d0180974657b05807a4f459da9d",
+      "domain": "news",
+      "title": "Netherlands - Latest Holland News - NewsNow",
+      "source": "www.newsnow.com",
+      "url": "https://www.newsnow.com/us/World/Europe/Western+Europe/Netherlands",
+      "reason": "freshness_reject:missing_news_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "6d17fce3b1143057c241ad8e7c1f1a93e071375fddfba66ae3d1f3b0166bb383",
+      "domain": "events",
+      "title": "Family & Education: Children & Youth Events & Tickets in Maastricht, Netherlands | Eventbrite",
+      "source": "www.eventbrite.com",
+      "url": "https://www.eventbrite.com/b/netherlands--maastricht/family-and-education/children-and-youth-",
+      "reason": "freshness_reject:event_weekend_hint_only",
+      "stage": "validator"
+    },
+    {
+      "item_id": "97db574a12f3db749d4599209bcdd933881cebf6f4305c4b9f14cfe2bbe6094d",
+      "domain": "events",
+      "title": "The best Maastricht Family-friendly activities 2026 - Free cancellation",
+      "source": "www.getyourguide.com",
+      "url": "https://www.getyourguide.com/maastricht-l2818/family-friendly-activities-tc1094",
+      "reason": "freshness_reject:event_weekend_hint_only",
+      "stage": "validator"
+    },
+    {
+      "item_id": "6ef990b74a24fbaa32c31759d22b35b42e04ec5d1020951833a7aeb78fbf74c6",
+      "domain": "events",
+      "title": "THE 10 BEST Things to Do in Maastricht with Kids (2026) - Tripadvisor",
+      "source": "www.tripadvisor.com",
+      "url": "https://www.tripadvisor.com/Attractions-g188575-Activities-zft11306-Maastricht_Limburg_Province.html",
+      "reason": "freshness_reject:event_weekend_hint_only",
+      "stage": "validator"
+    },
+    {
+      "item_id": "06103ab19722ffd2ecb646c238828681377a253f343f5812b2cd3adb6c8bab5b",
+      "domain": "events",
+      "title": "Events and Things to do in Maastricht, Netherlands this weekend",
+      "source": "www.eventbrite.com",
+      "url": "https://www.eventbrite.com/d/netherlands--maastricht/events--this-weekend",
+      "reason": "validator_decision:This is a generic, dynamic listing of multiple events from a ticketing platform, not a specific, noteworthy event. It functions as a search result page and is not suitable for a curated digest.",
+      "stage": "validator"
+    },
+    {
+      "item_id": "2ab334d68bc5098415860f9383160c1e0dd71614051c1016fed3277512f448da",
+      "domain": "events",
+      "title": "Things to Do in Limburg This Weekend | Eventbrite",
+      "source": "www.eventbrite.com",
+      "url": "https://www.eventbrite.com/d/netherlands--limburg/events--this-weekend",
+      "reason": "validator_decision:This is a generic, dynamic search result page for events, not a specific, curated item. It lacks the specificity required for a research digest.",
+      "stage": "validator"
+    },
+    {
+      "item_id": "cee3ed1a9fb971519db5a0b72ea912594412117aefced626d743bee9f08a7ba7",
+      "domain": "events",
+      "title": "Community Events in Maastricht, Netherlands - Local Gatherings & Activities | Eventbrite",
+      "source": "www.eventbrite.com",
+      "url": "https://www.eventbrite.com/b/netherlands--maastricht/community",
+      "reason": "freshness_reject:event_weekend_hint_only",
+      "stage": "validator"
+    },
+    {
+      "item_id": "84e2164267f81056f63c22a94ec54d214a6a3ee73e82ca4794012f28faecaba5",
+      "domain": "events",
+      "title": "Events and Things to do in Maastricht, Netherlands today - Eventbrite",
+      "source": "www.eventbrite.com",
+      "url": "https://www.eventbrite.com/d/netherlands--maastricht/events--today",
+      "reason": "freshness_reject:event_weekend_hint_only",
+      "stage": "validator"
+    },
+    {
+      "item_id": "128b564dd6c4464b8639807f55703f5582dc90c9e37f76e0a7f21cd6d476d244",
+      "domain": "bitcoin",
+      "title": "Overview of Popular BTC On-Chain Indicators | Gate Learn",
+      "source": "www.gate.com",
+      "url": "https://www.gate.com/learn/articles/overview-of-popular-btc-on-chain-indicators/5888",
+      "reason": "static_or_reference_signal",
+      "stage": "validator"
+    },
+    {
+      "item_id": "3d5d63935f11eace87a32030e44ea07d3d890dea0712c9eeeeca0bdd6230638f",
+      "domain": "bitcoin",
+      "title": "Bitcoin: Summary, on-chain data analytics, price, dex trades and charts",
+      "source": "cryptoquant.com",
+      "url": "https://cryptoquant.com/asset/btc/summary",
+      "reason": "freshness_reject:missing_bitcoin_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "134106373db985278de13d38be7e2db25317691a44c49727d7c532d785da659e",
+      "domain": "bitcoin",
+      "title": "Bitcoin price direction prediction using on-chain data and feature selection - ScienceDirect",
+      "source": "www.sciencedirect.com",
+      "url": "https://www.sciencedirect.com/science/article/pii/S266682702500057X",
+      "reason": "freshness_reject:missing_bitcoin_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "b5e1bb15edf4a785cf75b46f23c66a822b59ac51c503572f554a0f1476744963",
+      "domain": "bitcoin",
+      "title": "Nansen",
+      "source": "nansen.ai",
+      "url": "https://nansen.ai/post/onchain-metrics-key-indicators-for-cryptocurrency-price-prediction",
+      "reason": "freshness_reject:missing_bitcoin_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "27474623220122746076e5578f040716dd7bc7ca88a95b729ef2f4bf64fc075d",
+      "domain": "bitcoin",
+      "title": "BTCUSD - Bitcoin - USD Cryptocurrency Price - Barchart.com",
+      "source": "www.barchart.com",
+      "url": "https://www.barchart.com/crypto/quotes/%5EBTCUSD",
+      "reason": "freshness_reject:missing_bitcoin_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "1fc99b46c2209b19f16ba4e2101742c84f7a4874a2283387edee48bfed184521",
+      "domain": "bitcoin",
+      "title": "Bitcoin (BTC) Price USD Today, News, Charts, Market Cap | Coinbase",
+      "source": "www.coinbase.com",
+      "url": "https://www.coinbase.com/price/bitcoin",
+      "reason": "freshness_reject:missing_bitcoin_date",
+      "stage": "validator"
+    },
+    {
+      "item_id": "ed36f02ab30f97e35053436c9f55e07914fb08fb38ce725f2aed5f957e4b4cb7",
+      "domain": "bitcoin",
+      "title": "Bitcoin price today, BTC to USD live price, marketcap and chart",
+      "source": "www.coindesk.com",
+      "url": "https://www.coindesk.com/price/bitcoin",
+      "reason": "static_or_reference_signal",
+      "stage": "validator"
+    },
+    {
+      "item_id": "861cba6010256cfe4f4ea5b3663a87e07d9582d0058854393a8a5a47d54c9b72",
+      "domain": "bitcoin",
+      "title": "CoinDesk Bitcoin Price Index (XBX) - BTCUSD - MarketWatch",
+      "source": "www.marketwatch.com",
+      "url": "https://www.marketwatch.com/investing/cryptocurrency/btcusd",
+      "reason": "freshness_reject:missing_bitcoin_date",
+      "stage": "validator"
+    }
+  ]
+}

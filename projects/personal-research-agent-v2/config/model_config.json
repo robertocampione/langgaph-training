@@ -1,0 +1,14 @@
+{
+  "fast_model": "gemini-2.5-flash",
+  "quality_model": "gemini-2.5-pro",
+  "reasoning_model": "deepseek/deepseek-r1",
+  "reasoning_provider": "openrouter",
+  "reasoning_base_url": "https://openrouter.ai/api/v1",
+  "reasoning_api_env": "OPENROUTER_API_KEY",
+  "fallback_to_quality_on_reasoning_error": true,
+  "temperature": 0,
+  "max_results_per_query": 4,
+  "max_num_turns": 2,
+  "max_items_per_section": 4,
+  "next_weekend_days": 2
+}

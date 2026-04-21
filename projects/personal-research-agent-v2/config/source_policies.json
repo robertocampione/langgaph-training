@@ -1,0 +1,45 @@
+{
+  "news": {
+    "allow": [],
+    "block": [
+      "wikipedia.org",
+      "www.wikipedia.org",
+      "reddit.com",
+      "www.reddit.com",
+      "medium.com",
+      "ftp.bills.com.au",
+      "tradingeconomics.com",
+      "newsnow.co.uk",
+      "newsnow.com"
+    ],
+    "freshness_days": 3,
+    "location_terms": ["netherlands", "limburg", "maastricht", "borgharen"]
+  },
+  "events": {
+    "allow": [],
+    "block": [
+      "wikipedia.org",
+      "www.wikipedia.org",
+      "researchgate.net",
+      "www.researchgate.net"
+    ],
+    "weekend_only": true,
+    "location_terms": ["maastricht", "limburg", "borgharen", "heerlen", "sittard", "valkenburg"]
+  },
+  "bitcoin": {
+    "allow": [],
+    "block": [
+      "blog.bitfinex.com",
+      "coinmarketcap.com",
+      "www.coinmarketcap.com",
+      "coingecko.com",
+      "www.coingecko.com",
+      "wikipedia.org",
+      "www.wikipedia.org",
+      "reddit.com",
+      "www.reddit.com"
+    ],
+    "freshness_days": 7,
+    "allow_analysis_older": true
+  }
+}

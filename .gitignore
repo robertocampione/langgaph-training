@@ -221,3 +221,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 module-6/deployment/docker-compose.yml
+
+# DOE framework (local-only, never commit)
+/directives/
+/execution/
+/docs/
+/skills/
+/AGENT.MD
+/.vscode/

@@ -1,14 +1,14 @@
 {
-  "run_id": "v2-20260421202128",
-  "timestamp": "2026-04-21T20:21:28.444603Z",
+  "run_id": "v2-20260421212009",
+  "timestamp": "2026-04-21T21:20:09.772686Z",
   "trace_events": [
     {
       "stage": "planner",
       "message": "Plan generated",
       "plan": {
         "focus_areas": [
-          "Netherlands news",
-          "Limburg news",
+          "Netherlands News",
+          "Limburg News",
           "Family-friendly weekend events",
           "Bitcoin market signals",
           "Bitcoin technical analysis",
@@ -27,7 +27,7 @@
         ],
         "include_events": true,
         "include_bitcoin": true,
-        "max_items_per_section": 5
+        "max_items_per_section": 4
       }
     },
     {
@@ -38,12 +38,12 @@
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands nitrogen emissions policy impact Limburg agricultural communities land use planning site:1limburg.nl OR site:limburger.nl OR site:dutchnews.nl OR site:nos.nl OR site:nu.nl",
+        "Netherlands Limburg political economic social trends analysis long-term impact",
         "Netherlands economy news last 24 hours taxes inflation Netherlands site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
         "Limburg Maastricht news last 3 days policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl"
       ],
       "result_count": 8,
-      "raw_count": 12
+      "raw_count": 11
     },
     {
       "stage": "search_web",
@@ -52,7 +52,7 @@
         "Netherlands economy news last 24 hours taxes inflation Netherlands site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
         "Limburg Maastricht news last 3 days policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl"
       ],
-      "result_count": 7,
+      "result_count": 6,
       "raw_count": 8
     },
     {
@@ -64,13 +64,13 @@
       "stage": "search_web",
       "beat": "events",
       "queries": [
-        "family-friendly weekend events Maastricht site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com",
+        "family-friendly events Maastricht Limburg educational outdoor creative cultural",
         "site:eventbrite.com Maastricht Apr 25 2026 event",
         "site:meetup.com Maastricht Apr 26 2026 event bitcoin OR family",
         "next 7 days events Limburg Maastricht exact date location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com"
       ],
       "result_count": 10,
-      "raw_count": 16
+      "raw_count": 14
     },
     {
       "stage": "search_web",
@@ -93,7 +93,7 @@
       "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "Bitcoin technical and on-chain signals for next price move and short-term sentiment",
+        "bitcoin on-chain metrics institutional flow accumulation distribution post-halving technical outlook",
         "bitcoin news ETF regulation last 24 hours",
         "site:github.com bitcoin/bitcoin issues",
         "site:github.com bitcoin/bips BIP"
@@ -105,12 +105,12 @@
       "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "site:github.com bitcoin/bips BIP",
         "bitcoin news ETF regulation last 24 hours",
         "site:github.com bitcoin/bitcoin issues",
+        "site:github.com bitcoin/bips BIP",
         "bitcoin meetup Netherlands Maastricht April 2026"
       ],
-      "result_count": 9,
+      "result_count": 10,
       "raw_count": 15
     },
     {
@@ -126,15 +126,15 @@
     {
       "stage": "validator",
       "candidate_count": 30,
-      "valid_count": 8,
-      "rejected_count": 22,
+      "valid_count": 7,
+      "rejected_count": 23,
       "reason_counts": {
-        "not_article_page": 5,
-        "low_trust_source": 2,
+        "not_recent": 7,
+        "low_trust_source": 3,
         "generic_listing": 5,
-        "not_recent": 3,
         "duplicate_in_run": 4,
-        "missing_specific_date": 3
+        "missing_specific_date": 3,
+        "not_article_page": 1
       },
       "fallback_reasoning_active": true,
       "reasoning_active": false,
@@ -142,11 +142,11 @@
     },
     {
       "stage": "personalizer",
-      "scored_count": 8,
+      "scored_count": 7,
       "selected": {
-        "news": 1,
+        "news": 0,
         "events": 0,
-        "bitcoin": 5
+        "bitcoin": 4
       }
     },
     {
@@ -159,12 +159,12 @@
           "bitcoin": 2
         },
         "selected": {
-          "news": 1,
+          "news": 0,
           "events": 0,
-          "bitcoin": 5
+          "bitcoin": 4
         },
         "missing": {
-          "news": 2,
+          "news": 3,
           "events": 2,
           "bitcoin": 0
         },
@@ -174,8 +174,8 @@
     },
     {
       "stage": "output",
-      "report_len": 5126,
-      "newsletter_len": 3381
+      "report_len": 6250,
+      "newsletter_len": 2228
     },
     {
       "stage": "recap",
@@ -183,54 +183,6 @@
     }
   ],
   "scoring_preview": [
-    {
-      "item_id": "2cefacae547c2894b2495e79e23105641be8ab490ab4ddcf87e553f620518662",
-      "domain": "bitcoin",
-      "title": "bips/bip-0044.mediawiki at master \u00b7 bitcoin/bips - GitHub",
-      "source": "github.com",
-      "url": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
-      "summary": "This BIP defines a logical hierarchy for deterministic wallets based on an algorithm described in BIP-0032 (BIP32 from now on) and purpose scheme described in",
-      "category": "technical",
-      "classification": "analysis",
-      "content_type": "technical",
-      "source_tier": "tier1",
-      "date_confidence": 0.35,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:technical_no_date"
-      ],
-      "score_total": 0.9200000000000002,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 0.35,
-      "category_score": 1.0,
-      "novelty_score": 1.0,
-      "family_friendly": false
-    },
-    {
-      "item_id": "518af62978e3712b478359df0480da97cbf9a046a0cdb7668add4d64bb642be6",
-      "domain": "news",
-      "title": "What's all the fuss about nitrogen in the Netherlands? - DutchNews.nl",
-      "source": "dutchnews.nl",
-      "url": "https://www.dutchnews.nl/2022/06/whats-all-the-fuss-about-nitrogen-in-the-netherlands",
-      "summary": "**Nitrogen-based pollution is behind delays to the building of new homes and roads, has led to plans to reduce the number of cows and pigs in the Netherlands and is causing damage to rare habitats. Nitrogen can also be highly polluting when some compounds \u2013 like ammonia (NH3), nitrogen oxides (NOx) and nitrous oxide (N2O) \u2013 are present in high concentrations. In the Netherlands, nitrogen pollutio...",
-      "category": "economy",
-      "classification": "analysis",
-      "content_type": "article",
-      "source_tier": "tier1",
-      "date_confidence": 0.4,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:trusted_missing_date_assumed_today"
-      ],
-      "score_total": 0.8500000000000001,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 1.0,
-      "category_score": 1.0,
-      "novelty_score": 1.0,
-      "family_friendly": false
-    },
     {
       "item_id": "c9c697225f8720e198359a9c0ff428b9744427a3ddead50bb8957b20af4b8bb9",
       "domain": "bitcoin",
@@ -374,13 +326,37 @@
       "category_score": 1.0,
       "novelty_score": 0.2,
       "family_friendly": false
+    },
+    {
+      "item_id": "2cefacae547c2894b2495e79e23105641be8ab490ab4ddcf87e553f620518662",
+      "domain": "bitcoin",
+      "title": "bips/bip-0044.mediawiki at master \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
+      "summary": "This BIP defines a logical hierarchy for deterministic wallets based on an algorithm described in BIP-0032 (BIP32 from now on) and purpose scheme described in",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
     }
   ],
   "counts": {
     "candidate_items": 30,
-    "validated_items": 8,
-    "rejected_items": 22,
-    "scored_items": 8
+    "validated_items": 7,
+    "rejected_items": 23,
+    "scored_items": 7
   },
   "quality_gate_status": {
     "status": "warn",
@@ -390,12 +366,12 @@
       "bitcoin": 2
     },
     "selected": {
-      "news": 1,
+      "news": 0,
       "events": 0,
-      "bitcoin": 5
+      "bitcoin": 4
     },
     "missing": {
-      "news": 2,
+      "news": 3,
       "events": 2,
       "bitcoin": 0
     },
@@ -403,12 +379,12 @@
     "mode": "soft"
   },
   "reason_counts": {
-    "not_article_page": 5,
-    "low_trust_source": 2,
+    "not_recent": 7,
+    "low_trust_source": 3,
     "generic_listing": 5,
-    "not_recent": 3,
     "duplicate_in_run": 4,
-    "missing_specific_date": 3
+    "missing_specific_date": 3,
+    "not_article_page": 1
   },
   "reasoning_active": false,
   "fallback_reasoning_active": true,

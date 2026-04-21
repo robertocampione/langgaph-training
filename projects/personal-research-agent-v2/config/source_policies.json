@@ -1,43 +1,88 @@
 {
   "news": {
-    "allow": [],
+    "tier1_trusted": [
+      "nos.nl",
+      "dutchnews.nl",
+      "limburger.nl",
+      "1limburg.nl"
+    ],
+    "tier2_allowed": [
+      "nu.nl",
+      "ad.nl",
+      "rtl.nl",
+      "nltimes.nl"
+    ],
     "block": [
       "wikipedia.org",
-      "www.wikipedia.org",
-      "reddit.com",
-      "www.reddit.com",
       "medium.com",
-      "ftp.bills.com.au",
-      "tradingeconomics.com",
+      "linkedin.com",
+      "researchgate.net",
+      "newsnow.com",
       "newsnow.co.uk",
-      "newsnow.com"
+      "pdf",
+      "glossary",
+      "about netherlands",
+      "static page"
     ],
     "freshness_days": 3,
-    "location_terms": ["netherlands", "limburg", "maastricht", "borgharen"]
+    "location_terms": [
+      "netherlands",
+      "limburg",
+      "maastricht",
+      "borgharen"
+    ]
   },
   "events": {
-    "allow": [],
+    "tier1_trusted": [
+      "visitmaastricht.nl",
+      "visitmaastricht.com",
+      "eventbrite.com",
+      "meetup.com"
+    ],
+    "tier2_allowed": [
+      "allevents.in",
+      "facebook.com"
+    ],
     "block": [
       "wikipedia.org",
-      "www.wikipedia.org",
       "researchgate.net",
-      "www.researchgate.net"
+      "pdf",
+      "tourism overview",
+      "all events",
+      "things to do"
     ],
     "weekend_only": true,
-    "location_terms": ["maastricht", "limburg", "borgharen", "heerlen", "sittard", "valkenburg"]
+    "freshness_days": 7,
+    "location_terms": [
+      "maastricht",
+      "limburg",
+      "borgharen",
+      "heerlen",
+      "sittard",
+      "valkenburg"
+    ]
   },
   "bitcoin": {
-    "allow": [],
+    "tier1_trusted": [
+      "bitcoinmagazine.com",
+      "stacker.news",
+      "github.com",
+      "bitcointrain.it"
+    ],
+    "tier2_allowed": [
+      "coindesk.com",
+      "meetup.com",
+      "eventbrite.com"
+    ],
     "block": [
-      "blog.bitfinex.com",
       "coinmarketcap.com",
-      "www.coinmarketcap.com",
       "coingecko.com",
-      "www.coingecko.com",
-      "wikipedia.org",
-      "www.wikipedia.org",
+      "medium.com",
+      "linkedin.com",
+      "crypto-news",
+      "altcoin",
       "reddit.com",
-      "www.reddit.com"
+      "wikipedia.org"
     ],
     "freshness_days": 7,
     "allow_analysis_older": true

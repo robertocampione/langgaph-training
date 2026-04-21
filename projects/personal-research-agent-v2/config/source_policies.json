@@ -22,7 +22,11 @@
       "pdf",
       "glossary",
       "about netherlands",
-      "static page"
+      "static page",
+      "academic.oup.com",
+      "onlinelibrary.wiley.com",
+      "research paper",
+      "working paper"
     ],
     "freshness_days": 3,
     "location_terms": [
@@ -36,7 +40,9 @@
       "/discover",
       "/d/",
       ".xml",
-      ".pdf"
+      ".pdf",
+      "/doi/",
+      "/journal/"
     ]
   },
   "events": {
@@ -75,7 +81,11 @@
       "/discover",
       "/d/",
       ".xml",
-      ".pdf"
+      ".pdf",
+      "/b/netherlands--",
+      "/d/netherlands--",
+      "all-outings",
+      "/events--this-year"
     ]
   },
   "bitcoin": {

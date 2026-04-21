@@ -1,6 +1,6 @@
 {
-  "run_id": "v2-20260421212009",
-  "timestamp": "2026-04-21T21:20:09.772686Z",
+  "run_id": "v2-20260421223301",
+  "timestamp": "2026-04-21T22:33:01.130635Z",
   "trace_events": [
     {
       "stage": "planner",
@@ -38,22 +38,25 @@
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands Limburg political economic social trends analysis long-term impact",
-        "Netherlands economy news last 24 hours taxes inflation Netherlands site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
-        "Limburg Maastricht news last 3 days policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl"
+        "netherlands limburg political economic social trends site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands news last 24 hours inflation taxes government latest site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "limburg news last 3 days maastricht policy local economy breaking site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "site:nos.nl netherlands latest news today"
       ],
-      "result_count": 8,
-      "raw_count": 11
+      "result_count": 10,
+      "raw_count": 12
     },
     {
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands economy news last 24 hours taxes inflation Netherlands site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
-        "Limburg Maastricht news last 3 days policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl"
+        "netherlands news last 24 hours inflation taxes government latest site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "limburg news last 3 days maastricht policy local economy breaking site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "site:nos.nl netherlands latest news today",
+        "site:dutchnews.nl netherlands today breaking"
       ],
-      "result_count": 6,
-      "raw_count": 8
+      "result_count": 10,
+      "raw_count": 12
     },
     {
       "stage": "map_results_to_candidates",
@@ -64,22 +67,22 @@
       "stage": "search_web",
       "beat": "events",
       "queries": [
-        "family-friendly events Maastricht Limburg educational outdoor creative cultural",
-        "site:eventbrite.com Maastricht Apr 25 2026 event",
-        "site:meetup.com Maastricht Apr 26 2026 event bitcoin OR family",
-        "next 7 days events Limburg Maastricht exact date location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com"
+        "maastricht family events prioritization criteria age ranges activities date time location",
+        "maastricht event apr 25 2026 location time ticket",
+        "maastricht apr 26 2026 meetup event details location",
+        "family event maastricht this weekend children workshop date time location ticket"
       ],
-      "result_count": 10,
-      "raw_count": 14
+      "result_count": 9,
+      "raw_count": 16
     },
     {
       "stage": "search_web",
       "beat": "events",
       "queries": [
-        "upcoming events Maastricht next 7 days site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com",
-        "site:eventbrite.com Maastricht Apr 25 2026 event",
-        "site:meetup.com Maastricht Apr 26 2026 event bitcoin OR family",
-        "next 7 days events Limburg Maastricht exact date location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com"
+        "limburg maastricht next 7 days specific event date location time site:eventbrite.com or site:meetup.com or site:visitmaastricht.com or site:visitmaastricht.nl or site:allevents.in or site:facebook.com",
+        "maastricht event apr 25 2026 location time ticket",
+        "maastricht apr 26 2026 meetup event details location",
+        "family event maastricht this weekend children workshop date time location ticket"
       ],
       "result_count": 10,
       "raw_count": 16
@@ -93,10 +96,10 @@
       "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "bitcoin on-chain metrics institutional flow accumulation distribution post-halving technical outlook",
-        "bitcoin news ETF regulation last 24 hours",
-        "site:github.com bitcoin/bitcoin issues",
-        "site:github.com bitcoin/bips BIP"
+        "Bitcoin regulation major economic blocs recent legislative policy developments impact market structure institutional adoption",
+        "bitcoin market update last 24 hours etf regulation macro",
+        "site:github.com bitcoin/bitcoin issues updated",
+        "site:github.com bitcoin/bips pull request OR issue updated"
       ],
       "result_count": 8,
       "raw_count": 15
@@ -105,13 +108,13 @@
       "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "bitcoin news ETF regulation last 24 hours",
-        "site:github.com bitcoin/bitcoin issues",
-        "site:github.com bitcoin/bips BIP",
-        "bitcoin meetup Netherlands Maastricht April 2026"
+        "bitcoin market update last 24 hours etf regulation macro",
+        "site:github.com bitcoin/bitcoin issues updated",
+        "site:github.com bitcoin/bips pull request OR issue updated",
+        "bitcoin meetup Netherlands Maastricht event date time"
       ],
       "result_count": 10,
-      "raw_count": 15
+      "raw_count": 16
     },
     {
       "stage": "map_results_to_candidates",
@@ -126,27 +129,29 @@
     {
       "stage": "validator",
       "candidate_count": 30,
-      "valid_count": 7,
-      "rejected_count": 23,
+      "valid_count": 11,
+      "rejected_count": 19,
       "reason_counts": {
-        "not_recent": 7,
-        "low_trust_source": 3,
-        "generic_listing": 5,
-        "duplicate_in_run": 4,
+        "not_article_page": 5,
+        "not_recent": 3,
         "missing_specific_date": 3,
-        "not_article_page": 1
+        "low_trust_source": 4,
+        "generic_listing": 2,
+        "duplicate_in_run": 2
       },
       "fallback_reasoning_active": true,
       "reasoning_active": false,
-      "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
+      "reasoning_fallback": "langchain-openai not installed; fallback to quality model",
+      "reasoning_preflight_ok": false,
+      "reasoning_preflight_message": "langchain-openai not installed; fallback to quality model"
     },
     {
       "stage": "personalizer",
-      "scored_count": 7,
+      "scored_count": 11,
       "selected": {
-        "news": 0,
+        "news": 4,
         "events": 0,
-        "bitcoin": 4
+        "bitcoin": 2
       }
     },
     {
@@ -159,23 +164,23 @@
           "bitcoin": 2
         },
         "selected": {
-          "news": 0,
+          "news": 4,
           "events": 0,
-          "bitcoin": 4
+          "bitcoin": 2
         },
         "missing": {
-          "news": 3,
+          "news": 0,
           "events": 2,
           "bitcoin": 0
         },
-        "bitcoin_diversity_ok": true,
+        "bitcoin_diversity_ok": false,
         "mode": "soft"
       }
     },
     {
       "stage": "output",
-      "report_len": 6250,
-      "newsletter_len": 2228
+      "report_len": 5001,
+      "newsletter_len": 3368
     },
     {
       "stage": "recap",
@@ -184,36 +189,12 @@
   ],
   "scoring_preview": [
     {
-      "item_id": "c9c697225f8720e198359a9c0ff428b9744427a3ddead50bb8957b20af4b8bb9",
-      "domain": "bitcoin",
-      "title": "Issues \u00b7 bitcoin/bitcoin - GitHub",
-      "source": "github.com",
-      "url": "https://github.com/bitcoin/bitcoin/issues",
-      "summary": "Bitcoin Core integration/staging tree. Contribute to bitcoin/bitcoin development by creating an account on GitHub ... Issues 372 \u00b7 Pull requests 350 \u00b7 Actions",
-      "category": "technical",
-      "classification": "analysis",
-      "content_type": "technical",
-      "source_tier": "tier1",
-      "date_confidence": 0.35,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:technical_no_date"
-      ],
-      "score_total": 0.8400000000000001,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 0.35,
-      "category_score": 1.0,
-      "novelty_score": 0.2,
-      "family_friendly": false
-    },
-    {
       "item_id": "b6490aaf40dc74626f5d60ffa21496cc462df63bd608ff94938006c39760c9bc",
       "domain": "bitcoin",
       "title": "v30.0 Testing \u00b7 Issue #33368 \u00b7 bitcoin/bitcoin - GitHub",
       "source": "github.com",
       "url": "https://github.com/bitcoin/bitcoin/issues/33368",
-      "summary": "Umbrella issue for 30.0 testing. Please help testing on a wide variety of supported platforms, as well as interaction with different",
+      "summary": "Upgraded bitcoind from version 29.0 to 30.0rc1. Bitcoind (30.0rc1) is working great (txindex=1) with low block verification times (about 1",
       "category": "technical",
       "classification": "analysis",
       "content_type": "technical",
@@ -223,7 +204,7 @@
       "validation_flags": [
         "date_source:technical_no_date"
       ],
-      "score_total": 0.8400000000000001,
+      "score_total": 1.0,
       "recency_score": 1.0,
       "trust_score": 1.0,
       "geo_score": 0.35,
@@ -232,12 +213,12 @@
       "family_friendly": false
     },
     {
-      "item_id": "fd3722a40247f67bd5cea164a16b722db34bcbc220ee864c71738bb403de56aa",
+      "item_id": "6b5e305a93d12191e948d4a27ab7736ef9b338ad067bc465da0e76d4ddce23b9",
       "domain": "bitcoin",
-      "title": "v29.0 Testing \u00b7 Issue #32052 \u00b7 bitcoin/bitcoin - GitHub",
+      "title": "Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub",
       "source": "github.com",
-      "url": "https://github.com/bitcoin/bitcoin/issues/32052",
-      "summary": "Umbrella issue for 29.0 testing. Please help testing on a wide variety of supported platforms, as well as interaction with different",
+      "url": "https://github.com/bitcoin/bitcoin/issues/33777",
+      "summary": "These are bug fixes, not new features. Except for #34568 (already merged) they are not breaking changes, so they if they don't make it into v31.",
       "category": "technical",
       "classification": "analysis",
       "content_type": "technical",
@@ -247,10 +228,202 @@
       "validation_flags": [
         "date_source:technical_no_date"
       ],
-      "score_total": 0.8400000000000001,
+      "score_total": 1.0,
       "recency_score": 1.0,
       "trust_score": 1.0,
       "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "8c8369850d3e27491a8d2a6dec68807b292c83d69c50feb27e48245ce0581c71",
+      "domain": "bitcoin",
+      "title": "Issues \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/issues/152)",
+      "summary": "Pull requests 67 \u00b7 Actions \u00b7 Wiki \u00b7 Security 0 \u00b7 Insights. Additional navigation ... New issue. Filter contains 2 issues: Invalid value 152 for author; Unbalanced",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 1.0,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "2a3486499863637943266934977adeb8607ed737e2f79b42f3e5285087f944d2",
+      "domain": "bitcoin",
+      "title": "Pull requests \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/pulls",
+      "summary": "bip388: Update Changelog Metadata Update Changes to Changelog or Preamble without changing the technical content of a BIP. #2144 opened yesterday by",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.9800000000000002,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "20f572a1a0c3af7266cbf478b0f1a043a7a951c47b5f85cacce30780cc0eba05",
+      "domain": "bitcoin",
+      "title": "bips/bip-0003.md at master \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0003.md",
+      "summary": "Once the BIP is ready it should be submitted as a \"pull request\" to the BIPs repository where it may get further feedback. For each new BIP pull request that",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.9800000000000002,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "c9c697225f8720e198359a9c0ff428b9744427a3ddead50bb8957b20af4b8bb9",
+      "domain": "bitcoin",
+      "title": "Issues \u00b7 bitcoin/bitcoin - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bitcoin/issues",
+      "summary": "Gathers TODOs, issues, PRs, and status updates.Tracks longer-running projects and releases. Gathers TODOs, issues, PRs, and status updates. Status: Open",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8600000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "1b823fe51977af5a591e7f7a690a1bf5af3328d7f485441e18efe99bdd24afb1",
+      "domain": "news",
+      "title": "What's all the fuss about poverty in the Netherlands? - DutchNews.nl",
+      "source": "dutchnews.nl",
+      "url": "https://www.dutchnews.nl/2024/10/whats-all-the-fuss-about-poverty-in-the-netherlands",
+      "summary": "The richest Dutch are getting richer, adding 5% to their wealth last year, according to the latest edition of the Quote 500 rich list.",
+      "category": "economy",
+      "classification": "analysis",
+      "content_type": "article",
+      "source_tier": "tier1",
+      "date_confidence": 0.4,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:trusted_missing_date_assumed_today"
+      ],
+      "score_total": 0.8500000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 1.0,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "6a672d67b785efb70d449db2955f4927ac4bd0a108575fe509e02078be9bf814",
+      "domain": "news",
+      "title": "Netherlands to count 1.2 million migrant workers by 2030 | NL Times",
+      "source": "nltimes.nl",
+      "url": "https://nltimes.nl/2022/06/21/netherlands-count-12-million-migrant-workers-2030",
+      "summary": "The Netherlands is facing staff shortages in almost all sectors of its economy. Getting more workers from abroad may be a solution to that.",
+      "category": "economy",
+      "classification": "news",
+      "content_type": "article",
+      "source_tier": "tier2",
+      "date_confidence": 0.4,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:trusted_missing_date_assumed_today"
+      ],
+      "score_total": 0.8050000000000002,
+      "recency_score": 1.0,
+      "trust_score": 0.82,
+      "geo_score": 1.0,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "99d3d15bc5374eb7ccd93186aad6b97710e3fcc2f5346402c1862a48c2e128a7",
+      "domain": "news",
+      "title": "Record-breaking 39.5 degrees in Maastricht, as asphalt reaches 52 ...",
+      "source": "nltimes.nl",
+      "url": "https://nltimes.nl/2022/07/19/record-breaking-395-degrees-maastricht-asphalt-reaches-52-degrees-people-flock-movies",
+      "summary": "The old record of 37.1 degrees Celsius, measured in 2006 in Westdorpe, was broken at around 1:50 pm when the temperature in Maastricht reached 37.3 degrees.",
+      "category": "local",
+      "classification": "news",
+      "content_type": "article",
+      "source_tier": "tier2",
+      "date_confidence": 0.65,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:relative_today"
+      ],
+      "score_total": 0.7950000000000002,
+      "recency_score": 1.0,
+      "trust_score": 0.82,
+      "geo_score": 1.0,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "833284545cdd2034d40ffc9d43e36169169846476002d2c3e24bafd06fcfc60f",
+      "domain": "news",
+      "title": "New laws, new taxes: what changes for you in 2024 - DutchNews.nl",
+      "source": "dutchnews.nl",
+      "url": "https://www.dutchnews.nl/2024/01/new-laws-new-taxes-what-changes-for-you-in-2024",
+      "summary": "Households will get a standard \u20ac28.31 cut energy taxes. Taxes rise on soft drinks, fruit juice and plant-based milks. The tax on soft drinks,",
+      "category": "economy",
+      "classification": "news",
+      "content_type": "article",
+      "source_tier": "tier1",
+      "date_confidence": 0.4,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:trusted_missing_date_assumed_today"
+      ],
+      "score_total": 0.77,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 1.0,
       "category_score": 1.0,
       "novelty_score": 0.2,
       "family_friendly": false
@@ -261,7 +434,7 @@
       "title": "bips/bip-0001.mediawiki at master \u00b7 bitcoin/bips - GitHub",
       "source": "github.com",
       "url": "https://github.com/bitcoin/bips/blob/master/bip-0001.mediawiki",
-      "summary": "BIP stands for Bitcoin Improvement Proposal. A BIP is a design document providing information to the Bitcoin community, or describing a new feature for Bitcoin",
+      "summary": "Once the BIP is ready for the repository it should be submitted as a \"pull request\" to the bitcoin/bips repository on GitHub where it may get further feedback.",
       "category": "technical",
       "classification": "analysis",
       "content_type": "technical",
@@ -271,79 +444,7 @@
       "validation_flags": [
         "date_source:technical_no_date"
       ],
-      "score_total": 0.8400000000000001,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 0.35,
-      "category_score": 1.0,
-      "novelty_score": 0.2,
-      "family_friendly": false
-    },
-    {
-      "item_id": "0b0557564b8f0df5f5961281202a094616e3eb330957c316f254de7451f9a80a",
-      "domain": "bitcoin",
-      "title": "bips/bip-0070.mediawiki at master \u00b7 bitcoin/bips - GitHub",
-      "source": "github.com",
-      "url": "https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki",
-      "summary": "This BIP describes a protocol for communication between a merchant and their customer, enabling both a better customer experience and better security.",
-      "category": "technical",
-      "classification": "analysis",
-      "content_type": "technical",
-      "source_tier": "tier1",
-      "date_confidence": 0.35,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:technical_no_date"
-      ],
-      "score_total": 0.8400000000000001,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 0.35,
-      "category_score": 1.0,
-      "novelty_score": 0.2,
-      "family_friendly": false
-    },
-    {
-      "item_id": "07896cab3b92662fe1bdcb56ab95df0607e9f9c162db4e00f70389bce41b2cbf",
-      "domain": "bitcoin",
-      "title": "bitcoin/bips: Bitcoin Improvement Proposals - GitHub",
-      "source": "github.com",
-      "url": "https://github.com/bitcoin/bips",
-      "summary": "The BIPs repository serves as a publication medium and archive. Having a BIP published here indicates that the proposal is in scope and has met other formal",
-      "category": "technical",
-      "classification": "analysis",
-      "content_type": "technical",
-      "source_tier": "tier1",
-      "date_confidence": 0.35,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:technical_no_date"
-      ],
-      "score_total": 0.8400000000000001,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 0.35,
-      "category_score": 1.0,
-      "novelty_score": 0.2,
-      "family_friendly": false
-    },
-    {
-      "item_id": "2cefacae547c2894b2495e79e23105641be8ab490ab4ddcf87e553f620518662",
-      "domain": "bitcoin",
-      "title": "bips/bip-0044.mediawiki at master \u00b7 bitcoin/bips - GitHub",
-      "source": "github.com",
-      "url": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
-      "summary": "This BIP defines a logical hierarchy for deterministic wallets based on an algorithm described in BIP-0032 (BIP32 from now on) and purpose scheme described in",
-      "category": "technical",
-      "classification": "analysis",
-      "content_type": "technical",
-      "source_tier": "tier1",
-      "date_confidence": 0.35,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:technical_no_date"
-      ],
-      "score_total": 0.8400000000000001,
+      "score_total": 0.46000000000000013,
       "recency_score": 1.0,
       "trust_score": 1.0,
       "geo_score": 0.35,
@@ -354,9 +455,9 @@
   ],
   "counts": {
     "candidate_items": 30,
-    "validated_items": 7,
-    "rejected_items": 23,
-    "scored_items": 7
+    "validated_items": 11,
+    "rejected_items": 19,
+    "scored_items": 11
   },
   "quality_gate_status": {
     "status": "warn",
@@ -366,27 +467,30 @@
       "bitcoin": 2
     },
     "selected": {
-      "news": 0,
+      "news": 4,
       "events": 0,
-      "bitcoin": 4
+      "bitcoin": 2
     },
     "missing": {
-      "news": 3,
+      "news": 0,
       "events": 2,
       "bitcoin": 0
     },
-    "bitcoin_diversity_ok": true,
+    "bitcoin_diversity_ok": false,
     "mode": "soft"
   },
   "reason_counts": {
-    "not_recent": 7,
-    "low_trust_source": 3,
-    "generic_listing": 5,
-    "duplicate_in_run": 4,
+    "not_article_page": 5,
+    "not_recent": 3,
     "missing_specific_date": 3,
-    "not_article_page": 1
+    "low_trust_source": 4,
+    "generic_listing": 2,
+    "duplicate_in_run": 2
   },
   "reasoning_active": false,
   "fallback_reasoning_active": true,
-  "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
+  "reasoning_fallback": "langchain-openai not installed; fallback to quality model",
+  "reasoning_preflight_ok": false,
+  "reasoning_preflight_message": "langchain-openai not installed; fallback to quality model",
+  "human_validation_required": true
 }

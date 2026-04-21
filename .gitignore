@@ -227,5 +227,6 @@ module-6/deployment/docker-compose.yml
 /execution/
 /docs/
 /skills/
+/pending-orders-langgraph/
 /AGENT.MD
 /.vscode/

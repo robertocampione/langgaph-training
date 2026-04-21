@@ -30,6 +30,13 @@
       "limburg",
       "maastricht",
       "borgharen"
+    ],
+    "url_block_patterns": [
+      "/topics/",
+      "/discover",
+      "/d/",
+      ".xml",
+      ".pdf"
     ]
   },
   "events": {
@@ -60,6 +67,15 @@
       "heerlen",
       "sittard",
       "valkenburg"
+    ],
+    "url_block_patterns": [
+      "/events--this-weekend",
+      "/events--this-month",
+      "/topics/",
+      "/discover",
+      "/d/",
+      ".xml",
+      ".pdf"
     ]
   },
   "bitcoin": {
@@ -85,6 +101,24 @@
       "wikipedia.org"
     ],
     "freshness_days": 7,
-    "allow_analysis_older": true
+    "allow_analysis_older": true,
+    "url_block_patterns": [
+      "/topics/",
+      "/discover",
+      "/meetup/",
+      "/d/",
+      ".xml",
+      ".pdf"
+    ],
+    "url_allow_exceptions": {
+      "github.com": [
+        "/issues/",
+        "/pull/",
+        "/blob/",
+        "/commits/",
+        "/bitcoin/bitcoin",
+        "/bitcoin/bips"
+      ]
+    }
   }
 }

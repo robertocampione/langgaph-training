@@ -1,14 +1,15 @@
 {
-  "run_id": "v2-20260421191749",
-  "timestamp": "2026-04-21T19:17:49.794799Z",
+  "run_id": "v2-20260421202128",
+  "timestamp": "2026-04-21T20:21:28.444603Z",
   "trace_events": [
     {
       "stage": "planner",
       "message": "Plan generated",
       "plan": {
         "focus_areas": [
-          "regional news",
-          "family-friendly weekend events",
+          "Netherlands news",
+          "Limburg news",
+          "Family-friendly weekend events",
           "Bitcoin market signals",
           "Bitcoin technical analysis",
           "Bitcoin community news"
@@ -16,7 +17,8 @@
         "location_focus": [
           "Netherlands",
           "Limburg",
-          "Maastricht"
+          "Maastricht",
+          "Borgharen"
         ],
         "languages": [
           "en",
@@ -25,7 +27,7 @@
         ],
         "include_events": true,
         "include_bitcoin": true,
-        "max_items_per_section": 4
+        "max_items_per_section": 5
       }
     },
     {
@@ -36,9 +38,9 @@
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands news last 24 hours economy taxes finance site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl",
-        "Limburg Maastricht Borgharen news last 3 days local policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
-        "Netherlands regional news last 3 days Netherlands Limburg Maastricht Borgharen"
+        "Netherlands nitrogen emissions policy impact Limburg agricultural communities land use planning site:1limburg.nl OR site:limburger.nl OR site:dutchnews.nl OR site:nos.nl OR site:nu.nl",
+        "Netherlands economy news last 24 hours taxes inflation Netherlands site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
+        "Limburg Maastricht news last 3 days policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl"
       ],
       "result_count": 8,
       "raw_count": 12
@@ -47,12 +49,11 @@
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands news last 24 hours economy taxes finance site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl",
-        "Limburg Maastricht Borgharen news last 3 days local policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
-        "Netherlands regional news last 3 days Netherlands Limburg Maastricht Borgharen"
+        "Netherlands economy news last 24 hours taxes inflation Netherlands site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
+        "Limburg Maastricht news last 3 days policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl"
       ],
-      "result_count": 8,
-      "raw_count": 12
+      "result_count": 7,
+      "raw_count": 8
     },
     {
       "stage": "map_results_to_candidates",
@@ -63,51 +64,54 @@
       "stage": "search_web",
       "beat": "events",
       "queries": [
-        "events Maastricht this weekend family friendly site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl",
-        "events Maastricht this weekend family friendly 2026-04-25 2026-04-26 site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl",
-        "next 7 days events Limburg Maastricht with exact date and location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com",
-        "meetup eventbrite maastricht weekend bitcoin family"
+        "family-friendly weekend events Maastricht site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com",
+        "site:eventbrite.com Maastricht Apr 25 2026 event",
+        "site:meetup.com Maastricht Apr 26 2026 event bitcoin OR family",
+        "next 7 days events Limburg Maastricht exact date location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com"
       ],
       "result_count": 10,
+      "raw_count": 16
+    },
+    {
+      "stage": "search_web",
+      "beat": "events",
+      "queries": [
+        "upcoming events Maastricht next 7 days site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com",
+        "site:eventbrite.com Maastricht Apr 25 2026 event",
+        "site:meetup.com Maastricht Apr 26 2026 event bitcoin OR family",
+        "next 7 days events Limburg Maastricht exact date location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com"
+      ],
+      "result_count": 10,
+      "raw_count": 16
+    },
+    {
+      "stage": "map_results_to_candidates",
+      "beat": "events",
+      "candidate_count": 10
+    },
+    {
+      "stage": "search_web",
+      "beat": "bitcoin",
+      "queries": [
+        "Bitcoin technical and on-chain signals for next price move and short-term sentiment",
+        "bitcoin news ETF regulation last 24 hours",
+        "site:github.com bitcoin/bitcoin issues",
+        "site:github.com bitcoin/bips BIP"
+      ],
+      "result_count": 8,
       "raw_count": 15
     },
     {
       "stage": "search_web",
-      "beat": "events",
-      "queries": [
-        "next 7 days events Limburg Maastricht with exact date and location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com",
-        "events Maastricht this weekend family friendly 2026-04-25 2026-04-26 site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl",
-        "meetup eventbrite maastricht weekend bitcoin family"
-      ],
-      "result_count": 8,
-      "raw_count": 12
-    },
-    {
-      "stage": "map_results_to_candidates",
-      "beat": "events",
-      "candidate_count": 10
-    },
-    {
-      "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "bitcoin price analysis last 24 hours macro etf regulation site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com",
-        "bitcoin BIP github bitcoin/bitcoin commits protocol discussion site:github.com",
-        "bitcoin meetup Netherlands Maastricht Europe bitcoin only site:meetup.com OR site:eventbrite.com site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com"
+        "site:github.com bitcoin/bips BIP",
+        "bitcoin news ETF regulation last 24 hours",
+        "site:github.com bitcoin/bitcoin issues",
+        "bitcoin meetup Netherlands Maastricht April 2026"
       ],
-      "result_count": 10,
-      "raw_count": 12
-    },
-    {
-      "stage": "search_web",
-      "beat": "bitcoin",
-      "queries": [
-        "bitcoin price analysis last 24 hours macro etf regulation site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com",
-        "bitcoin BIP github bitcoin/bitcoin commits protocol discussion site:github.com",
-        "bitcoin meetup Netherlands Maastricht Europe bitcoin only site:meetup.com OR site:eventbrite.com site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com"
-      ],
-      "result_count": 10,
-      "raw_count": 12
+      "result_count": 9,
+      "raw_count": 15
     },
     {
       "stage": "map_results_to_candidates",
@@ -122,27 +126,27 @@
     {
       "stage": "validator",
       "candidate_count": 30,
-      "valid_count": 1,
-      "rejected_count": 29,
+      "valid_count": 8,
+      "rejected_count": 22,
       "reason_counts": {
-        "not_article_page": 10,
-        "low_trust_source": 7,
-        "not_recent": 4,
-        "duplicate_in_run": 2,
-        "generic_listing": 1,
-        "missing_specific_date": 4,
-        "altcoin_noise": 1
+        "not_article_page": 5,
+        "low_trust_source": 2,
+        "generic_listing": 5,
+        "not_recent": 3,
+        "duplicate_in_run": 4,
+        "missing_specific_date": 3
       },
       "fallback_reasoning_active": true,
+      "reasoning_active": false,
       "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
     },
     {
       "stage": "personalizer",
-      "scored_count": 1,
+      "scored_count": 8,
       "selected": {
-        "news": 0,
+        "news": 1,
         "events": 0,
-        "bitcoin": 1
+        "bitcoin": 5
       }
     },
     {
@@ -150,27 +154,28 @@
       "quality_gate_status": {
         "status": "warn",
         "targets": {
-          "news": 5,
-          "events": 3,
-          "bitcoin": 3
-        },
-        "selected": {
-          "news": 0,
-          "events": 0,
-          "bitcoin": 1
-        },
-        "missing": {
-          "news": 5,
-          "events": 3,
+          "news": 3,
+          "events": 2,
           "bitcoin": 2
         },
+        "selected": {
+          "news": 1,
+          "events": 0,
+          "bitcoin": 5
+        },
+        "missing": {
+          "news": 2,
+          "events": 2,
+          "bitcoin": 0
+        },
+        "bitcoin_diversity_ok": true,
         "mode": "soft"
       }
     },
     {
       "stage": "output",
-      "report_len": 7015,
-      "newsletter_len": 1211
+      "report_len": 5126,
+      "newsletter_len": 3381
     },
     {
       "stage": "recap",
@@ -179,23 +184,192 @@
   ],
   "scoring_preview": [
     {
-      "item_id": "58798b1192a056be3c0549d1c1869bd045dcf92e7143e8c6b69d9c350866f197",
+      "item_id": "2cefacae547c2894b2495e79e23105641be8ab490ab4ddcf87e553f620518662",
       "domain": "bitcoin",
-      "title": "Healthy Habits groups | Meetup",
-      "source": "meetup.com",
-      "url": "https://www.meetup.com/topics/habits/nl",
-      "summary": "Join in-person Healthy Habits events happening right now. \ud83e\udd1d\ud83e\udd3c\u200d\u2642\ufe0f\ud83d\udcac\ud83d\ude4b\u200d\u2642\ufe0f\ud83e\udec2 \ud83d\udc49 Join https://chat.whatsapp.com/GopSuzuFKRBKeYVKQrX4pE The group has many regular members, we intend to do various type of events, the goal is to build a strong community for all sorts of activities. [![[ARNHEM] Bitcoin Meetup with CRAZY POOL](https://secure.meetupstatic.com/photos/event/5/d/f/highres_533641503.webp? [[ARNHEM]...",
-      "category": "community",
-      "classification": "news",
-      "source_tier": "tier2",
+      "title": "bips/bip-0044.mediawiki at master \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
+      "summary": "This BIP defines a logical hierarchy for deterministic wallets based on an algorithm described in BIP-0032 (BIP32 from now on) and purpose scheme described in",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.9200000000000002,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "518af62978e3712b478359df0480da97cbf9a046a0cdb7668add4d64bb642be6",
+      "domain": "news",
+      "title": "What's all the fuss about nitrogen in the Netherlands? - DutchNews.nl",
+      "source": "dutchnews.nl",
+      "url": "https://www.dutchnews.nl/2022/06/whats-all-the-fuss-about-nitrogen-in-the-netherlands",
+      "summary": "**Nitrogen-based pollution is behind delays to the building of new homes and roads, has led to plans to reduce the number of cows and pigs in the Netherlands and is causing damage to rare habitats. Nitrogen can also be highly polluting when some compounds \u2013 like ammonia (NH3), nitrogen oxides (NOx) and nitrous oxide (N2O) \u2013 are present in high concentrations. In the Netherlands, nitrogen pollutio...",
+      "category": "economy",
+      "classification": "analysis",
+      "content_type": "article",
+      "source_tier": "tier1",
       "date_confidence": 0.4,
       "is_listing_page": false,
       "validation_flags": [
         "date_source:trusted_missing_date_assumed_today"
       ],
-      "score_total": 0.595,
+      "score_total": 0.8500000000000001,
       "recency_score": 1.0,
-      "trust_score": 0.82,
+      "trust_score": 1.0,
+      "geo_score": 1.0,
+      "category_score": 1.0,
+      "novelty_score": 1.0,
+      "family_friendly": false
+    },
+    {
+      "item_id": "c9c697225f8720e198359a9c0ff428b9744427a3ddead50bb8957b20af4b8bb9",
+      "domain": "bitcoin",
+      "title": "Issues \u00b7 bitcoin/bitcoin - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bitcoin/issues",
+      "summary": "Bitcoin Core integration/staging tree. Contribute to bitcoin/bitcoin development by creating an account on GitHub ... Issues 372 \u00b7 Pull requests 350 \u00b7 Actions",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "b6490aaf40dc74626f5d60ffa21496cc462df63bd608ff94938006c39760c9bc",
+      "domain": "bitcoin",
+      "title": "v30.0 Testing \u00b7 Issue #33368 \u00b7 bitcoin/bitcoin - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bitcoin/issues/33368",
+      "summary": "Umbrella issue for 30.0 testing. Please help testing on a wide variety of supported platforms, as well as interaction with different",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "fd3722a40247f67bd5cea164a16b722db34bcbc220ee864c71738bb403de56aa",
+      "domain": "bitcoin",
+      "title": "v29.0 Testing \u00b7 Issue #32052 \u00b7 bitcoin/bitcoin - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bitcoin/issues/32052",
+      "summary": "Umbrella issue for 29.0 testing. Please help testing on a wide variety of supported platforms, as well as interaction with different",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "8f67c5fd1d6a44f83945494a803ebe1af586dd952f44344fc1a152a0bd9da9d8",
+      "domain": "bitcoin",
+      "title": "bips/bip-0001.mediawiki at master \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0001.mediawiki",
+      "summary": "BIP stands for Bitcoin Improvement Proposal. A BIP is a design document providing information to the Bitcoin community, or describing a new feature for Bitcoin",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "0b0557564b8f0df5f5961281202a094616e3eb330957c316f254de7451f9a80a",
+      "domain": "bitcoin",
+      "title": "bips/bip-0070.mediawiki at master \u00b7 bitcoin/bips - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki",
+      "summary": "This BIP describes a protocol for communication between a merchant and their customer, enabling both a better customer experience and better security.",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
+      "geo_score": 0.35,
+      "category_score": 1.0,
+      "novelty_score": 0.2,
+      "family_friendly": false
+    },
+    {
+      "item_id": "07896cab3b92662fe1bdcb56ab95df0607e9f9c162db4e00f70389bce41b2cbf",
+      "domain": "bitcoin",
+      "title": "bitcoin/bips: Bitcoin Improvement Proposals - GitHub",
+      "source": "github.com",
+      "url": "https://github.com/bitcoin/bips",
+      "summary": "The BIPs repository serves as a publication medium and archive. Having a BIP published here indicates that the proposal is in scope and has met other formal",
+      "category": "technical",
+      "classification": "analysis",
+      "content_type": "technical",
+      "source_tier": "tier1",
+      "date_confidence": 0.35,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:technical_no_date"
+      ],
+      "score_total": 0.8400000000000001,
+      "recency_score": 1.0,
+      "trust_score": 1.0,
       "geo_score": 0.35,
       "category_score": 1.0,
       "novelty_score": 0.2,
@@ -204,38 +378,39 @@
   ],
   "counts": {
     "candidate_items": 30,
-    "validated_items": 1,
-    "rejected_items": 29,
-    "scored_items": 1
+    "validated_items": 8,
+    "rejected_items": 22,
+    "scored_items": 8
   },
   "quality_gate_status": {
     "status": "warn",
     "targets": {
-      "news": 5,
-      "events": 3,
-      "bitcoin": 3
-    },
-    "selected": {
-      "news": 0,
-      "events": 0,
-      "bitcoin": 1
-    },
-    "missing": {
-      "news": 5,
-      "events": 3,
+      "news": 3,
+      "events": 2,
       "bitcoin": 2
     },
+    "selected": {
+      "news": 1,
+      "events": 0,
+      "bitcoin": 5
+    },
+    "missing": {
+      "news": 2,
+      "events": 2,
+      "bitcoin": 0
+    },
+    "bitcoin_diversity_ok": true,
     "mode": "soft"
   },
   "reason_counts": {
-    "not_article_page": 10,
-    "low_trust_source": 7,
-    "not_recent": 4,
-    "duplicate_in_run": 2,
-    "generic_listing": 1,
-    "missing_specific_date": 4,
-    "altcoin_noise": 1
+    "not_article_page": 5,
+    "low_trust_source": 2,
+    "generic_listing": 5,
+    "not_recent": 3,
+    "duplicate_in_run": 4,
+    "missing_specific_date": 3
   },
+  "reasoning_active": false,
   "fallback_reasoning_active": true,
   "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
 }

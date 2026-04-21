@@ -1,20 +1,22 @@
 {
-  "run_id": "v2-20260421151314",
-  "timestamp": "2026-04-21T15:13:14.157224Z",
+  "run_id": "v2-20260421191749",
+  "timestamp": "2026-04-21T19:17:49.794799Z",
   "trace_events": [
     {
       "stage": "planner",
       "message": "Plan generated",
       "plan": {
         "focus_areas": [
-          "General News",
-          "Technology"
+          "regional news",
+          "family-friendly weekend events",
+          "Bitcoin market signals",
+          "Bitcoin technical analysis",
+          "Bitcoin community news"
         ],
         "location_focus": [
           "Netherlands",
           "Limburg",
-          "Maastricht",
-          "Borgharen"
+          "Maastricht"
         ],
         "languages": [
           "en",
@@ -23,7 +25,7 @@
         ],
         "include_events": true,
         "include_bitcoin": true,
-        "max_items_per_section": 5
+        "max_items_per_section": 4
       }
     },
     {
@@ -34,87 +36,104 @@
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands Limburg news economic social policy technology trends",
-        "Netherlands news today last 24 hours Netherlands, Limburg, Maastricht, Borgharen economy taxes finance",
-        "Netherlands regional news last 3 days Limburg Maastricht Borgharen economy, events, bitcoin"
+        "Netherlands news last 24 hours economy taxes finance site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl",
+        "Limburg Maastricht Borgharen news last 3 days local policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
+        "Netherlands regional news last 3 days Netherlands Limburg Maastricht Borgharen"
       ],
-      "result_count": 9
+      "result_count": 8,
+      "raw_count": 12
     },
     {
       "stage": "search_web",
       "beat": "news",
       "queries": [
-        "Netherlands news today last 24 hours Limburg Maastricht Borgharen economy taxes finance",
-        "Netherlands news today last 24 hours Netherlands, Limburg, Maastricht, Borgharen economy taxes finance",
-        "Netherlands regional news last 3 days Limburg Maastricht Borgharen economy, events, bitcoin"
+        "Netherlands news last 24 hours economy taxes finance site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl",
+        "Limburg Maastricht Borgharen news last 3 days local policy economy site:1limburg.nl OR site:dutchnews.nl OR site:limburger.nl OR site:nos.nl OR site:ad.nl OR site:nltimes.nl OR site:nu.nl OR site:rtl.nl",
+        "Netherlands regional news last 3 days Netherlands Limburg Maastricht Borgharen"
       ],
-      "result_count": 8
+      "result_count": 8,
+      "raw_count": 12
     },
     {
       "stage": "map_results_to_candidates",
       "beat": "news",
-      "candidate_count": 8
+      "candidate_count": 10
     },
     {
       "stage": "search_web",
       "beat": "events",
       "queries": [
-        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
-        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
-        "Eventbrite Meetup Maastricht Limburg this weekend"
+        "events Maastricht this weekend family friendly site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl",
+        "events Maastricht this weekend family friendly 2026-04-25 2026-04-26 site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl",
+        "next 7 days events Limburg Maastricht with exact date and location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com",
+        "meetup eventbrite maastricht weekend bitcoin family"
       ],
-      "result_count": 8
+      "result_count": 10,
+      "raw_count": 15
     },
     {
       "stage": "search_web",
       "beat": "events",
       "queries": [
-        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
-        "this weekend events Maastricht Limburg family friendly 2026-04-25 2026-04-26",
-        "Eventbrite Meetup Maastricht Limburg this weekend"
+        "next 7 days events Limburg Maastricht with exact date and location site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl OR site:allevents.in OR site:facebook.com",
+        "events Maastricht this weekend family friendly 2026-04-25 2026-04-26 site:eventbrite.com OR site:meetup.com OR site:visitmaastricht.com OR site:visitmaastricht.nl",
+        "meetup eventbrite maastricht weekend bitcoin family"
       ],
-      "result_count": 8
+      "result_count": 8,
+      "raw_count": 12
     },
     {
       "stage": "map_results_to_candidates",
       "beat": "events",
-      "candidate_count": 8
+      "candidate_count": 10
     },
     {
       "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "Bitcoin leading indicators on-chain data institutional flow metrics market sentiment price direction",
-        "Bitcoin market update last 7 days",
-        "Bitcoin technical protocol BIP updates last 7 days"
+        "bitcoin price analysis last 24 hours macro etf regulation site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com",
+        "bitcoin BIP github bitcoin/bitcoin commits protocol discussion site:github.com",
+        "bitcoin meetup Netherlands Maastricht Europe bitcoin only site:meetup.com OR site:eventbrite.com site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com"
       ],
-      "result_count": 12
+      "result_count": 10,
+      "raw_count": 12
     },
     {
       "stage": "search_web",
       "beat": "bitcoin",
       "queries": [
-        "Bitcoin market update last 7 days",
-        "Bitcoin market update last 7 days",
-        "Bitcoin technical protocol BIP updates last 7 days"
+        "bitcoin price analysis last 24 hours macro etf regulation site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com",
+        "bitcoin BIP github bitcoin/bitcoin commits protocol discussion site:github.com",
+        "bitcoin meetup Netherlands Maastricht Europe bitcoin only site:meetup.com OR site:eventbrite.com site:bitcoinmagazine.com OR site:bitcointrain.it OR site:github.com OR site:stacker.news OR site:coindesk.com OR site:eventbrite.com OR site:meetup.com"
       ],
-      "result_count": 8
+      "result_count": 10,
+      "raw_count": 12
     },
     {
       "stage": "map_results_to_candidates",
       "beat": "bitcoin",
-      "candidate_count": 8
+      "candidate_count": 10
     },
     {
       "stage": "collect_interview_outputs",
-      "section_count": 0,
-      "candidate_count": 24
+      "section_count": 3,
+      "candidate_count": 30
     },
     {
       "stage": "validator",
-      "candidate_count": 24,
+      "candidate_count": 30,
       "valid_count": 1,
-      "rejected_count": 23,
+      "rejected_count": 29,
+      "reason_counts": {
+        "not_article_page": 10,
+        "low_trust_source": 7,
+        "not_recent": 4,
+        "duplicate_in_run": 2,
+        "generic_listing": 1,
+        "missing_specific_date": 4,
+        "altcoin_noise": 1
+      },
+      "fallback_reasoning_active": true,
       "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
     },
     {
@@ -122,14 +141,36 @@
       "scored_count": 1,
       "selected": {
         "news": 0,
-        "events": 1,
-        "bitcoin": 0
+        "events": 0,
+        "bitcoin": 1
+      }
+    },
+    {
+      "stage": "quality_gate",
+      "quality_gate_status": {
+        "status": "warn",
+        "targets": {
+          "news": 5,
+          "events": 3,
+          "bitcoin": 3
+        },
+        "selected": {
+          "news": 0,
+          "events": 0,
+          "bitcoin": 1
+        },
+        "missing": {
+          "news": 5,
+          "events": 3,
+          "bitcoin": 2
+        },
+        "mode": "soft"
       }
     },
     {
       "stage": "output",
-      "report_len": 1012,
-      "newsletter_len": 1149
+      "report_len": 7015,
+      "newsletter_len": 1211
     },
     {
       "stage": "recap",
@@ -138,27 +179,63 @@
   ],
   "scoring_preview": [
     {
-      "item_id": "bb525c0c047bd1d096bf73f2a61902eced6d94bdaede8f797a8b607dc694d67c",
-      "domain": "events",
-      "title": "Events & Things To Do in Maastricht in April 2026 | AllEvents",
-      "source": "allevents.in",
-      "url": "https://allevents.in/maastricht/april",
-      "summary": "# Events in April in Maastricht. ### Events in April in Maastricht. ### Events in April in Maastricht. ### Ra:dius Festival - Kingsday 2026. ### Trending Events in Maastricht. ## Upcoming Events in April in Maastricht. | 25 Apr 2026 | **Native Tone presents Camelphat** | Complex Maastricht |. | 24 Apr 2026 | **Complex presents Somewhen BYORN N00M1 Oniver b2b KeyKey** | Complex Maastricht |. | 24...",
-      "category": "events",
-      "classification": "event",
-      "score_total": 0.8875,
+      "item_id": "58798b1192a056be3c0549d1c1869bd045dcf92e7143e8c6b69d9c350866f197",
+      "domain": "bitcoin",
+      "title": "Healthy Habits groups | Meetup",
+      "source": "meetup.com",
+      "url": "https://www.meetup.com/topics/habits/nl",
+      "summary": "Join in-person Healthy Habits events happening right now. \ud83e\udd1d\ud83e\udd3c\u200d\u2642\ufe0f\ud83d\udcac\ud83d\ude4b\u200d\u2642\ufe0f\ud83e\udec2 \ud83d\udc49 Join https://chat.whatsapp.com/GopSuzuFKRBKeYVKQrX4pE The group has many regular members, we intend to do various type of events, the goal is to build a strong community for all sorts of activities. [![[ARNHEM] Bitcoin Meetup with CRAZY POOL](https://secure.meetupstatic.com/photos/event/5/d/f/highres_533641503.webp? [[ARNHEM]...",
+      "category": "community",
+      "classification": "news",
+      "source_tier": "tier2",
+      "date_confidence": 0.4,
+      "is_listing_page": false,
+      "validation_flags": [
+        "date_source:trusted_missing_date_assumed_today"
+      ],
+      "score_total": 0.595,
       "recency_score": 1.0,
-      "trust_score": 0.55,
-      "geo_score": 1.0,
+      "trust_score": 0.82,
+      "geo_score": 0.35,
       "category_score": 1.0,
-      "novelty_score": 1.0,
+      "novelty_score": 0.2,
       "family_friendly": false
     }
   ],
   "counts": {
-    "candidate_items": 24,
+    "candidate_items": 30,
     "validated_items": 1,
-    "rejected_items": 23,
+    "rejected_items": 29,
     "scored_items": 1
-  }
+  },
+  "quality_gate_status": {
+    "status": "warn",
+    "targets": {
+      "news": 5,
+      "events": 3,
+      "bitcoin": 3
+    },
+    "selected": {
+      "news": 0,
+      "events": 0,
+      "bitcoin": 1
+    },
+    "missing": {
+      "news": 5,
+      "events": 3,
+      "bitcoin": 2
+    },
+    "mode": "soft"
+  },
+  "reason_counts": {
+    "not_article_page": 10,
+    "low_trust_source": 7,
+    "not_recent": 4,
+    "duplicate_in_run": 2,
+    "generic_listing": 1,
+    "missing_specific_date": 4,
+    "altcoin_noise": 1
+  },
+  "fallback_reasoning_active": true,
+  "reasoning_fallback": "langchain-openai not installed; fallback to quality model"
 }

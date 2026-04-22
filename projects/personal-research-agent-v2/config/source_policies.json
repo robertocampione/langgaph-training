@@ -26,9 +26,12 @@
       "academic.oup.com",
       "onlinelibrary.wiley.com",
       "research paper",
-      "working paper"
+      "working paper",
+      "over.nos.nl",
+      "about nos",
+      "teletekst"
     ],
-    "freshness_days": 3,
+    "freshness_days": 7,
     "location_terms": [
       "netherlands",
       "limburg",
@@ -64,8 +67,8 @@
       "all events",
       "things to do"
     ],
-    "weekend_only": true,
-    "freshness_days": 7,
+    "weekend_only": false,
+    "freshness_days": 21,
     "location_terms": [
       "maastricht",
       "limburg",
@@ -110,7 +113,7 @@
       "reddit.com",
       "wikipedia.org"
     ],
-    "freshness_days": 7,
+    "freshness_days": 14,
     "allow_analysis_older": true,
     "url_block_patterns": [
       "/topics/",

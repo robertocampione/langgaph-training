@@ -65,6 +65,37 @@ def run_for_chat(
         return readiness_stub(effective_chat_id) + f" Fallback reason: {exc}"
 
 
+def run_for_chat_detailed(
+    chat_id: int | None = None,
+    mode: str = "auto",
+    max_results_per_query: int = pipeline.DEFAULT_MAX_RESULTS_PER_QUERY,
+    fallback_to_stub: bool = True,
+) -> dict:
+    """Run the v3 digest pipeline and return newsletter and report content."""
+    effective_chat_id = chat_id if chat_id is not None else 0
+    try:
+        result = pipeline.run_research_digest(
+            chat_id=effective_chat_id,
+            mode=mode,
+            max_results_per_query=max_results_per_query,
+        )
+        return {
+            "newsletter": result.newsletter,
+            "report": result.report,
+            "summary": pipeline.format_console_summary(result),
+        }
+    except Exception as exc:
+        if not fallback_to_stub:
+            raise
+        fallback_msg = readiness_stub(effective_chat_id) + f" Fallback reason: {exc}"
+        return {
+            "newsletter": "",
+            "report": "",
+            "summary": fallback_msg,
+            "error": True,
+        }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=None, help="External chat identifier for the run.")

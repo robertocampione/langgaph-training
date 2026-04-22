@@ -75,12 +75,23 @@ async def run_handler(update: Any, context: Any) -> None:
     db_users.ensure_user(chat_id=int(chat.id))
     await send_text(update, "Running your research digest now.")
     try:
-        result = await asyncio.to_thread(agent_main.run_for_chat, int(chat.id))
+        result = await asyncio.to_thread(agent_main.run_for_chat_detailed, int(chat.id))
     except Exception:
         LOGGER.exception("Pipeline run failed for chat_id=%s", chat.id)
         await send_text(update, "Sorry, I could not process that request.")
         return
-    await send_text(update, result)
+    
+    # Send summary first
+    if result.get("summary"):
+        await send_text(update, result["summary"])
+    
+    # Send newsletter
+    if result.get("newsletter"):
+        await send_text(update, f"📰 **Newsletter**\n\n{result['newsletter']}")
+    
+    # Send report
+    if result.get("report"):
+        await send_text(update, f"📋 **Report**\n\n{result['report']}")
 
 
 async def topics_handler(update: Any, context: Any) -> None:

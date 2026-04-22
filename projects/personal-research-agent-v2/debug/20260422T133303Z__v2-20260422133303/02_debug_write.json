@@ -1,0 +1,19 @@
+{
+  "stage": "debug_write",
+  "mode": "basic",
+  "created_at": "2026-04-22T13:37:39.685942Z",
+  "context": {
+    "run_id": "v2-[REDACTED_PHONE]",
+    "timestamp": "20260422T133303Z",
+    "started_at": "2026-04-22T13:33:03.515030Z",
+    "thread_id": "personal-research-agent-v2",
+    "stage": "debug_write"
+  },
+  "payload": {
+    "stage": "debug_write",
+    "rejected_path": "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v2/debug/rejected_items.json",
+    "manual_validation_path": "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v2/debug/manual_validation_checklist.md",
+    "feedback_stub_path": "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v2/debug/feedback_memory_stub.json",
+    "feedback_available": false
+  }
+}

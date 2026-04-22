@@ -1,0 +1,491 @@
+{
+  "stage": "final_output",
+  "mode": "basic",
+  "created_at": "2026-04-22T13:37:39.686309Z",
+  "context": {
+    "run_id": "v2-[REDACTED_PHONE]",
+    "timestamp": "20260422T133303Z",
+    "started_at": "2026-04-22T13:33:03.515030Z",
+    "thread_id": "personal-research-agent-v2",
+    "stage": "final_output"
+  },
+  "payload": {
+    "final_report": "# Personal Research Agent V2 Report\n\n## Introduction\n\nThis report synthesizes hyperlocal intelligence for the Limburg region with analysis of the global Bitcoin market. The primary theme this period is the impact of national-level uncertainty on local affairs. Protracted Dutch coalition negotiations are creating a policy vacuum, directly affecting regional planning and business confidence in Limburg. Concurrently, the Bitcoin ecosystem is experiencing significant market movements driven by large capital flows, alongside critical technical developments. The agent's focus has been on refining local event and policy tracking through direct user clarification to enhance the relevance of future updates.\n\n## Insights\n\n### News & Policy\n\nThe central issue is the profound policy uncertainty stemming from the extended Dutch coalition negotiations. This national-level paralysis has direct consequences for Limburg, with decisions on cross-border worker policies, regional infrastructure funding, and agricultural regulations likely stalled. For local businesses and commuters, this creates tangible uncertainty. From a market perspective, this instability in a core Eurozone economy is a key variable, potentially increasing interest in alternative assets like Bitcoin as a hedge against political and fiat currency risk.\n\n### Local Events\n\nThe agent is actively seeking user preferences to refine the curation of family-friendly weekend events near Maastricht. To move beyond generic listings, clarification on interests such as outdoor adventures, cultural festivals, or workshops is required. The quality and relevance of future event digests are now directly dependent on this user input.\n\n### Bitcoin\n\n*   **Market Mover:** A significant $2.5 billion purchase, reportedly linked to geopolitical news, has pushed the price to $77,500. This highlights the market's sensitivity to large, concentrated capital flows.\n*   **Critical Security Alert:** A serious vulnerability was disclosed in the B... [truncated 3427 chars]",
+    "final_newsletter": "# Personal Research Agent V2 Newsletter ([REDACTED_PHONE])\n\n## Quick Glance\n- News signals: **1**\n- Weekend events: **1**\n- Bitcoin signals: **1**\n- Quality gate: **WARN** (mode: `soft`) (missing targets: news=2, events=1, bitcoin=1)\n\n## Netherlands & Local News\n- **1. [Fuel costs for low-income workers could rise by \u20ac1,000: CPB](https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb)** (source: `dutchnews.nl`, tier: `tier1`, type: `article`, score: `0.67`) - Fuel costs for low-income workers could rise by \u20ac1,000: CPB. April 16, 2026 Photo: DutchNews.nl. Any political support to cushion the current\n\n## Weekend Events ([REDACTED_PHONE] to [REDACTED_PHONE])\n- **1. [Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates](https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026)** (source: `songkick.com`, tier: `unknown`, type: `event`, score: `0.83`) - Muziekgieterij, Maastricht, Netherlands. Saturday 25 April 2026. Yong Yello Concert Tickets - 2026 Tour Dates \u00b7 Yong Yello \u00b7 Muziekgieterij, Maastricht,\n\n## Bitcoin Corner\n- **1. [Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub](https://github.com/bitcoin/bitcoin/issues/33777)** (source: `github.com`, tier: `tier1`, type: `technical`, score: `1.00`) - These are bug fixes, not new features. Except for #34568 (already merged) they are not breaking changes, so they if they don't make it into v31.\n\n## Action Checklist\n- Pick one local event to attend this weekend.\n- Review two high-signal news items and note personal impact.\n- Track one Bitcoin market signal and one technical/community signal.\n\n## Sources\n- [dutchnews.nl](https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb)\n- [songkick.com](https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026)\n- [github.com](https://github.com/bitcoin/bitcoin/issues/33777)",
+    "multilingual_recap": {
+      "english": "This week, your agent flags a critical financial update: fuel costs for low-income workers in the Netherlands could rise by \u20ac1,000. Your first action is to review this news and assess its personal impact. For your weekend, consider the Yong Yello concert in Maastricht this Saturday\u2014check the details and decide on your plans. On the technical front, stay informed by tracking the Bitcoin mining interface bug fixes being discussed on GitHub. Your checklist is straightforward: analyze the news, choose a weekend event, and monitor both market and technical Bitcoin signals to stay ahead.",
+      "italian": "Questa settimana, il tuo agente segnala un aggiornamento finanziario critico: i costi del carburante per i lavoratori a basso reddito nei Paesi Bassi potrebbero aumentare di 1.000 \u20ac. La tua prima azione \u00e8 analizzare questa notizia e valutarne l'impatto personale. Per il weekend, considera il concerto di Yong Yello a Maastricht questo sabato: controlla i dettagli e decidi i tuoi piani. Sul fronte tecnico, tieniti informato seguendo le correzioni dei bug dell'interfaccia di mining di Bitcoin discusse su GitHub. La tua checklist \u00e8 chiara: analizza le notizie, scegli un evento e monitora i segnali di Bitcoin.",
+      "dutch": "Je agent signaleert deze week een belangrijke financi\u00eble update: de brandstofkosten voor werknemers met een laag inkomen kunnen met \u20ac1.000 stijgen. Je eerste actie is om dit nieuws te beoordelen en de persoonlijke impact ervan in te schatten. Overweeg voor het weekend het concert van Yong Yello in Maastricht aanstaande zaterdag; bekijk de details en maak je plannen. Blijf op technisch vlak op de hoogte door de bugfixes voor de Bitcoin mining-interface op GitHub te volgen. Je checklist is duidelijk: analyseer het nieuws, kies een evenement voor het weekend en volg de technische signalen van Bitcoin."
+    },
+    "trace_payload": {
+      "run_id": "v2-[REDACTED_PHONE]",
+      "timestamp": "2026-04-22T13:33:03.515030Z",
+      "trace_events": [
+        {
+          "stage": "planner",
+          "message": "Plan generated",
+          "plan": {
+            "focus_areas": "[TRUNCATED_DEPTH]",
+            "location_focus": "[TRUNCATED_DEPTH]",
+            "languages": "[TRUNCATED_DEPTH]",
+            "include_events": "[TRUNCATED_DEPTH]",
+            "include_bitcoin": "[TRUNCATED_DEPTH]",
+            "max_items_per_section": "[TRUNCATED_DEPTH]"
+          },
+          "required_tracks": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ]
+        },
+        {
+          "stage": "create_analysts",
+          "message": "Prepared 4 track analysts",
+          "track_counts": {
+            "news": "[TRUNCATED_DEPTH]",
+            "events": "[TRUNCATED_DEPTH]",
+            "bitcoin": "[TRUNCATED_DEPTH]"
+          },
+          "legacy_beats": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ]
+        },
+        {
+          "stage": "search_web",
+          "track_type": "news",
+          "beat": "news",
+          "profile_key": "news",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 5,
+          "result_count": 10,
+          "filtered_count": 10,
+          "raw_count": 30
+        },
+        {
+          "stage": "search_web",
+          "track_type": "news",
+          "beat": "news",
+          "profile_key": "news",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 5,
+          "result_count": 10,
+          "filtered_count": 10,
+          "raw_count": 25
+        },
+        {
+          "stage": "map_results_to_candidates",
+          "track_type": "news",
+          "beat": "news",
+          "candidate_count": 10
+        },
+        {
+          "stage": "search_web",
+          "track_type": "news",
+          "beat": "news",
+          "profile_key": "news",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 5,
+          "result_count": 10,
+          "filtered_count": 10,
+          "raw_count": 22
+        },
+        {
+          "stage": "search_web",
+          "track_type": "news",
+          "beat": "news",
+          "profile_key": "news",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 5,
+          "result_count": 10,
+          "filtered_count": 10,
+          "raw_count": 28
+        },
+        {
+          "stage": "map_results_to_candidates",
+          "track_type": "news",
+          "beat": "news",
+          "candidate_count": 10
+        },
+        {
+          "stage": "search_web",
+          "track_type": "events",
+          "beat": "events",
+          "profile_key": "events",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 4,
+          "result_count": 8,
+          "filtered_count": 8,
+          "raw_count": 21
+        },
+        {
+          "stage": "search_web",
+          "track_type": "events",
+          "beat": "events",
+          "profile_key": "events",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 4,
+          "result_count": 8,
+          "filtered_count": 8,
+          "raw_count": 20
+        },
+        {
+          "stage": "map_results_to_candidates",
+          "track_type": "events",
+          "beat": "events",
+          "candidate_count": 10
+        },
+        {
+          "stage": "search_web",
+          "track_type": "bitcoin",
+          "beat": "bitcoin",
+          "profile_key": "bitcoin",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 4,
+          "result_count": 10,
+          "filtered_count": 10,
+          "raw_count": 23
+        },
+        {
+          "stage": "search_web",
+          "track_type": "bitcoin",
+          "beat": "bitcoin",
+          "profile_key": "bitcoin",
+          "queries": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "query_count": 4,
+          "result_count": 10,
+          "filtered_count": 10,
+          "raw_count": 21
+        },
+        {
+          "stage": "map_results_to_candidates",
+          "track_type": "bitcoin",
+          "beat": "bitcoin",
+          "candidate_count": 10
+        },
+        {
+          "stage": "collect_interview_outputs",
+          "section_count": 4,
+          "candidate_count": 40,
+          "tracks_seen": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ]
+        },
+        {
+          "stage": "validator",
+          "candidate_count": 40,
+          "valid_count": 4,
+          "rejected_count": 36,
+          "reason_counts": {
+            "not_recent": "[TRUNCATED_DEPTH]",
+            "not_article_page": "[TRUNCATED_DEPTH]",
+            "duplicate_in_run": "[TRUNCATED_DEPTH]",
+            "generic_listing": "[TRUNCATED_DEPTH]",
+            "low_trust_source": "[TRUNCATED_DEPTH]",
+            "missing_specific_date": "[TRUNCATED_DEPTH]",
+            "altcoin_noise": "[TRUNCATED_DEPTH]"
+          },
+          "tracks_seen": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "profile_reason_counts": {
+            "not_recent": "[TRUNCATED_DEPTH]",
+            "not_article_page": "[TRUNCATED_DEPTH]",
+            "duplicate_in_run": "[TRUNCATED_DEPTH]",
+            "generic_listing": "[TRUNCATED_DEPTH]",
+            "low_trust_source": "[TRUNCATED_DEPTH]",
+            "missing_specific_date": "[TRUNCATED_DEPTH]",
+            "altcoin_noise": "[TRUNCATED_DEPTH]"
+          },
+          "fallback_reasoning_active": false,
+          "reasoning_active": true,
+          "reasoning_fallback": "none",
+          "reasoning_preflight_ok": true,
+          "reasoning_preflight_message": "ok",
+          "reasoning_model_used": "deepseek/deepseek-r1",
+          "fallback_chain": [],
+          "failover_count": 0
+        },
+        {
+          "stage": "personalizer",
+          "scored_count": 4,
+          "selected": {
+            "news": "[TRUNCATED_DEPTH]",
+            "events": "[TRUNCATED_DEPTH]",
+            "bitcoin": "[TRUNCATED_DEPTH]"
+          },
+          "quality_flags_summary": {
+            "stale_high_items": "[TRUNCATED_DEPTH]",
+            "low_confidence_dates": "[TRUNCATED_DEPTH]",
+            "bitcoin_low_value_patterns": "[TRUNCATED_DEPTH]",
+            "feedback_adjusted_items": "[TRUNCATED_DEPTH]",
+            "feedback_available": "[TRUNCATED_DEPTH]"
+          },
+          "feedback_available": false,
+          "feedback_adjusted_count": 0
+        },
+        {
+          "stage": "quality_gate",
+          "quality_gate_status": {
+            "status": "[TRUNCATED_DEPTH]",
+            "targets": "[TRUNCATED_DEPTH]",
+            "selected": "[TRUNCATED_DEPTH]",
+            "missing": "[TRUNCATED_DEPTH]",
+            "bitcoin_diversity_ok": "[TRUNCATED_DEPTH]",
+            "mode": "[TRUNCATED_DEPTH]"
+          }
+        },
+        {
+          "stage": "output",
+          "report_len": 5427,
+          "newsletter_len": 1892
+        },
+        {
+          "stage": "recap",
+          "status": "ok"
+        }
+      ],
+      "scoring_preview": [
+        {
+          "item_id": "6b5e305a93d12191e948d4a27ab7736ef9b338ad067bc465da0e76d4ddce23b9",
+          "domain": "bitcoin",
+          "track_type": "bitcoin",
+          "beat": "bitcoin",
+          "title": "Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub",
+          "source": "github.com",
+          "url": "https://github.com/bitcoin/bitcoin/issues/33777",
+          "summary": "These are bug fixes, not new features. Except for #34568 (already merged) they are not breaking changes, so they if they don't make it into v31.",
+          "category": "technical",
+          "classification": "analysis",
+          "content_type": "technical",
+          "source_tier": "tier1",
+          "date_confidence": 0.65,
+          "is_listing_page": false,
+          "validation_flags": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "age_days": 0,
+          "stale_risk": "low",
+          "score_total": 1.0,
+          "recency_score": 1.0,
+          "trust_score": 1.0,
+          "_truncated_keys": 4
+        },
+        {
+          "item_id": "536673ec3a95230acb7a2c948d609e96937ff45a0c1a2bdd4722e1e65ab88f28",
+          "domain": "events",
+          "track_type": "events",
+          "beat": "events",
+          "title": "Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates",
+          "source": "songkick.com",
+          "url": "https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026",
+          "summary": "Muziekgieterij, Maastricht, Netherlands. Saturday 25 April 2026. Yong Yello Concert Tickets - 2026 Tour Dates \u00b7 Yong Yello \u00b7 Muziekgieterij, Maastricht,",
+          "category": "events",
+          "classification": "event",
+          "content_type": "event",
+          "source_tier": "unknown",
+          "date_confidence": 0.8,
+          "is_listing_page": false,
+          "validation_flags": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "age_days": -3,
+          "stale_risk": "low",
+          "score_total": 0.8250000000000001,
+          "recency_score": 0.9,
+          "trust_score": 0.58,
+          "_truncated_keys": 4
+        },
+        {
+          "item_id": "71ca3b660b0ed10f89b4ff4548b5e12e2c3d9d98068d5d9bbdae5d5e6288cf29",
+          "domain": "news",
+          "track_type": "news",
+          "beat": "news",
+          "title": "Fuel costs for low-income workers could rise by \u20ac1,000: CPB",
+          "source": "dutchnews.nl",
+          "url": "https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb",
+          "summary": "Fuel costs for low-income workers could rise by \u20ac1,000: CPB. April 16, 2026 Photo: DutchNews.nl. Any political support to cushion the current",
+          "category": "economy",
+          "classification": "news",
+          "content_type": "article",
+          "source_tier": "tier1",
+          "date_confidence": 0.8,
+          "is_listing_page": false,
+          "validation_flags": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "age_days": 6,
+          "stale_risk": "medium",
+          "score_total": 0.6714285714285715,
+          "recency_score": 0.5714285714285714,
+          "trust_score": 1.0,
+          "_truncated_keys": 4
+        },
+        {
+          "item_id": "b6490aaf40dc74626f5d60ffa21496cc462df63bd608ff94938006c39760c9bc",
+          "domain": "bitcoin",
+          "track_type": "bitcoin",
+          "beat": "bitcoin",
+          "title": "v30.0 Testing \u00b7 Issue #33368 \u00b7 bitcoin/bitcoin - GitHub",
+          "source": "github.com",
+          "url": "https://github.com/bitcoin/bitcoin/issues/33368",
+          "summary": "Upgraded bitcoind from version 29.0 to 30.0rc1. Bitcoind (30.0rc1) is working great (txindex=1) with low block verification times (about 1",
+          "category": "technical",
+          "classification": "analysis",
+          "content_type": "technical",
+          "source_tier": "tier1",
+          "date_confidence": 0.3,
+          "is_listing_page": false,
+          "validation_flags": [
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]",
+            "[TRUNCATED_DEPTH]"
+          ],
+          "age_days": 0,
+          "stale_risk": "high",
+          "score_total": 0.27000000000000013,
+          "recency_score": 1.0,
+          "trust_score": 1.0,
+          "_truncated_keys": 4
+        }
+      ],
+      "counts": {
+        "candidate_items": 40,
+        "validated_items": 4,
+        "rejected_items": 36,
+        "scored_items": 4
+      },
+      "selected_counts": {
+        "news": 1,
+        "events": 1,
+        "bitcoin": 1
+      },
+      "news_preview": [
+        {
+          "title": "Fuel costs for low-income workers could rise by \u20ac1,000: CPB",
+          "url": "https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb",
+          "score_total": 0.671
+        }
+      ],
+      "events_preview": [
+        {
+          "title": "Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates",
+          "url": "https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026",
+          "score_total": 0.825
+        }
+      ],
+      "bitcoin_preview": [
+        {
+          "title": "Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub",
+          "url": "https://github.com/bitcoin/bitcoin/issues/33777",
+          "score_total": 1.0,
+          "category": "technical",
+          "content_type": "technical"
+        }
+      ],
+      "quality_gate_status": {
+        "status": "warn",
+        "targets": {
+          "news": 3,
+          "events": 2,
+          "bitcoin": 2
+        },
+        "selected": {
+          "news": 1,
+          "events": 1,
+          "bitcoin": 1
+        },
+        "missing": {
+          "news": 2,
+          "events": 1,
+          "bitcoin": 1
+        },
+        "bitcoin_diversity_ok": false,
+        "mode": "soft"
+      },
+      "quality_flags_summary": {
+        "stale_high_items": 1,
+        "low_confidence_dates": 1,
+        "bitcoin_low_value_patterns": 0,
+        "feedback_adjusted_items": 0,
+        "feedback_available": false
+      },
+      "reason_counts": {
+        "not_recent": 13,
+        "not_article_page": 5,
+        "duplicate_in_run": 5,
+        "generic_listing": 7,
+        "low_trust_source": 3,
+        "missing_specific_date": 2,
+        "altcoin_noise": 1
+      },
+      "feedback_available": false,
+      "feedback_memory_version": 1,
+      "reasoning_active": true,
+      "fallback_reasoning_active": false,
+      "reasoning_fallback": "none",
+      "reasoning_preflight_ok": true,
+      "reasoning_preflight_message": "ok",
+      "reasoning_model_used": "deepseek/deepseek-r1",
+      "_truncated_keys": 4
+    },
+    "manual_validation_checklist": "# Manual Validation Checklist (v2-[REDACTED_PHONE])\n\n## Process\n1. Open debug/last_run_trace.json and inspect candidate/rejected/selected counts.\n2. Validate each selected item manually in browser.\n3. If quality is low, tune queries/policies/validator and rerun.\n\n## News Checks\n- Real article page?\n- Recent and relevant for Netherlands/Limburg?\n- [ ] accept [ ] reject [ ] unsure | news | Fuel costs for low-income workers could rise by \u20ac1,000: CPB | dutchnews.nl | https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb | item_id=71ca3b660b0ed10f89b4ff4548b5e12e2c3d9d98068d5d9bbdae5d5e6288cf29 | notes:\n\n## Events Checks\n- Real event page (not listing/category)?\n- Specific date/location/time present?\n- [ ] accept [ ] reject [ ] unsure | events | Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates | songkick.com | https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026 | item_id=536673ec3a95230acb7a2c948d609e96937ff45a0c1a2bdd4722e1e65ab88f28 | notes:\n\n## Bitcoin Checks\n- Real update vs noise/reference?\n- Balanced market/technical/community?\n- [ ] accept [ ] reject [ ] unsure | bitcoin | Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub | github.com | https://github.com/bitcoin/bitcoin/issues/33777 | item_id=6b5e305a93d12191e948d4a27ab7736ef9b338ad067bc465da0e76d4ddce23b9 | notes:\n\n## Stale Suspects\n- Threshold date_confidence: 0.55\n- [ ] accept [ ] reject [ ] unsure | bitcoin | v30.0 Testing \u00b7 Issue #33368 \u00b7 bitcoin/bitcoin - GitHub | github.com | https://github.com/bitcoin/bitcoin/issues/33368 | item_id=b6490aaf40dc74626f5d60ffa21496cc462df63bd608ff94938006c39760c9bc | notes:\n\n## Rejected Samples\n- [ ] accept [ ] reject [ ] unsure | news | Netherlands declines to follow German example of fuel tax cuts | nltimes.nl | https://nltimes.nl/2026/04/14/netherlands-declines-follow-german-example-fuel-tax-cuts | item_id=744df85302a4d36aa84910539e517ef8bdd4e20ecb52ff89341f2c6198d39c9e | notes:\n- [ ] ac... [truncated 821 chars]"
+  }
+}

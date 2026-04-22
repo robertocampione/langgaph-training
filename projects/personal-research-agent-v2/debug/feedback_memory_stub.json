@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "run_id": "v2-20260422122530",
-  "generated_at": "2026-04-22T12:25:30.982377Z",
+  "run_id": "v2-20260422133303",
+  "generated_at": "2026-04-22T13:37:39.683988Z",
   "reviewed_items": {
     "71ca3b660b0ed10f89b4ff4548b5e12e2c3d9d98068d5d9bbdae5d5e6288cf29": {
       "decision": "pending",
@@ -12,22 +12,13 @@
       "url": "https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb",
       "notes": ""
     },
-    "733e0dbde119a4b70bbfd7aeadc44cdbfa7c6ecf79f6ef201fe2a058b86c0bd7": {
-      "decision": "pending",
-      "track_type": "news",
-      "beat": "news",
-      "title": "Dutch labor talks resume after strikes halt parliament work, shut ...",
-      "source": "nltimes.nl",
-      "url": "https://nltimes.nl/2026/04/18/dutch-labor-talks-resume-strikes-halt-parliament-work-shut-slaughterhouses",
-      "notes": ""
-    },
-    "7d5ee0c970e889c592a631e7bb44c37e70dca5b84882e8a911ec71350c088f7c": {
+    "536673ec3a95230acb7a2c948d609e96937ff45a0c1a2bdd4722e1e65ab88f28": {
       "decision": "pending",
       "track_type": "events",
       "beat": "events",
-      "title": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch ...",
-      "source": "allevents.in",
-      "url": "https://allevents.in/maastricht/complex-festival-2026/200028610594340",
+      "title": "Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates",
+      "source": "songkick.com",
+      "url": "https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026",
       "notes": ""
     },
     "6b5e305a93d12191e948d4a27ab7736ef9b338ad067bc465da0e76d4ddce23b9": {

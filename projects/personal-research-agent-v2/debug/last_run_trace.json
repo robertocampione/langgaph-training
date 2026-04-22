@@ -1,6 +1,6 @@
 {
-  "run_id": "v2-20260422122530",
-  "timestamp": "2026-04-22T12:25:30.982258Z",
+  "run_id": "v2-20260422133303",
+  "timestamp": "2026-04-22T13:33:03.515030Z",
   "trace_events": [
     {
       "stage": "planner",
@@ -8,10 +8,10 @@
       "plan": {
         "focus_areas": [
           "Netherlands news",
-          "Limburg news",
+          "Limburg regional news",
           "Family-friendly weekend events",
           "Bitcoin market signals",
-          "Bitcoin technical analysis",
+          "Bitcoin technical developments",
           "Bitcoin community news"
         ],
         "location_focus": [
@@ -55,7 +55,7 @@
       "beat": "news",
       "profile_key": "news",
       "queries": [
-        "netherlands new government coalition agreement policy shifts economic priorities macroeconomic impact site:dutchnews.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands coalition negotiations economic political implications next quarter latest",
         "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
         "site:1limburg.nl maastricht limburg nieuws vandaag latest",
         "site:nos.nl vandaag nieuws limburg maastricht economie latest",
@@ -64,47 +64,7 @@
       "query_count": 5,
       "result_count": 10,
       "filtered_count": 10,
-      "raw_count": 23
-    },
-    {
-      "stage": "search_web",
-      "track_type": "news",
-      "beat": "news",
-      "profile_key": "news",
-      "queries": [
-        "limburg maastricht news last 48 hours economy policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
-        "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
-        "site:1limburg.nl maastricht limburg nieuws vandaag latest",
-        "site:nos.nl vandaag nieuws limburg maastricht economie latest",
-        "site:nu.nl nederland nieuws vandaag economie politiek latest"
-      ],
-      "query_count": 5,
-      "result_count": 10,
-      "filtered_count": 10,
-      "raw_count": 29
-    },
-    {
-      "stage": "map_results_to_candidates",
-      "track_type": "news",
-      "beat": "news",
-      "candidate_count": 10
-    },
-    {
-      "stage": "search_web",
-      "track_type": "news",
-      "beat": "news",
-      "profile_key": "news",
-      "queries": [
-        "limburg maastricht socio-economic trends employment shifts regional development projects site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
-        "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
-        "site:1limburg.nl maastricht limburg nieuws vandaag latest",
-        "site:nos.nl vandaag nieuws limburg maastricht economie latest",
-        "site:nu.nl nederland nieuws vandaag economie politiek latest"
-      ],
-      "query_count": 5,
-      "result_count": 10,
-      "filtered_count": 10,
-      "raw_count": 17
+      "raw_count": 30
     },
     {
       "stage": "search_web",
@@ -131,11 +91,51 @@
     },
     {
       "stage": "search_web",
+      "track_type": "news",
+      "beat": "news",
+      "profile_key": "news",
+      "queries": [
+        "limburg maastricht recent policy changes community developments site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "site:1limburg.nl maastricht limburg nieuws vandaag latest",
+        "site:nos.nl vandaag nieuws limburg maastricht economie latest",
+        "site:nu.nl nederland nieuws vandaag economie politiek latest"
+      ],
+      "query_count": 5,
+      "result_count": 10,
+      "filtered_count": 10,
+      "raw_count": 22
+    },
+    {
+      "stage": "search_web",
+      "track_type": "news",
+      "beat": "news",
+      "profile_key": "news",
+      "queries": [
+        "limburg maastricht news last 48 hours economy policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "site:1limburg.nl maastricht limburg nieuws vandaag latest",
+        "site:nos.nl vandaag nieuws limburg maastricht economie latest",
+        "site:nu.nl nederland nieuws vandaag economie politiek latest"
+      ],
+      "query_count": 5,
+      "result_count": 10,
+      "filtered_count": 10,
+      "raw_count": 28
+    },
+    {
+      "stage": "map_results_to_candidates",
+      "track_type": "news",
+      "beat": "news",
+      "candidate_count": 10
+    },
+    {
+      "stage": "search_web",
       "track_type": "events",
       "beat": "events",
       "profile_key": "events",
       "queries": [
-        "maastricht family-friendly weekend activities event date time location",
+        "maastricht family-friendly weekend events next 21 days site:eventbrite.com or site:meetup.com or site:visitmaastricht.com or site:visitmaastricht.nl or site:allevents.in or site:facebook.com date time location",
         "maastricht event apr 25 2026 location time ticket",
         "maastricht apr 26 2026 cultural event festival concert details date time",
         "maastricht cultural event museum exhibition live music date time location"
@@ -143,7 +143,7 @@
       "query_count": 4,
       "result_count": 8,
       "filtered_count": 8,
-      "raw_count": 23
+      "raw_count": 21
     },
     {
       "stage": "search_web",
@@ -159,7 +159,7 @@
       "query_count": 4,
       "result_count": 8,
       "filtered_count": 8,
-      "raw_count": 19
+      "raw_count": 20
     },
     {
       "stage": "map_results_to_candidates",
@@ -173,7 +173,7 @@
       "beat": "bitcoin",
       "profile_key": "bitcoin",
       "queries": [
-        "bitcoin on-chain analysis long-term holder accumulation distribution exchange flows short medium term outlook",
+        "bitcoin latest on-chain macroeconomic signals price consolidation directional move analysis",
         "bitcoin market update last 24 hours etf regulation macro",
         "site:github.com bitcoin/bitcoin issues updated",
         "site:github.com bitcoin/bips pull request OR issue updated"
@@ -181,7 +181,7 @@
       "query_count": 4,
       "result_count": 10,
       "filtered_count": 10,
-      "raw_count": 24
+      "raw_count": 23
     },
     {
       "stage": "search_web",
@@ -189,15 +189,15 @@
       "beat": "bitcoin",
       "profile_key": "bitcoin",
       "queries": [
+        "most relevant bitcoin on-chain metrics traditional market indicators macroeconomic influence",
         "bitcoin market update last 24 hours etf regulation macro",
         "site:github.com bitcoin/bitcoin issues updated",
-        "site:github.com bitcoin/bips pull request OR issue updated",
-        "bitcoin meetup Netherlands Maastricht event date time"
+        "site:github.com bitcoin/bips pull request OR issue updated"
       ],
       "query_count": 4,
       "result_count": 10,
       "filtered_count": 10,
-      "raw_count": 22
+      "raw_count": 21
     },
     {
       "stage": "map_results_to_candidates",
@@ -218,15 +218,15 @@
     {
       "stage": "validator",
       "candidate_count": 40,
-      "valid_count": 5,
-      "rejected_count": 35,
+      "valid_count": 4,
+      "rejected_count": 36,
       "reason_counts": {
-        "not_recent": 14,
-        "not_article_page": 7,
-        "duplicate_in_run": 4,
-        "generic_listing": 4,
-        "missing_specific_date": 3,
-        "low_trust_source": 2,
+        "not_recent": 13,
+        "not_article_page": 5,
+        "duplicate_in_run": 5,
+        "generic_listing": 7,
+        "low_trust_source": 3,
+        "missing_specific_date": 2,
         "altcoin_noise": 1
       },
       "tracks_seen": [
@@ -235,12 +235,12 @@
         "news"
       ],
       "profile_reason_counts": {
-        "not_recent": 14,
-        "not_article_page": 7,
-        "duplicate_in_run": 4,
-        "generic_listing": 4,
-        "missing_specific_date": 3,
-        "low_trust_source": 2,
+        "not_recent": 13,
+        "not_article_page": 5,
+        "duplicate_in_run": 5,
+        "generic_listing": 7,
+        "low_trust_source": 3,
+        "missing_specific_date": 2,
         "altcoin_noise": 1
       },
       "fallback_reasoning_active": false,
@@ -249,16 +249,14 @@
       "reasoning_preflight_ok": true,
       "reasoning_preflight_message": "ok",
       "reasoning_model_used": "deepseek/deepseek-r1",
-      "fallback_chain": [
-        "deepseek/deepseek-r1:attempt1:ValidationError"
-      ],
+      "fallback_chain": [],
       "failover_count": 0
     },
     {
       "stage": "personalizer",
-      "scored_count": 5,
+      "scored_count": 4,
       "selected": {
-        "news": 2,
+        "news": 1,
         "events": 1,
         "bitcoin": 1
       },
@@ -282,12 +280,12 @@
           "bitcoin": 2
         },
         "selected": {
-          "news": 2,
+          "news": 1,
           "events": 1,
           "bitcoin": 1
         },
         "missing": {
-          "news": 1,
+          "news": 2,
           "events": 1,
           "bitcoin": 1
         },
@@ -297,8 +295,8 @@
     },
     {
       "stage": "output",
-      "report_len": 2783,
-      "newsletter_len": 2656
+      "report_len": 5427,
+      "newsletter_len": 1892
     },
     {
       "stage": "recap",
@@ -337,30 +335,31 @@
       "family_friendly": false
     },
     {
-      "item_id": "7d5ee0c970e889c592a631e7bb44c37e70dca5b84882e8a911ec71350c088f7c",
+      "item_id": "536673ec3a95230acb7a2c948d609e96937ff45a0c1a2bdd4722e1e65ab88f28",
       "domain": "events",
       "track_type": "events",
       "beat": "events",
-      "title": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch ...",
-      "source": "allevents.in",
-      "url": "https://allevents.in/maastricht/complex-festival-2026/200028610594340",
-      "summary": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch, Chris Stussy, Winson, Malugi & many more! # Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch, Chris Stussy, Winson, Malugi & many more! ## Complex Maastricht. ## About the event. You may also like the following events from Complex Maastricht:. * This Friday, 24th April, 11:00 pm, Complex presents Somewhen / BYORN \ufeff/ N00M1 \ufeff/ Oniver b2b KeyKe...",
+      "title": "Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates",
+      "source": "songkick.com",
+      "url": "https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026",
+      "summary": "Muziekgieterij, Maastricht, Netherlands. Saturday 25 April 2026. Yong Yello Concert Tickets - 2026 Tour Dates \u00b7 Yong Yello \u00b7 Muziekgieterij, Maastricht,",
       "category": "events",
       "classification": "event",
       "content_type": "event",
-      "source_tier": "tier2",
+      "source_tier": "unknown",
       "date_confidence": 0.8,
       "is_listing_page": false,
       "validation_flags": [
         "date_source:content_date",
         "stale_risk:low",
-        "age_days:-2"
+        "age_days:-3",
+        "unknown_tier"
       ],
-      "age_days": -2,
+      "age_days": -3,
       "stale_risk": "low",
-      "score_total": 0.7950000000000002,
-      "recency_score": 0.9333333333333333,
-      "trust_score": 0.82,
+      "score_total": 0.8250000000000001,
+      "recency_score": 0.9,
+      "trust_score": 0.58,
       "geo_score": 1.0,
       "category_score": 1.0,
       "novelty_score": 0.2,
@@ -391,36 +390,6 @@
       "score_total": 0.6714285714285715,
       "recency_score": 0.5714285714285714,
       "trust_score": 1.0,
-      "geo_score": 1.0,
-      "category_score": 1.0,
-      "novelty_score": 0.2,
-      "family_friendly": false
-    },
-    {
-      "item_id": "733e0dbde119a4b70bbfd7aeadc44cdbfa7c6ecf79f6ef201fe2a058b86c0bd7",
-      "domain": "news",
-      "track_type": "news",
-      "beat": "news",
-      "title": "Dutch labor talks resume after strikes halt parliament work, shut ...",
-      "source": "nltimes.nl",
-      "url": "https://nltimes.nl/2026/04/18/dutch-labor-talks-resume-strikes-halt-parliament-work-shut-slaughterhouses",
-      "summary": "The dispute centers on the government's proposed \u201cnullijn,\u201d or zero line, which would freeze wages and provide no inflation adjustment for civil",
-      "category": "economy",
-      "classification": "news",
-      "content_type": "article",
-      "source_tier": "tier2",
-      "date_confidence": 1.0,
-      "is_listing_page": false,
-      "validation_flags": [
-        "date_source:published_or_url_date",
-        "stale_risk:medium",
-        "age_days:4"
-      ],
-      "age_days": 4,
-      "stale_risk": "medium",
-      "score_total": 0.6692857142857143,
-      "recency_score": 0.7142857142857143,
-      "trust_score": 0.82,
       "geo_score": 1.0,
       "category_score": 1.0,
       "novelty_score": 0.2,
@@ -459,12 +428,12 @@
   ],
   "counts": {
     "candidate_items": 40,
-    "validated_items": 5,
-    "rejected_items": 35,
-    "scored_items": 5
+    "validated_items": 4,
+    "rejected_items": 36,
+    "scored_items": 4
   },
   "selected_counts": {
-    "news": 2,
+    "news": 1,
     "events": 1,
     "bitcoin": 1
   },
@@ -473,18 +442,13 @@
       "title": "Fuel costs for low-income workers could rise by \u20ac1,000: CPB",
       "url": "https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb",
       "score_total": 0.671
-    },
-    {
-      "title": "Dutch labor talks resume after strikes halt parliament work, shut ...",
-      "url": "https://nltimes.nl/2026/04/18/dutch-labor-talks-resume-strikes-halt-parliament-work-shut-slaughterhouses",
-      "score_total": 0.669
     }
   ],
   "events_preview": [
     {
-      "title": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch ...",
-      "url": "https://allevents.in/maastricht/complex-festival-2026/200028610594340",
-      "score_total": 0.795
+      "title": "Maastricht in 2026 | Concerts, Festivals, Tickets & Tour Dates",
+      "url": "https://www.songkick.com/metro-areas/31398-netherlands-maastricht/2026",
+      "score_total": 0.825
     }
   ],
   "bitcoin_preview": [
@@ -504,12 +468,12 @@
       "bitcoin": 2
     },
     "selected": {
-      "news": 2,
+      "news": 1,
       "events": 1,
       "bitcoin": 1
     },
     "missing": {
-      "news": 1,
+      "news": 2,
       "events": 1,
       "bitcoin": 1
     },
@@ -524,12 +488,12 @@
     "feedback_available": false
   },
   "reason_counts": {
-    "not_recent": 14,
-    "not_article_page": 7,
-    "duplicate_in_run": 4,
-    "generic_listing": 4,
-    "missing_specific_date": 3,
-    "low_trust_source": 2,
+    "not_recent": 13,
+    "not_article_page": 5,
+    "duplicate_in_run": 5,
+    "generic_listing": 7,
+    "low_trust_source": 3,
+    "missing_specific_date": 2,
     "altcoin_noise": 1
   },
   "feedback_available": false,
@@ -540,9 +504,7 @@
   "reasoning_preflight_ok": true,
   "reasoning_preflight_message": "ok",
   "reasoning_model_used": "deepseek/deepseek-r1",
-  "fallback_chain": [
-    "deepseek/deepseek-r1:attempt1:ValidationError"
-  ],
+  "fallback_chain": [],
   "failover_count": 0,
   "human_validation_required": true,
   "feedback_stub_path": "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v2/debug/feedback_memory_stub.json"

@@ -1,0 +1,20 @@
+{
+  "stage": "recap",
+  "mode": "basic",
+  "created_at": "2026-04-22T13:37:39.677944Z",
+  "context": {
+    "run_id": "v2-[REDACTED_PHONE]",
+    "timestamp": "20260422T133303Z",
+    "started_at": "2026-04-22T13:33:03.515030Z",
+    "thread_id": "personal-research-agent-v2",
+    "stage": "recap"
+  },
+  "payload": {
+    "status": "ok",
+    "recap": {
+      "english": "This week, your agent flags a critical financial update: fuel costs for low-income workers in the Netherlands could rise by \u20ac1,000. Your first action is to review this news and assess its personal impact. For your weekend, consider the Yong Yello concert in Maastricht this Saturday\u2014check the details and decide on your plans. On the technical front, stay informed by tracking the Bitcoin mining interface bug fixes being discussed on GitHub. Your checklist is straightforward: analyze the news, choose a weekend event, and monitor both market and technical Bitcoin signals to stay ahead.",
+      "italian": "Questa settimana, il tuo agente segnala un aggiornamento finanziario critico: i costi del carburante per i lavoratori a basso reddito nei Paesi Bassi potrebbero aumentare di 1.000 \u20ac. La tua prima azione \u00e8 analizzare questa notizia e valutarne l'impatto personale. Per il weekend, considera il concerto di Yong Yello a Maastricht questo sabato: controlla i dettagli e decidi i tuoi piani. Sul fronte tecnico, tieniti informato seguendo le correzioni dei bug dell'interfaccia di mining di Bitcoin discusse su GitHub. La tua checklist \u00e8 chiara: analizza le notizie, scegli un evento e monitora i segnali di Bitcoin.",
+      "dutch": "Je agent signaleert deze week een belangrijke financi\u00eble update: de brandstofkosten voor werknemers met een laag inkomen kunnen met \u20ac1.000 stijgen. Je eerste actie is om dit nieuws te beoordelen en de persoonlijke impact ervan in te schatten. Overweeg voor het weekend het concert van Yong Yello in Maastricht aanstaande zaterdag; bekijk de details en maak je plannen. Blijf op technisch vlak op de hoogte door de bugfixes voor de Bitcoin mining-interface op GitHub te volgen. Je checklist is duidelijk: analyseer het nieuws, kies een evenement voor het weekend en volg de technische signalen van Bitcoin."
+    }
+  }
+}

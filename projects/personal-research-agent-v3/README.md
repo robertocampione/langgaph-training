@@ -85,3 +85,8 @@ python3 scripts/generate_test_notebook.py \
 ```
 
 The generated notebook summarizes inputs, validation counts, selected categories, rejection reasons, and output lengths. Generated notebooks are ignored by default unless intentionally named as `project-docs/sample_*.ipynb`.
+
+Current samples:
+
+- `project-docs/sample_legacy_v2_debug_analysis.ipynb`: legacy bootstrap sample generated from v2 debug artifacts.
+- `project-docs/sample_v3_debug_analysis.ipynb`: future sample generated from a real v3 debug run.

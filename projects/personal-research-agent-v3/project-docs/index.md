@@ -31,3 +31,5 @@ python3 scripts/generate_test_notebook.py \
   --style-file docs/notebook_style.md \
   --output project-docs/run_analysis.ipynb
 ```
+
+`sample_legacy_v2_debug_analysis.ipynb` is a bootstrap reference generated from v2 artifacts. A true `sample_v3_debug_analysis.ipynb` should be generated only after v3 produces its own debug run.

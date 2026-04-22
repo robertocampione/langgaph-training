@@ -21,6 +21,31 @@ from app import db_users
 TRACKS = ("news", "events", "bitcoin")
 DEFAULT_MAX_RESULTS_PER_QUERY = 2
 TAVILY_ENDPOINT = "https://api.tavily.com/search"
+LOW_VALUE_DOMAINS = {
+    "ground.news",
+    "linkees.com",
+    "getyourguide.com",
+    "coinmarketcap.com",
+}
+PREFERRED_DOMAINS = {
+    "news": {"1limburg.nl", "dutchnews.nl", "nltimes.nl", "maastrichtuniversity.nl"},
+    "events": {"visitmaastricht.com", "visitzuidlimburg.com", "maastrichtbereikbaar.nl", "maastrichtuniversity.nl"},
+    "bitcoin": {"bitcoinops.org", "github.com", "bitcoinmagazine.com", "coindesk.com"},
+}
+MONTHS = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
 
 
 @dataclass(frozen=True)
@@ -78,16 +103,19 @@ def build_queries(user: dict[str, Any], max_topics: int | None = None) -> list[d
 
     query_templates = {
         "news": [
-            "recent Netherlands Limburg Maastricht news",
-            "latest Limburg Netherlands local news Maastricht",
+            "site:1limburg.nl Maastricht Limburg vandaag nieuws april 2026",
+            "site:dutchnews.nl Netherlands Limburg Maastricht April 2026 news",
+            "site:nltimes.nl Netherlands Limburg Maastricht latest news April 2026",
         ],
         "events": [
-            "upcoming family friendly events Maastricht Limburg this weekend",
-            "Maastricht Limburg weekend events concerts exhibitions upcoming",
+            "site:visitmaastricht.com Maastricht events this weekend April 2026",
+            "site:visitzuidlimburg.com Maastricht event April 2026 family weekend",
+            "site:maastrichtbereikbaar.nl Maastricht events weekend April 2026",
         ],
         "bitcoin": [
-            "latest Bitcoin market technical community update",
-            "Bitcoin Core recent issue pull request market news",
+            "site:bitcoinops.org/en/newsletters Bitcoin Optech Newsletter April 2026",
+            "site:github.com/bitcoin/bitcoin/issues Bitcoin Core recent issue 2026",
+            "site:coindesk.com Bitcoin market technical update April 2026",
         ],
     }
     queries: list[dict[str, str]] = []
@@ -120,6 +148,12 @@ def tavily_search(query: str, max_results: int) -> list[dict[str, Any]]:
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
             data = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")[:240]
+        detail = f"HTTP {exc.code}"
+        if body:
+            detail = f"{detail}: {body}"
+        raise RuntimeError(f"Tavily retrieval failed: {detail}") from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(f"Tavily retrieval failed: {exc}") from exc
     results = data.get("results", [])
@@ -197,10 +231,12 @@ def retrieve_candidates(
                 "query": query_item["query"],
                 "title": str(result.get("title", "")).strip() or url,
                 "url": url,
-                "summary": str(result.get("content") or result.get("summary") or "").strip(),
+                "summary": clean_summary(str(result.get("content") or result.get("summary") or "").strip()),
                 "score": float(result.get("score") or 0.0),
                 "source": domain_from_url(url),
             }
+            candidate["quality_score"] = score_candidate(candidate)
+            candidate["selection_reason"] = selection_reason(candidate)
             db.cache_article(
                 {
                     "id": candidate["item_id"],
@@ -247,29 +283,94 @@ def domain_from_url(url: str) -> str:
     return urlparse(url).netloc.lower().removeprefix("www.")
 
 
+def url_path(url: str) -> str:
+    return urlparse(url).path.lower()
+
+
+def url_query(url: str) -> str:
+    return urlparse(url).query.lower()
+
+
 def extract_date(text: str) -> datetime | None:
     match = re.search(r"(20\d{2})[-/](\d{2})[-/](\d{2})", text)
-    if not match:
+    if match:
+        year, month, day = (int(part) for part in match.groups())
+        try:
+            return datetime(year, month, day, tzinfo=timezone.utc)
+        except ValueError:
+            return None
+    month_match = re.search(
+        r"\b(\d{1,2})\s+("
+        + "|".join(MONTHS)
+        + r")\s+(20\d{2})\b",
+        text.lower(),
+    )
+    if not month_match:
         return None
-    year, month, day = (int(part) for part in match.groups())
+    day = int(month_match.group(1))
+    month = MONTHS[month_match.group(2)]
+    year = int(month_match.group(3))
     try:
         return datetime(year, month, day, tzinfo=timezone.utc)
     except ValueError:
         return None
 
 
+def clean_summary(summary: str, max_length: int = 420) -> str:
+    text = re.sub(r"\s+", " ", summary).strip()
+    boilerplate_markers = [
+        "###### Thank you for donating",
+        "## Help us to keep",
+        "View Live Map",
+        "Check Weather",
+    ]
+    for marker in boilerplate_markers:
+        if marker in text:
+            text = text.split(marker, 1)[0].strip()
+    text = text.removeprefix("# DutchNews.nl - ")
+    if len(text) > max_length:
+        text = text[: max_length - 3].rstrip() + "..."
+    return text
+
+
 def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None, str]:
     url = candidate["url"].lower()
+    path = url_path(candidate["url"])
+    query = url_query(candidate["url"])
     title = candidate["title"].lower()
+    summary = candidate.get("summary", "").lower()
     track_type = candidate["track_type"]
-    if any(part in url for part in ["/tag/", "/category/", "/topics/", "/search", "/archive"]):
+    source = candidate.get("source", "")
+    if source in LOW_VALUE_DOMAINS:
+        return "low_value_source", f"domain={source}"
+    if any(part in url for part in ["/tag/", "/category/", "/topics/", "/search", "/archive", "/interest/"]) or any(
+        key in query for key in ["s=", "search=", "q=", "page="]
+    ):
         return "generic_listing", "listing_or_archive_url"
-    if track_type == "news" and any(title == word for word in ["news", "latest news", "112"]):
+    if track_type == "news" and (
+        any(title == word for word in ["news", "latest news", "112"])
+        or any(word in title for word in ["headlines today", "local news, events", "breaking news headlines"])
+    ):
         return "not_article_page", "static_news_title"
-    if track_type == "bitcoin" and url.rstrip("/").endswith(("github.com/bitcoin/bitcoin", "bitcoin.org")):
+    if track_type == "events" and (
+        "calendar" in title
+        or "event calendar" in title
+        or "activities" in title
+        or path.rstrip("/").endswith("/events")
+        or "/events/?" in url
+    ):
+        return "generic_listing", "event_listing_page"
+    if track_type == "bitcoin" and (
+        url.rstrip("/").endswith(("github.com/bitcoin/bitcoin", "bitcoin.org"))
+        or path.rstrip("/").endswith("/newsletters")
+        or "/zh/" in path
+        or "latest bitcoin" in title
+        or "latest updates" in title
+        or source in {"x.com", "twitter.com"} and "pull request" not in title
+    ):
         return "low_value_bitcoin", "root_or_overview_page"
 
-    date = extract_date(url + " " + title)
+    date = extract_date(url + " " + title + " " + summary)
     if date is not None:
         age_days = (now - date).days
         if track_type == "news" and age_days > 14:
@@ -303,8 +404,41 @@ def select_items(validated: list[dict[str, Any]], per_track: int = 2) -> list[di
     selected: list[dict[str, Any]] = []
     for track in TRACKS:
         track_items = [item for item in validated if item["track_type"] == track]
-        selected.extend(sorted(track_items, key=lambda item: item.get("score", 0), reverse=True)[:per_track])
+        selected.extend(sorted(track_items, key=lambda item: item.get("quality_score", 0), reverse=True)[:per_track])
     return selected
+
+
+def score_candidate(candidate: dict[str, Any]) -> float:
+    score = float(candidate.get("score") or 0.0)
+    track_type = candidate["track_type"]
+    source = candidate.get("source", "")
+    title = candidate["title"].lower()
+    url = candidate["url"].lower()
+    summary = candidate.get("summary", "").lower()
+
+    if source in PREFERRED_DOMAINS.get(track_type, set()):
+        score += 0.35
+    if source in LOW_VALUE_DOMAINS:
+        score -= 0.75
+    if any(word in url for word in ["/tag/", "/category/", "/search", "/archive", "/interest/"]):
+        score -= 0.45
+    if track_type == "events" and any(word in title + summary for word in ["maastricht", "limburg", "weekend", "april", "2026"]):
+        score += 0.25
+    if track_type == "bitcoin" and any(word in title + summary + url for word in ["issue", "pull request", "optech", "newsletter", "core"]):
+        score += 0.3
+    if track_type == "news" and any(word in title + summary for word in ["maastricht", "limburg", "netherlands", "dutch"]):
+        score += 0.2
+    return round(score, 4)
+
+
+def selection_reason(candidate: dict[str, Any]) -> str:
+    source = candidate.get("source", "unknown source")
+    track_type = candidate["track_type"]
+    if source in PREFERRED_DOMAINS.get(track_type, set()):
+        return f"preferred {track_type} source: {source}"
+    if track_type == "bitcoin" and "github.com/bitcoin/bitcoin" in candidate["url"]:
+        return "Bitcoin Core technical signal"
+    return f"matched {track_type} query from {source}"
 
 
 def selected_counts(items: list[dict[str, Any]]) -> dict[str, int]:
@@ -338,6 +472,7 @@ def build_outputs(user: dict[str, Any], selected: list[dict[str, Any]], counts: 
         "# Personal Research Agent v3 Report",
         "",
         f"User: {user['name']} | Language: {user['language']} | Quality: {quality}",
+        f"Selected counts: news={counts['news']}, events={counts['events']}, bitcoin={counts['bitcoin']}",
         "",
         "## Selected Items",
     ]
@@ -347,7 +482,11 @@ def build_outputs(user: dict[str, Any], selected: list[dict[str, Any]], counts: 
         if not track_items:
             report_lines.append("- No item selected in this run.")
         for item in track_items:
-            report_lines.append(f"- {md_link(item)} - {item.get('summary') or 'No summary available.'}")
+            report_lines.append(f"- {md_link(item)}")
+            report_lines.append(f"  - Source: {item.get('source', 'unknown')} | Score: {item.get('quality_score', item.get('score', 0))}")
+            report_lines.append(f"  - Why selected: {item.get('selection_reason', 'matched query')}")
+            report_lines.append(f"  - Summary: {item.get('summary') or 'No summary available.'}")
+            report_lines.append(f"  - Query: `{item.get('query', '')}`")
 
     newsletter_lines = [
         "# Personal Research Agent v3 Newsletter",
@@ -356,8 +495,16 @@ def build_outputs(user: dict[str, Any], selected: list[dict[str, Any]], counts: 
         f"Selected: news={counts['news']}, events={counts['events']}, bitcoin={counts['bitcoin']}",
         "",
     ]
-    for item in selected[:5]:
-        newsletter_lines.append(f"- {item['track_type']}: {md_link(item)}")
+    for track in TRACKS:
+        track_items = [item for item in selected if item["track_type"] == track]
+        if not track_items:
+            newsletter_lines.append(f"- {track}: no strong item selected")
+            continue
+        for item in track_items[:2]:
+            summary = item.get("summary") or ""
+            if len(summary) > 170:
+                summary = summary[:167].rstrip() + "..."
+            newsletter_lines.append(f"- {track}: {md_link(item)} - {summary}")
     return "\n".join(report_lines), "\n".join(newsletter_lines)
 
 

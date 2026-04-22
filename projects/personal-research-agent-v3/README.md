@@ -62,6 +62,8 @@ python3 scripts/smoke_test_pipeline.py --mode fixture --max-results-per-query 1
 python3 scripts/smoke_test_pipeline.py --mode live --max-results-per-query 1
 ```
 
+The pipeline prefers source-specific queries and rejects common low-value listing pages such as search pages, event calendars, generic news aggregators, and Bitcoin index pages. If the live retriever is unavailable or capped, the run falls back to fixture mode and records `quality=warn` with a `retrieval_fallback` trace flag.
+
 ## Users and Persistence
 
 Initial testers are configured in `config/users.json`. Run `python3 scripts/init_db.py` after editing that file to insert missing users without dropping existing data.

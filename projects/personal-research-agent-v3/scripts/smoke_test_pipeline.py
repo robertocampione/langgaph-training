@@ -16,6 +16,35 @@ if str(PROJECT_ROOT) not in sys.path:
 from app import pipeline  # noqa: E402
 
 
+def validate_static_rejections() -> None:
+    cases = [
+        {
+            "track_type": "news",
+            "title": "Limburg Breaking News Headlines Today",
+            "url": "https://ground.news/interest/limburg-netherlands",
+            "summary": "Headline listing.",
+            "source": "ground.news",
+        },
+        {
+            "track_type": "events",
+            "title": "Event calendar in Maastricht",
+            "url": "https://www.visitzuidlimburg.com/govisit/events/?city=maastricht",
+            "summary": "Calendar listing.",
+            "source": "visitzuidlimburg.com",
+        },
+        {
+            "track_type": "bitcoin",
+            "title": "Newsletters-zh - Bitcoin Optech",
+            "url": "https://bitcoinops.org/zh/newsletters/",
+            "summary": "Newsletter index.",
+            "source": "bitcoinops.org",
+        },
+    ]
+    _, rejected, reason_counts = pipeline.validate_candidates(cases)
+    assert len(rejected) == len(cases)
+    assert reason_counts
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=100000001)
@@ -23,6 +52,7 @@ def main() -> None:
     parser.add_argument("--max-results-per-query", type=int, default=1)
     args = parser.parse_args()
 
+    validate_static_rejections()
     result = pipeline.run_research_digest(
         chat_id=args.chat_id,
         mode=args.mode,
@@ -51,4 +81,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

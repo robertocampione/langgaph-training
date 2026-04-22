@@ -1,0 +1,192 @@
+"""Telegram adapter for Personal Research Agent v3."""
+
+from __future__ import annotations
+
+import argparse
+import asyncio
+import logging
+import sys
+from pathlib import Path
+from typing import Any
+
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from app import db  # noqa: E402
+from app import db_users  # noqa: E402
+from app import config as app_config  # noqa: E402
+from app import main as agent_main  # noqa: E402
+
+
+LOGGER = logging.getLogger(__name__)
+SUPPORTED_LANGUAGES = {"en", "it", "nl"}
+TELEGRAM_MESSAGE_LIMIT = 4096
+
+
+def split_message(text: str, limit: int = TELEGRAM_MESSAGE_LIMIT) -> list[str]:
+    if len(text) <= limit:
+        return [text]
+    chunks: list[str] = []
+    remaining = text
+    while len(remaining) > limit:
+        split_at = remaining.rfind("\n", 0, limit)
+        if split_at < limit // 2:
+            split_at = limit
+        chunks.append(remaining[:split_at].strip())
+        remaining = remaining[split_at:].strip()
+    if remaining:
+        chunks.append(remaining)
+    return chunks
+
+
+def greeting_for(user: dict[str, Any]) -> str:
+    topics = ", ".join(user["topics"])
+    return (
+        f"Hi {user['name']}. Personal Research Agent v3 is ready.\n"
+        f"Language: {user['language']}\n"
+        f"Topics: {topics}\n\n"
+        "Commands: /run, /topics news events bitcoin, /language en, /feedback 5 useful notes"
+    )
+
+
+async def send_text(update: Any, text: str) -> None:
+    if update.effective_chat is None:
+        return
+    for chunk in split_message(text):
+        await update.effective_chat.send_message(chunk)
+
+
+async def start_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    user_name = None
+    if update.effective_user is not None:
+        user_name = update.effective_user.full_name
+    user = db_users.ensure_user(chat_id=int(chat.id), name=user_name)
+    await send_text(update, greeting_for(user))
+
+
+async def run_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    db_users.ensure_user(chat_id=int(chat.id))
+    await send_text(update, "Running your research digest now.")
+    try:
+        result = await asyncio.to_thread(agent_main.run_for_chat, int(chat.id))
+    except Exception:
+        LOGGER.exception("Pipeline run failed for chat_id=%s", chat.id)
+        await send_text(update, "Sorry, I could not process that request.")
+        return
+    await send_text(update, result)
+
+
+async def topics_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    topics = [item.strip().lower() for item in context.args if item.strip()]
+    if not topics:
+        user = db_users.ensure_user(chat_id=int(chat.id))
+        await send_text(update, "Current topics: " + ", ".join(user["topics"]))
+        return
+    user = db_users.ensure_user(chat_id=int(chat.id))
+    updated = db_users.update_user_topics(chat_id=int(chat.id), topics=topics)
+    await send_text(update, f"Updated topics for {user['name']}: " + ", ".join(updated["topics"]))
+
+
+async def language_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    if not context.args:
+        language = db_users.get_user_language(chat_id=int(chat.id)) or app_config.load_app_config().default_language
+        await send_text(update, f"Current language: {language}")
+        return
+    requested = context.args[0].strip().lower()
+    if requested not in SUPPORTED_LANGUAGES:
+        await send_text(update, "Supported languages: en, it, nl")
+        return
+    db_users.ensure_user(chat_id=int(chat.id))
+    updated = db_users.update_user_language(chat_id=int(chat.id), language=requested)
+    await send_text(update, f"Updated language: {updated['language']}")
+
+
+async def feedback_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    if not context.args:
+        await send_text(update, "Use /feedback <rating 1-5> <notes>.")
+        return
+    try:
+        rating = int(context.args[0])
+    except ValueError:
+        await send_text(update, "Feedback rating must be a number from 1 to 5.")
+        return
+    if rating < 1 or rating > 5:
+        await send_text(update, "Feedback rating must be between 1 and 5.")
+        return
+
+    config = app_config.load_app_config()
+    user = db_users.ensure_user(chat_id=int(chat.id), db_path=config.db_path)
+    latest_run = db.latest_run_for_user(int(user["id"]), db_path=config.db_path)
+    if latest_run is None:
+        await send_text(update, "Run /run before sending feedback.")
+        return
+
+    notes = " ".join(context.args[1:]).strip()
+    feedback_id = db.create_run_feedback(
+        user_id=int(user["id"]),
+        run_id=int(latest_run["id"]),
+        rating=rating,
+        notes=notes,
+        db_path=config.db_path,
+    )
+    await send_text(update, f"Thanks. Feedback saved with id {feedback_id}.")
+
+
+async def fallback_handler(update: Any, context: Any) -> None:
+    text = update.message.text.strip() if update.message and update.message.text else ""
+    if text:
+        await send_text(update, "Send /run to generate a digest, /feedback to rate it, or /topics and /language to update preferences.")
+
+
+def build_application(token: str) -> Any:
+    from telegram.ext import Application, CommandHandler, MessageHandler, filters
+
+    application = Application.builder().token(token).build()
+    application.add_handler(CommandHandler("start", start_handler))
+    application.add_handler(CommandHandler(["run", "news"], run_handler))
+    application.add_handler(CommandHandler(["topics", "settopics"], topics_handler))
+    application.add_handler(CommandHandler("language", language_handler))
+    application.add_handler(CommandHandler("feedback", feedback_handler))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, fallback_handler))
+    return application
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dry-run", action="store_true", help="Validate configuration without starting Telegram polling.")
+    parser.add_argument("--env-file", default=".env", help="Path to a dotenv-style file.")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+    config = app_config.load_app_config(args.env_file)
+    db.initialize_database(config.db_path)
+    db_users.seed_users_from_config(db_path=config.db_path)
+
+    if args.dry_run:
+        print(f"telegram_dry_run=pass db={config.db_path} token_configured={config.telegram_token_configured}")
+        return
+    if not config.telegram_token_configured:
+        raise SystemExit("TELEGRAM_TOKEN is required to start polling.")
+
+    application = build_application(app_config.get_telegram_token())
+    application.run_polling()
+
+
+if __name__ == "__main__":
+    main()

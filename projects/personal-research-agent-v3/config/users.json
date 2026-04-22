@@ -1,0 +1,20 @@
+[
+  {
+    "chat_id": 100000001,
+    "name": "Example Italian Tester",
+    "language": "it",
+    "topics": ["news", "events", "bitcoin"]
+  },
+  {
+    "chat_id": 100000002,
+    "name": "Example Dutch Tester",
+    "language": "nl",
+    "topics": ["news", "events"]
+  },
+  {
+    "chat_id": 100000003,
+    "name": "Example Demo Reviewer",
+    "language": "en",
+    "topics": ["news", "events"]
+  }
+]

@@ -1,14 +1,14 @@
 {
-  "run_id": "v2-20260422084959",
-  "timestamp": "2026-04-22T08:49:59.826079Z",
+  "run_id": "v2-20260422122530",
+  "timestamp": "2026-04-22T12:25:30.982258Z",
   "trace_events": [
     {
       "stage": "planner",
       "message": "Plan generated",
       "plan": {
         "focus_areas": [
-          "Netherlands News",
-          "Limburg News",
+          "Netherlands news",
+          "Limburg news",
           "Family-friendly weekend events",
           "Bitcoin market signals",
           "Bitcoin technical analysis",
@@ -17,8 +17,7 @@
         "location_focus": [
           "Netherlands",
           "Limburg",
-          "Maastricht",
-          "Borgharen"
+          "Maastricht"
         ],
         "languages": [
           "en",
@@ -27,29 +26,91 @@
         ],
         "include_events": true,
         "include_bitcoin": true,
-        "max_items_per_section": 4
-      }
+        "max_items_per_section": 5
+      },
+      "required_tracks": [
+        "news",
+        "events",
+        "bitcoin"
+      ]
     },
     {
       "stage": "create_analysts",
-      "message": "Prepared 3 analysts"
+      "message": "Prepared 4 track analysts",
+      "track_counts": {
+        "news": 2,
+        "events": 1,
+        "bitcoin": 1
+      },
+      "legacy_beats": [
+        "news",
+        "news",
+        "events",
+        "bitcoin"
+      ]
     },
     {
       "stage": "search_web",
+      "track_type": "news",
       "beat": "news",
+      "profile_key": "news",
       "queries": [
-        "limburg regional challenges cross-border issues demographic shifts economic sector trends site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands new government coalition agreement policy shifts economic priorities macroeconomic impact site:dutchnews.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
         "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
         "site:1limburg.nl maastricht limburg nieuws vandaag latest",
         "site:nos.nl vandaag nieuws limburg maastricht economie latest",
         "site:nu.nl nederland nieuws vandaag economie politiek latest"
       ],
+      "query_count": 5,
       "result_count": 10,
-      "raw_count": 18
+      "filtered_count": 10,
+      "raw_count": 23
     },
     {
       "stage": "search_web",
+      "track_type": "news",
       "beat": "news",
+      "profile_key": "news",
+      "queries": [
+        "limburg maastricht news last 48 hours economy policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "site:1limburg.nl maastricht limburg nieuws vandaag latest",
+        "site:nos.nl vandaag nieuws limburg maastricht economie latest",
+        "site:nu.nl nederland nieuws vandaag economie politiek latest"
+      ],
+      "query_count": 5,
+      "result_count": 10,
+      "filtered_count": 10,
+      "raw_count": 29
+    },
+    {
+      "stage": "map_results_to_candidates",
+      "track_type": "news",
+      "beat": "news",
+      "candidate_count": 10
+    },
+    {
+      "stage": "search_web",
+      "track_type": "news",
+      "beat": "news",
+      "profile_key": "news",
+      "queries": [
+        "limburg maastricht socio-economic trends employment shifts regional development projects site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl latest",
+        "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
+        "site:1limburg.nl maastricht limburg nieuws vandaag latest",
+        "site:nos.nl vandaag nieuws limburg maastricht economie latest",
+        "site:nu.nl nederland nieuws vandaag economie politiek latest"
+      ],
+      "query_count": 5,
+      "result_count": 10,
+      "filtered_count": 10,
+      "raw_count": 17
+    },
+    {
+      "stage": "search_web",
+      "track_type": "news",
+      "beat": "news",
+      "profile_key": "news",
       "queries": [
         "limburg maastricht latest local news last 48 hours economy policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
         "netherlands breaking news today april 2026 inflation taxes government policy site:1limburg.nl or site:dutchnews.nl or site:limburger.nl or site:nos.nl or site:ad.nl or site:nltimes.nl or site:nu.nl or site:rtl.nl",
@@ -57,89 +118,129 @@
         "site:nos.nl vandaag nieuws limburg maastricht economie latest",
         "site:nu.nl nederland nieuws vandaag economie politiek latest"
       ],
+      "query_count": 5,
       "result_count": 10,
-      "raw_count": 18
+      "filtered_count": 10,
+      "raw_count": 25
     },
     {
       "stage": "map_results_to_candidates",
+      "track_type": "news",
       "beat": "news",
       "candidate_count": 10
     },
     {
       "stage": "search_web",
+      "track_type": "events",
       "beat": "events",
+      "profile_key": "events",
       "queries": [
-        "limburg maastricht next 21 days family-friendly weekend events site:eventbrite.com or site:meetup.com or site:visitmaastricht.com or site:visitmaastricht.nl or site:allevents.in or site:facebook.com date time location",
+        "maastricht family-friendly weekend activities event date time location",
         "maastricht event apr 25 2026 location time ticket",
         "maastricht apr 26 2026 cultural event festival concert details date time",
         "maastricht cultural event museum exhibition live music date time location"
       ],
+      "query_count": 4,
       "result_count": 8,
-      "raw_count": 20
+      "filtered_count": 8,
+      "raw_count": 23
     },
     {
       "stage": "search_web",
+      "track_type": "events",
       "beat": "events",
+      "profile_key": "events",
       "queries": [
         "limburg maastricht next 21 days specific event date location time site:eventbrite.com or site:meetup.com or site:visitmaastricht.com or site:visitmaastricht.nl or site:allevents.in or site:facebook.com",
         "maastricht event apr 25 2026 location time ticket",
         "maastricht apr 26 2026 cultural event festival concert details date time",
         "maastricht cultural event museum exhibition live music date time location"
       ],
+      "query_count": 4,
       "result_count": 8,
-      "raw_count": 20
+      "filtered_count": 8,
+      "raw_count": 19
     },
     {
       "stage": "map_results_to_candidates",
+      "track_type": "events",
       "beat": "events",
       "candidate_count": 10
     },
     {
       "stage": "search_web",
+      "track_type": "bitcoin",
       "beat": "bitcoin",
+      "profile_key": "bitcoin",
       "queries": [
-        "Bitcoin market structure and community sentiment shifts last week short-term price implications",
+        "bitcoin on-chain analysis long-term holder accumulation distribution exchange flows short medium term outlook",
         "bitcoin market update last 24 hours etf regulation macro",
         "site:github.com bitcoin/bitcoin issues updated",
         "site:github.com bitcoin/bips pull request OR issue updated"
       ],
+      "query_count": 4,
       "result_count": 10,
-      "raw_count": 22
+      "filtered_count": 10,
+      "raw_count": 24
     },
     {
       "stage": "search_web",
+      "track_type": "bitcoin",
       "beat": "bitcoin",
+      "profile_key": "bitcoin",
       "queries": [
-        "site:github.com bitcoin/bips pull request OR issue updated",
         "bitcoin market update last 24 hours etf regulation macro",
         "site:github.com bitcoin/bitcoin issues updated",
+        "site:github.com bitcoin/bips pull request OR issue updated",
         "bitcoin meetup Netherlands Maastricht event date time"
       ],
+      "query_count": 4,
       "result_count": 10,
-      "raw_count": 23
+      "filtered_count": 10,
+      "raw_count": 22
     },
     {
       "stage": "map_results_to_candidates",
+      "track_type": "bitcoin",
       "beat": "bitcoin",
       "candidate_count": 10
     },
     {
       "stage": "collect_interview_outputs",
-      "section_count": 3,
-      "candidate_count": 30
+      "section_count": 4,
+      "candidate_count": 40,
+      "tracks_seen": [
+        "bitcoin",
+        "events",
+        "news"
+      ]
     },
     {
       "stage": "validator",
-      "candidate_count": 30,
+      "candidate_count": 40,
       "valid_count": 5,
-      "rejected_count": 25,
+      "rejected_count": 35,
       "reason_counts": {
-        "not_recent": 5,
-        "not_article_page": 5,
-        "low_trust_source": 2,
+        "not_recent": 14,
+        "not_article_page": 7,
+        "duplicate_in_run": 4,
+        "generic_listing": 4,
         "missing_specific_date": 3,
-        "generic_listing": 8,
-        "duplicate_in_run": 1,
+        "low_trust_source": 2,
+        "altcoin_noise": 1
+      },
+      "tracks_seen": [
+        "bitcoin",
+        "events",
+        "news"
+      ],
+      "profile_reason_counts": {
+        "not_recent": 14,
+        "not_article_page": 7,
+        "duplicate_in_run": 4,
+        "generic_listing": 4,
+        "missing_specific_date": 3,
+        "low_trust_source": 2,
         "altcoin_noise": 1
       },
       "fallback_reasoning_active": false,
@@ -158,14 +259,18 @@
       "scored_count": 5,
       "selected": {
         "news": 2,
-        "events": 0,
+        "events": 1,
         "bitcoin": 1
       },
       "quality_flags_summary": {
-        "stale_high_items": 2,
-        "low_confidence_dates": 2,
-        "bitcoin_low_value_patterns": 0
-      }
+        "stale_high_items": 1,
+        "low_confidence_dates": 1,
+        "bitcoin_low_value_patterns": 0,
+        "feedback_adjusted_items": 0,
+        "feedback_available": false
+      },
+      "feedback_available": false,
+      "feedback_adjusted_count": 0
     },
     {
       "stage": "quality_gate",
@@ -178,12 +283,12 @@
         },
         "selected": {
           "news": 2,
-          "events": 0,
+          "events": 1,
           "bitcoin": 1
         },
         "missing": {
           "news": 1,
-          "events": 2,
+          "events": 1,
           "bitcoin": 1
         },
         "bitcoin_diversity_ok": false,
@@ -192,8 +297,8 @@
     },
     {
       "stage": "output",
-      "report_len": 7096,
-      "newsletter_len": 2000
+      "report_len": 2783,
+      "newsletter_len": 2656
     },
     {
       "stage": "recap",
@@ -204,6 +309,8 @@
     {
       "item_id": "6b5e305a93d12191e948d4a27ab7736ef9b338ad067bc465da0e76d4ddce23b9",
       "domain": "bitcoin",
+      "track_type": "bitcoin",
+      "beat": "bitcoin",
       "title": "Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub",
       "source": "github.com",
       "url": "https://github.com/bitcoin/bitcoin/issues/33777",
@@ -230,36 +337,40 @@
       "family_friendly": false
     },
     {
-      "item_id": "268e65521599695622f7c82d31a3cbbc0b73d92bc6df5f884119079d6cadf836",
-      "domain": "news",
-      "title": "Gov't considering temporary cut to public transport fares against high ...",
-      "source": "nltimes.nl",
-      "url": "https://nltimes.nl/2026/04/20/govt-considering-temporary-cut-public-transport-fares-high-fuel-prices",
-      "summary": "The Dutch Cabinet is considering a temporary fare reduction for public transport as one of the measures to help citizens cope with higher",
-      "category": "economy",
-      "classification": "news",
-      "content_type": "article",
+      "item_id": "7d5ee0c970e889c592a631e7bb44c37e70dca5b84882e8a911ec71350c088f7c",
+      "domain": "events",
+      "track_type": "events",
+      "beat": "events",
+      "title": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch ...",
+      "source": "allevents.in",
+      "url": "https://allevents.in/maastricht/complex-festival-2026/200028610594340",
+      "summary": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch, Chris Stussy, Winson, Malugi & many more! # Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch, Chris Stussy, Winson, Malugi & many more! ## Complex Maastricht. ## About the event. You may also like the following events from Complex Maastricht:. * This Friday, 24th April, 11:00 pm, Complex presents Somewhen / BYORN \ufeff/ N00M1 \ufeff/ Oniver b2b KeyKe...",
+      "category": "events",
+      "classification": "event",
+      "content_type": "event",
       "source_tier": "tier2",
-      "date_confidence": 1.0,
+      "date_confidence": 0.8,
       "is_listing_page": false,
       "validation_flags": [
-        "date_source:published_or_url_date",
+        "date_source:content_date",
         "stale_risk:low",
-        "age_days:2"
+        "age_days:-2"
       ],
-      "age_days": 2,
+      "age_days": -2,
       "stale_risk": "low",
-      "score_total": 0.9521428571428572,
-      "recency_score": 0.8571428571428572,
+      "score_total": 0.7950000000000002,
+      "recency_score": 0.9333333333333333,
       "trust_score": 0.82,
       "geo_score": 1.0,
       "category_score": 1.0,
-      "novelty_score": 1.0,
+      "novelty_score": 0.2,
       "family_friendly": false
     },
     {
       "item_id": "71ca3b660b0ed10f89b4ff4548b5e12e2c3d9d98068d5d9bbdae5d5e6288cf29",
       "domain": "news",
+      "track_type": "news",
+      "beat": "news",
       "title": "Fuel costs for low-income workers could rise by \u20ac1,000: CPB",
       "source": "dutchnews.nl",
       "url": "https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb",
@@ -286,29 +397,31 @@
       "family_friendly": false
     },
     {
-      "item_id": "8cc2a2693f2db45f610146a476884bd4b3d10cf97e0a587572fa21145aafac57",
-      "domain": "bitcoin",
-      "title": "Release Schedule for 31.0 \u00b7 Issue #33607 \u00b7 bitcoin/bitcoin - GitHub",
-      "source": "github.com",
-      "url": "https://github.com/bitcoin/bitcoin/issues/33607",
-      "summary": "Here is a proposed release schedule for v31.0, the next major release of Bitcoin Core. The dates are set to target a release in early April.",
-      "category": "technical",
-      "classification": "analysis",
-      "content_type": "technical",
-      "source_tier": "tier1",
-      "date_confidence": 0.3,
+      "item_id": "733e0dbde119a4b70bbfd7aeadc44cdbfa7c6ecf79f6ef201fe2a058b86c0bd7",
+      "domain": "news",
+      "track_type": "news",
+      "beat": "news",
+      "title": "Dutch labor talks resume after strikes halt parliament work, shut ...",
+      "source": "nltimes.nl",
+      "url": "https://nltimes.nl/2026/04/18/dutch-labor-talks-resume-strikes-halt-parliament-work-shut-slaughterhouses",
+      "summary": "The dispute centers on the government's proposed \u201cnullijn,\u201d or zero line, which would freeze wages and provide no inflation adjustment for civil",
+      "category": "economy",
+      "classification": "news",
+      "content_type": "article",
+      "source_tier": "tier2",
+      "date_confidence": 1.0,
       "is_listing_page": false,
       "validation_flags": [
-        "date_source:technical_inferred_today",
-        "stale_risk:high",
-        "age_days:0"
+        "date_source:published_or_url_date",
+        "stale_risk:medium",
+        "age_days:4"
       ],
-      "age_days": 0,
-      "stale_risk": "high",
-      "score_total": 0.27000000000000013,
-      "recency_score": 1.0,
-      "trust_score": 1.0,
-      "geo_score": 0.35,
+      "age_days": 4,
+      "stale_risk": "medium",
+      "score_total": 0.6692857142857143,
+      "recency_score": 0.7142857142857143,
+      "trust_score": 0.82,
+      "geo_score": 1.0,
       "category_score": 1.0,
       "novelty_score": 0.2,
       "family_friendly": false
@@ -316,6 +429,8 @@
     {
       "item_id": "b6490aaf40dc74626f5d60ffa21496cc462df63bd608ff94938006c39760c9bc",
       "domain": "bitcoin",
+      "track_type": "bitcoin",
+      "beat": "bitcoin",
       "title": "v30.0 Testing \u00b7 Issue #33368 \u00b7 bitcoin/bitcoin - GitHub",
       "source": "github.com",
       "url": "https://github.com/bitcoin/bitcoin/issues/33368",
@@ -343,29 +458,35 @@
     }
   ],
   "counts": {
-    "candidate_items": 30,
+    "candidate_items": 40,
     "validated_items": 5,
-    "rejected_items": 25,
+    "rejected_items": 35,
     "scored_items": 5
   },
   "selected_counts": {
     "news": 2,
-    "events": 0,
+    "events": 1,
     "bitcoin": 1
   },
   "news_preview": [
     {
-      "title": "Gov't considering temporary cut to public transport fares against high ...",
-      "url": "https://nltimes.nl/2026/04/20/govt-considering-temporary-cut-public-transport-fares-high-fuel-prices",
-      "score_total": 0.952
-    },
-    {
       "title": "Fuel costs for low-income workers could rise by \u20ac1,000: CPB",
       "url": "https://www.dutchnews.nl/2026/04/fuel-costs-for-low-income-workers-could-rise-by-e1000-cpb",
       "score_total": 0.671
+    },
+    {
+      "title": "Dutch labor talks resume after strikes halt parliament work, shut ...",
+      "url": "https://nltimes.nl/2026/04/18/dutch-labor-talks-resume-strikes-halt-parliament-work-shut-slaughterhouses",
+      "score_total": 0.669
     }
   ],
-  "events_preview": [],
+  "events_preview": [
+    {
+      "title": "Complex Festival 2026 with Paul Kalkbrenner, K\u00f6lsch ...",
+      "url": "https://allevents.in/maastricht/complex-festival-2026/200028610594340",
+      "score_total": 0.795
+    }
+  ],
   "bitcoin_preview": [
     {
       "title": "Mining interface tracking issue #33777 - bitcoin/bitcoin - GitHub",
@@ -384,31 +505,35 @@
     },
     "selected": {
       "news": 2,
-      "events": 0,
+      "events": 1,
       "bitcoin": 1
     },
     "missing": {
       "news": 1,
-      "events": 2,
+      "events": 1,
       "bitcoin": 1
     },
     "bitcoin_diversity_ok": false,
     "mode": "soft"
   },
   "quality_flags_summary": {
-    "stale_high_items": 2,
-    "low_confidence_dates": 2,
-    "bitcoin_low_value_patterns": 0
+    "stale_high_items": 1,
+    "low_confidence_dates": 1,
+    "bitcoin_low_value_patterns": 0,
+    "feedback_adjusted_items": 0,
+    "feedback_available": false
   },
   "reason_counts": {
-    "not_recent": 5,
-    "not_article_page": 5,
-    "low_trust_source": 2,
+    "not_recent": 14,
+    "not_article_page": 7,
+    "duplicate_in_run": 4,
+    "generic_listing": 4,
     "missing_specific_date": 3,
-    "generic_listing": 8,
-    "duplicate_in_run": 1,
+    "low_trust_source": 2,
     "altcoin_noise": 1
   },
+  "feedback_available": false,
+  "feedback_memory_version": 1,
   "reasoning_active": true,
   "fallback_reasoning_active": false,
   "reasoning_fallback": "none",
@@ -419,5 +544,6 @@
     "deepseek/deepseek-r1:attempt1:ValidationError"
   ],
   "failover_count": 0,
-  "human_validation_required": true
+  "human_validation_required": true,
+  "feedback_stub_path": "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v2/debug/feedback_memory_stub.json"
 }

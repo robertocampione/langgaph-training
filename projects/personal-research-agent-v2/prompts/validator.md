@@ -7,7 +7,7 @@ For each candidate item:
 
 Validation policy:
 - Reject static pages, glossaries, and generic reference content.
-- Reject domain mismatch (e.g., event-like content in wrong beat) unless clearly reclassifiable.
+- Reject track/domain mismatch (e.g., event-like content in the wrong track/legacy beat) unless clearly reclassifiable.
 - Prefer factual and recent items.
 - Avoid unverifiable claims.
 

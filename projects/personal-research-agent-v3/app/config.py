@@ -57,8 +57,9 @@ def parse_topics(value: str | None) -> tuple[str, ...]:
 
 def load_app_config(env_file: str | Path | None = None) -> AppConfig:
     load_environment(env_file)
+    db_path_value = os.getenv("DB_PATH", DEFAULT_DB_PATH)
     return AppConfig(
-        db_path=os.getenv("DB_PATH", DEFAULT_DB_PATH),
+        db_path=str(resolve_project_path(db_path_value)),
         default_language=os.getenv("DEFAULT_LANGUAGE", DEFAULT_LANGUAGE),
         default_topics=parse_topics(os.getenv("DEFAULT_TOPICS")),
         telegram_token_configured=bool(os.getenv("TELEGRAM_TOKEN", "").strip()),

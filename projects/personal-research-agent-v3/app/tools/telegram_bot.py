@@ -46,8 +46,30 @@ def greeting_for(user: dict[str, Any]) -> str:
         f"Hi {user['name']}. Personal Research Agent v3 is ready.\n"
         f"Language: {user['language']}\n"
         f"Topics: {topics}\n\n"
-        "Commands: /run, /topics news events bitcoin, /language en, /feedback 5 useful notes"
+        "Commands: /ping, /run, /topics juventus, /topics juventus, bitcoin, /language en, /feedback 5 useful notes"
     )
+
+
+def parse_topics_args(args: list[str]) -> list[str]:
+    if not args:
+        return []
+    cleaned_args = [item.strip().lower() for item in args if item and item.strip()]
+    if not cleaned_args:
+        return []
+    if any("," in item for item in cleaned_args):
+        parts: list[str] = []
+        for item in cleaned_args:
+            parts.extend(part.strip() for part in item.split(","))
+    else:
+        parts = cleaned_args
+    topics: list[str] = []
+    seen: set[str] = set()
+    for part in parts:
+        if not part or part in seen:
+            continue
+        seen.add(part)
+        topics.append(part)
+    return topics
 
 
 async def send_text(update: Any, text: str) -> None:
@@ -68,14 +90,31 @@ async def start_handler(update: Any, context: Any) -> None:
     await send_text(update, greeting_for(user))
 
 
+async def ping_handler(update: Any, context: Any) -> None:
+    config = app_config.load_app_config()
+    await send_text(
+        update,
+        f"pong db={config.db_path} token_configured={config.telegram_token_configured}",
+    )
+
+
 async def run_handler(update: Any, context: Any) -> None:
     chat = update.effective_chat
     if chat is None:
         return
     db_users.ensure_user(chat_id=int(chat.id))
     await send_text(update, "Running your research digest now.")
+    mode = str(context.application.bot_data.get("run_mode", "auto"))
+    max_results_per_query = int(context.application.bot_data.get("max_results_per_query", 2))
+    fallback_to_stub = bool(context.application.bot_data.get("fallback_to_stub", True))
     try:
-        result = await asyncio.to_thread(agent_main.run_for_chat_detailed, int(chat.id))
+        result = await asyncio.to_thread(
+            agent_main.run_for_chat_detailed,
+            int(chat.id),
+            mode,
+            max_results_per_query,
+            fallback_to_stub,
+        )
     except Exception:
         LOGGER.exception("Pipeline run failed for chat_id=%s", chat.id)
         await send_text(update, "Sorry, I could not process that request.")
@@ -98,7 +137,7 @@ async def topics_handler(update: Any, context: Any) -> None:
     chat = update.effective_chat
     if chat is None:
         return
-    topics = [item.strip().lower() for item in context.args if item.strip()]
+    topics = parse_topics_args(context.args)
     if not topics:
         user = db_users.ensure_user(chat_id=int(chat.id))
         await send_text(update, "Current topics: " + ", ".join(user["topics"]))
@@ -170,6 +209,7 @@ def build_application(token: str) -> Any:
 
     application = Application.builder().token(token).build()
     application.add_handler(CommandHandler("start", start_handler))
+    application.add_handler(CommandHandler("ping", ping_handler))
     application.add_handler(CommandHandler(["run", "news"], run_handler))
     application.add_handler(CommandHandler(["topics", "settopics"], topics_handler))
     application.add_handler(CommandHandler("language", language_handler))
@@ -182,9 +222,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true", help="Validate configuration without starting Telegram polling.")
     parser.add_argument("--env-file", default=".env", help="Path to a dotenv-style file.")
+    parser.add_argument("--mode", choices=("auto", "live", "web_fallback", "fixture"), default="auto", help="Retrieval mode used by /run.")
+    parser.add_argument("--max-results-per-query", type=int, default=2, help="Bounded retrieval cap used by /run.")
+    parser.add_argument("--no-fallback", action="store_true", help="Raise pipeline errors instead of returning the readiness stub.")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     config = app_config.load_app_config(args.env_file)
     db.initialize_database(config.db_path)
     db_users.seed_users_from_config(db_path=config.db_path)
@@ -196,6 +240,16 @@ def main() -> None:
         raise SystemExit("TELEGRAM_TOKEN is required to start polling.")
 
     application = build_application(app_config.get_telegram_token())
+    application.bot_data["run_mode"] = args.mode
+    application.bot_data["max_results_per_query"] = args.max_results_per_query
+    application.bot_data["fallback_to_stub"] = not args.no_fallback
+    LOGGER.info(
+        "telegram_bot_ready mode=%s max_results_per_query=%s fallback_to_stub=%s db=%s",
+        args.mode,
+        args.max_results_per_query,
+        not args.no_fallback,
+        config.db_path,
+    )
     application.run_polling()
 
 

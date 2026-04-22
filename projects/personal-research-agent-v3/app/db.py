@@ -79,7 +79,7 @@ def utc_now() -> str:
 
 
 def get_db_path(db_path: str | None = None) -> Path:
-    return Path(db_path or app_config.load_app_config().db_path)
+    return app_config.resolve_project_path(db_path or app_config.load_app_config().db_path)
 
 
 def get_connection(db_path: str | None = None) -> sqlite3.Connection:

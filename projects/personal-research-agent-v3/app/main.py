@@ -100,7 +100,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=None, help="External chat identifier for the run.")
     parser.add_argument("--init-db", action="store_true", help="Initialize the DB and seed configured users before running.")
-    parser.add_argument("--mode", choices=("auto", "live", "fixture"), default="auto", help="Retrieval mode.")
+    parser.add_argument(
+        "--mode",
+        choices=("auto", "live", "web_fallback", "fixture"),
+        default="auto",
+        help="Retrieval mode.",
+    )
     parser.add_argument("--max-results-per-query", type=int, default=pipeline.DEFAULT_MAX_RESULTS_PER_QUERY, help="Bounded retrieval cap.")
     parser.add_argument("--no-fallback", action="store_true", help="Raise pipeline errors instead of returning the readiness stub.")
     args = parser.parse_args()

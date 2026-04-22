@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any
 
+from app import config as app_config
 from app import db
 
 
@@ -34,8 +34,8 @@ def seed_users_from_config(
             db.create_user(
                 chat_id=int(item["chat_id"]),
                 name=str(item.get("name") or item["chat_id"]),
-                language=str(item.get("language") or os.getenv("DEFAULT_LANGUAGE", "it")),
-                topics=item.get("topics") or os.getenv("DEFAULT_TOPICS", "news,events,bitcoin"),
+                language=str(item.get("language") or app_config.load_app_config().default_language),
+                topics=item.get("topics") or app_config.load_app_config().default_topics,
                 db_path=db_path,
             )
         )
@@ -53,8 +53,8 @@ def ensure_user(
     return db.create_user(
         chat_id=chat_id,
         name=name or f"User {chat_id}",
-        language=os.getenv("DEFAULT_LANGUAGE", "it"),
-        topics=os.getenv("DEFAULT_TOPICS", "news,events,bitcoin"),
+        language=app_config.load_app_config().default_language,
+        topics=app_config.load_app_config().default_topics,
         db_path=db_path,
     )
 
@@ -80,4 +80,3 @@ def get_user_language(chat_id: int, db_path: str | None = None) -> str | None:
     if user is None:
         return None
     return str(user["language"])
-

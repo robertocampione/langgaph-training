@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
 
-DEFAULT_DB_PATH = "db/personal_research_agent.sqlite"
+from app import config as app_config
+
+
+DEFAULT_DB_PATH = app_config.DEFAULT_DB_PATH
 
 
 SCHEMA_STATEMENTS = (
@@ -77,7 +79,7 @@ def utc_now() -> str:
 
 
 def get_db_path(db_path: str | None = None) -> Path:
-    return Path(db_path or os.getenv("DB_PATH", DEFAULT_DB_PATH))
+    return Path(db_path or app_config.load_app_config().db_path)
 
 
 def get_connection(db_path: str | None = None) -> sqlite3.Connection:
@@ -211,6 +213,40 @@ def log_run(
         return int(cursor.lastrowid)
 
 
+def update_run_summary(
+    run_id: int,
+    report_path: str | None = None,
+    newsletter_path: str | None = None,
+    quality_status: str | None = None,
+    selected_counts: dict[str, int] | None = None,
+    db_path: str | None = None,
+) -> None:
+    initialize_database(db_path)
+    fields: list[str] = []
+    values: list[Any] = []
+    if report_path is not None:
+        fields.append("report_path = ?")
+        values.append(report_path)
+    if newsletter_path is not None:
+        fields.append("newsletter_path = ?")
+        values.append(newsletter_path)
+    if quality_status is not None:
+        fields.append("quality_status = ?")
+        values.append(quality_status)
+    if selected_counts is not None:
+        fields.append("selected_counts = ?")
+        values.append(json.dumps(selected_counts, sort_keys=True))
+    if not fields:
+        return
+    values.append(run_id)
+    with get_connection(db_path) as connection:
+        connection.execute(
+            f"UPDATE runs SET {', '.join(fields)} WHERE id = ?",
+            values,
+        )
+        connection.commit()
+
+
 def list_runs_for_user(
     user_id: int,
     limit: int = 10,
@@ -301,3 +337,51 @@ def get_cache_value(key: str, db_path: str | None = None) -> dict[str, Any] | No
         return None
     return json.loads(row["value"])
 
+
+def create_feedback(
+    user_id: int,
+    article_id: str,
+    rating: int,
+    notes: str = "",
+    db_path: str | None = None,
+) -> int:
+    initialize_database(db_path)
+    if rating < 1 or rating > 5:
+        raise ValueError("Feedback rating must be between 1 and 5")
+    with get_connection(db_path) as connection:
+        cursor = connection.execute(
+            """
+            INSERT INTO feedback (user_id, article_id, rating, notes, created_at)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (user_id, article_id, rating, notes, utc_now()),
+        )
+        connection.commit()
+        return int(cursor.lastrowid)
+
+
+def create_run_feedback(
+    user_id: int,
+    run_id: int,
+    rating: int,
+    notes: str = "",
+    db_path: str | None = None,
+) -> int:
+    article_id = f"run:{run_id}"
+    cache_article(
+        {
+            "id": article_id,
+            "title": f"Feedback for run {run_id}",
+            "url": f"run://{run_id}",
+            "category": "run_feedback",
+            "domain": "local-run",
+            "summary": "Synthetic article record used for run-level feedback.",
+        },
+        db_path,
+    )
+    return create_feedback(user_id, article_id, rating, notes, db_path)
+
+
+def latest_run_for_user(user_id: int, db_path: str | None = None) -> dict[str, Any] | None:
+    runs = list_runs_for_user(user_id, limit=1, db_path=db_path)
+    return runs[0] if runs else None

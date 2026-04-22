@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import argparse
-import os
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -14,28 +12,17 @@ if __package__ in {None, ""}:
 
 from app import db  # noqa: E402
 from app import db_users  # noqa: E402
+from app import config as app_config  # noqa: E402
+from app import pipeline  # noqa: E402
 
 
-@dataclass(frozen=True)
-class AppConfig:
-    db_path: str
-    default_language: str
-    default_topics: tuple[str, ...]
-
-
-def load_config() -> AppConfig:
+def load_config() -> app_config.AppConfig:
     """Load the minimal project configuration from environment variables."""
-    topics_raw = os.getenv("DEFAULT_TOPICS", "news,events,bitcoin")
-    topics = tuple(topic.strip() for topic in topics_raw.split(",") if topic.strip())
-    return AppConfig(
-        db_path=os.getenv("DB_PATH", "db/personal_research_agent.sqlite"),
-        default_language=os.getenv("DEFAULT_LANGUAGE", "it"),
-        default_topics=topics,
-    )
+    return app_config.load_app_config()
 
 
-def run_for_chat(chat_id: int | None = None) -> str:
-    """Run the current deterministic placeholder pipeline for a user."""
+def readiness_stub(chat_id: int | None = None) -> str:
+    """Return the deterministic readiness fallback for a user."""
     config = load_config()
     effective_chat_id = chat_id if chat_id is not None else 0
     user = db_users.ensure_user(
@@ -57,17 +44,48 @@ def run_for_chat(chat_id: int | None = None) -> str:
     )
 
 
+def run_for_chat(
+    chat_id: int | None = None,
+    mode: str = "auto",
+    max_results_per_query: int = pipeline.DEFAULT_MAX_RESULTS_PER_QUERY,
+    fallback_to_stub: bool = True,
+) -> str:
+    """Run the v3 digest pipeline for a chat user."""
+    effective_chat_id = chat_id if chat_id is not None else 0
+    try:
+        result = pipeline.run_research_digest(
+            chat_id=effective_chat_id,
+            mode=mode,
+            max_results_per_query=max_results_per_query,
+        )
+        return pipeline.format_console_summary(result)
+    except Exception as exc:
+        if not fallback_to_stub:
+            raise
+        return readiness_stub(effective_chat_id) + f" Fallback reason: {exc}"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=None, help="External chat identifier for the run.")
     parser.add_argument("--init-db", action="store_true", help="Initialize the DB and seed configured users before running.")
+    parser.add_argument("--mode", choices=("auto", "live", "fixture"), default="auto", help="Retrieval mode.")
+    parser.add_argument("--max-results-per-query", type=int, default=pipeline.DEFAULT_MAX_RESULTS_PER_QUERY, help="Bounded retrieval cap.")
+    parser.add_argument("--no-fallback", action="store_true", help="Raise pipeline errors instead of returning the readiness stub.")
     args = parser.parse_args()
 
     config = load_config()
     if args.init_db:
         db.initialize_database(config.db_path)
         db_users.seed_users_from_config(db_path=config.db_path)
-    print(run_for_chat(args.chat_id))
+    print(
+        run_for_chat(
+            args.chat_id,
+            mode=args.mode,
+            max_results_per_query=args.max_results_per_query,
+            fallback_to_stub=not args.no_fallback,
+        )
+    )
 
 
 if __name__ == "__main__":

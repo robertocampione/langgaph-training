@@ -15,6 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from app import db  # noqa: E402
 from app import db_users  # noqa: E402
+from app import config as app_config  # noqa: E402
 
 
 def validate(db_path: str) -> None:
@@ -67,6 +68,7 @@ def validate(db_path: str) -> None:
 
 
 def main() -> None:
+    app_config.load_environment()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db-path", default=None, help="Optional DB path. A temp DB is used by default.")
     args = parser.parse_args()
@@ -84,4 +86,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

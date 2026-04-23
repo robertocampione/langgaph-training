@@ -1,0 +1,57 @@
+{
+  "created_at": "2026-04-23T11:31:10+00:00",
+  "evaluated_runs": [
+    {
+      "homepage_leakage_rejections": 0,
+      "informative_summary": 1,
+      "llm_calls": 1,
+      "location_relevant_event_hits": 0,
+      "mode_used": "web_fallback",
+      "run_dir": "20260423T113054Z__v4-7",
+      "selected_items": 2
+    },
+    {
+      "homepage_leakage_rejections": 1,
+      "informative_summary": 1,
+      "llm_calls": 0,
+      "location_relevant_event_hits": 1,
+      "mode_used": "fixture",
+      "run_dir": "20260423T113054Z__v4-6",
+      "selected_items": 2
+    },
+    {
+      "homepage_leakage_rejections": 0,
+      "informative_summary": 1,
+      "llm_calls": 1,
+      "location_relevant_event_hits": 0,
+      "mode_used": "web_fallback",
+      "run_dir": "20260423T113013Z__v4-5",
+      "selected_items": 2
+    },
+    {
+      "homepage_leakage_rejections": 2,
+      "informative_summary": 1,
+      "llm_calls": 0,
+      "location_relevant_event_hits": 0,
+      "mode_used": "fixture",
+      "run_dir": "20260423T113013Z__v4-4",
+      "selected_items": 1
+    }
+  ],
+  "summary": {
+    "go_no_go": {
+      "reasons": [
+        "location_relevance_too_low"
+      ],
+      "status": "no_go"
+    },
+    "kpis": {
+      "feedback_trend": 0,
+      "homepage_leakage_avg_rejections": 0.75,
+      "informative_summary_rate": 1.0,
+      "llm_calls_avg": 0.5,
+      "location_relevant_event_hits_avg": 0.25
+    },
+    "sample_size": 4
+  }
+}

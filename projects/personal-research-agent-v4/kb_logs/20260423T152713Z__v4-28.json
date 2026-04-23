@@ -1,0 +1,141 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 4,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.35,
+          "feedback_delta": 0.0,
+          "final_score": 1.35,
+          "item_id": "1eebb4c2be8fc993e73b3237",
+          "source": "nltimes.nl",
+          "track_type": "news"
+        },
+        {
+          "base_score": 1.4,
+          "feedback_delta": 0.0,
+          "final_score": 1.4,
+          "item_id": "6b9c7462fa59e5e9052105e4",
+          "source": "dutchnews.nl",
+          "track_type": "news"
+        },
+        {
+          "base_score": 1.35,
+          "feedback_delta": 0.0,
+          "final_score": 1.35,
+          "item_id": "1a7ce6f1f27163ddb5cd62f9",
+          "source": "maastrichtuniversity.nl",
+          "track_type": "news"
+        },
+        {
+          "base_score": 1.2,
+          "feedback_delta": 0.0,
+          "final_score": 1.2,
+          "item_id": "a87f1d05ab4bf3f1e88bc2c1",
+          "source": "coindesk.com",
+          "track_type": "bitcoin"
+        },
+        {
+          "base_score": 1.1,
+          "feedback_delta": 0.0,
+          "final_score": 1.1,
+          "item_id": "c9a26cd5bcc4a15b4d2fcc4f",
+          "source": "coinjournal.net",
+          "track_type": "bitcoin"
+        }
+      ],
+      "applied_items": 5,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 0,
+    "llm_enabled": true,
+    "llm_models_used": [],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 5,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 0
+  },
+  "created_at": "2026-04-23T15:27:13+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 1,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin": [
+        "market",
+        "core-dev",
+        "onchain"
+      ],
+      "events": [
+        "local-calendar",
+        "family",
+        "culture"
+      ],
+      "news": [
+        "safety",
+        "economy",
+        "infrastructure"
+      ]
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback",
+    "missing_events"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 8,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 1,
+    "mode_requested": "web_fallback",
+    "mode_used": "web_fallback",
+    "providers_used": [
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss"
+    ],
+    "query_count": 9,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 9,
+    "retrieval_provider": "bing_news_rss,google_news_rss",
+    "retriever": "bing_news_rss,google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-28",
+  "selected_counts": {
+    "bitcoin": 2,
+    "events": 0,
+    "news": 2
+  }
+}

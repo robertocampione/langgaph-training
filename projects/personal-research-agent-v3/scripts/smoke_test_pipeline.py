@@ -48,7 +48,7 @@ def validate_static_rejections() -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=100000001)
-    parser.add_argument("--mode", choices=("fixture", "live"), default="fixture")
+    parser.add_argument("--mode", choices=("fixture", "live", "web_fallback", "auto"), default="fixture")
     parser.add_argument("--max-results-per-query", type=int, default=1)
     args = parser.parse_args()
 

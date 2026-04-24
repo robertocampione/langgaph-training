@@ -385,3 +385,69 @@ def create_run_feedback(
 def latest_run_for_user(user_id: int, db_path: str | None = None) -> dict[str, Any] | None:
     runs = list_runs_for_user(user_id, limit=1, db_path=db_path)
     return runs[0] if runs else None
+
+
+def list_feedback_for_user(
+    user_id: int,
+    limit: int = 500,
+    db_path: str | None = None,
+) -> list[dict[str, Any]]:
+    initialize_database(db_path)
+    with get_connection(db_path) as connection:
+        rows = connection.execute(
+            """
+            SELECT f.id, f.user_id, f.article_id, f.rating, f.notes, f.created_at,
+                   a.category, a.domain, a.url, a.title
+            FROM feedback f
+            LEFT JOIN articles a ON a.id = f.article_id
+            WHERE f.user_id = ?
+            ORDER BY f.created_at DESC, f.id DESC
+            LIMIT ?
+            """,
+            (user_id, limit),
+        ).fetchall()
+    return [row_to_dict(row) or {} for row in rows]
+
+
+def feedback_profile_for_user(
+    user_id: int,
+    limit: int = 500,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    feedback_rows = list_feedback_for_user(user_id=user_id, limit=limit, db_path=db_path)
+    topic_stats: dict[str, dict[str, int]] = {}
+    domain_stats: dict[str, dict[str, int]] = {}
+    total_like = 0
+    total_dislike = 0
+    total_neutral = 0
+
+    for row in feedback_rows:
+        category = str(row.get("category") or "").strip().lower()
+        domain = str(row.get("domain") or "").strip().lower()
+        if category == "run_feedback":
+            continue
+        rating = int(row.get("rating") or 0)
+        signal = "neutral"
+        if rating >= 4:
+            signal = "like"
+            total_like += 1
+        elif rating <= 2:
+            signal = "dislike"
+            total_dislike += 1
+        else:
+            total_neutral += 1
+
+        if category:
+            stats = topic_stats.setdefault(category, {"like": 0, "dislike": 0, "neutral": 0})
+            stats[signal] += 1
+        if domain:
+            stats = domain_stats.setdefault(domain, {"like": 0, "dislike": 0, "neutral": 0})
+            stats[signal] += 1
+
+    return {
+        "user_id": user_id,
+        "sample_size": len(feedback_rows),
+        "totals": {"like": total_like, "dislike": total_dislike, "neutral": total_neutral},
+        "topics": topic_stats,
+        "domains": domain_stats,
+    }

@@ -11,6 +11,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from html import unescape
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
 from app import config as app_config
 from app import db
 from app import db_users
+from app import llm
 from app.nodes import interpretation as interpretation_node
 
 
@@ -81,6 +83,71 @@ BING_NEWS_SETLANG = {
 GOOGLE_NEWS_RESOLVE_TIMEOUT_SECONDS = 7
 URL_RESOLVE_CACHE: dict[str, str] = {}
 GOOGLE_NEWS_TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+MAX_NEWS_AGE_DAYS = 7
+MAX_BITCOIN_AGE_DAYS = 7
+MAX_FINANCE_AGE_DAYS = 7
+MAX_EVENT_PAST_DAYS = 7
+MAX_EVENT_FUTURE_DAYS = 120
+GENERIC_TOPIC_TERMS = {
+    "news",
+    "notizie",
+    "nieuws",
+    "events",
+    "eventi",
+    "evenementen",
+    "general",
+    "generale",
+    "update",
+    "updates",
+    "local",
+    "world",
+    "mondo",
+}
+TOPIC_SCOPE_VALUES = {"auto", "local", "global"}
+TOPIC_TOKEN_STOPWORDS = {
+    "news",
+    "notizie",
+    "nieuws",
+    "event",
+    "events",
+    "eventi",
+    "evenementen",
+    "latest",
+    "ultime",
+    "oggi",
+    "today",
+    "week",
+    "weekend",
+    "update",
+    "updates",
+}
+DUTCH_LOCAL_SIGNALS = {
+    "maastricht",
+    "limburg",
+    "netherlands",
+    "nederland",
+    "holland",
+    "amsterdam",
+    "rotterdam",
+    "utrecht",
+    "the hague",
+    "den haag",
+    "eindhoven",
+}
+LANGUAGE_REGION_TOKEN_RE = re.compile(r"^[a-z]{2}(?:[-_][a-z]{2})?$", flags=re.IGNORECASE)
+NON_GEOGRAPHIC_LOCALE_TOKENS = {
+    "auto",
+    "global",
+    "local",
+    "world",
+    "mondo",
+    "news",
+    "notizie",
+    "nieuws",
+    "events",
+    "eventi",
+    "evenementen",
+}
 
 
 def normalize_language(language: str | None) -> str:
@@ -88,6 +155,99 @@ def normalize_language(language: str | None) -> str:
     if value in SUPPORTED_LANGUAGES:
         return value
     return "en"
+
+
+def _locale_languages_hint(locales: list[str]) -> list[str]:
+    joined = " ".join(str(value or "").strip().lower() for value in locales if str(value or "").strip())
+    if not joined:
+        return []
+    if any(token in joined for token in DUTCH_LOCAL_SIGNALS):
+        return ["nl", "en"]
+    if any(token in joined for token in {"italy", "italia", "rome", "milan", "milano", "napoli", "torino"}):
+        return ["it", "en"]
+    return ["en"]
+
+
+def infer_retrieval_languages(
+    topic: str,
+    track_family: str,
+    context_location: str,
+    user_language: str,
+    geo_scope: str = "auto",
+    topic_locales: list[str] | None = None,
+) -> list[str]:
+    topic_value = str(topic or "").strip().lower()
+    location_value = str(context_location or "").strip().lower()
+    locale_values = [str(value).strip() for value in (topic_locales or []) if str(value).strip()]
+    combined = " ".join([topic_value, location_value, *[value.lower() for value in locale_values]]).strip()
+    has_dutch_local_signal = any(signal in combined for signal in DUTCH_LOCAL_SIGNALS)
+    normalized_scope = str(geo_scope or "auto").strip().lower()
+    if normalized_scope not in TOPIC_SCOPE_VALUES:
+        normalized_scope = "auto"
+
+    ordered: list[str] = []
+
+    if track_family in {"bitcoin", "finance"} and normalized_scope != "local":
+        ordered.extend(["en"])
+    elif normalized_scope == "global":
+        ordered.extend(["en", normalize_language(user_language)])
+    elif normalized_scope == "local":
+        local_hint = _locale_languages_hint(locale_values or [context_location])
+        ordered.extend(local_hint or ["en"])
+    elif track_family in {"events", "news"} and has_dutch_local_signal:
+        ordered.extend(["nl", "en"])
+    else:
+        ordered.extend([normalize_language(user_language)])
+
+    ordered.append(normalize_language(user_language))
+    deduped: list[str] = []
+    for language in ordered:
+        normalized = normalize_language(language)
+        if normalized not in deduped:
+            deduped.append(normalized)
+    return deduped or ["en"]
+
+
+def infer_track_family(track_type: str) -> str:
+    value = str(track_type or "").strip().lower()
+    if value in TRACKS:
+        return value
+    if any(token in value for token in {"event", "festival", "concert", "meetup", "calendar", "conference"}):
+        return "events"
+    if any(token in value for token in {"bitcoin", "btc", "crypto", "onchain", "blockchain"}):
+        return "bitcoin"
+    if any(token in value for token in {"finance", "market", "macro", "econom", "policy", "report"}):
+        return "finance"
+    return "news"
+
+
+def preferred_domains_for_track(track_type: str) -> set[str]:
+    direct = PREFERRED_DOMAINS.get(track_type, set())
+    if direct:
+        return direct
+    family = infer_track_family(track_type)
+    return PREFERRED_DOMAINS.get(family, set())
+
+
+def source_trust_tier_for_track(track_type: str, source: str) -> int:
+    direct = SOURCE_TRUST_TIERS.get(track_type, {})
+    if source in direct:
+        return int(direct[source])
+    family = infer_track_family(track_type)
+    return int(SOURCE_TRUST_TIERS.get(family, {}).get(source, 1))
+
+
+def parse_rss_pubdate(value: str | None) -> str | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = parsedate_to_datetime(raw)
+    except Exception:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc).replace(microsecond=0).isoformat()
 
 
 @dataclass(frozen=True)
@@ -102,6 +262,7 @@ class PipelineResult:
     selected_counts: dict[str, int]
     mode: str
     language: str
+    quality_flags: list[str]
     enriched_items: list[dict[str, Any]]
     telegram_compact: str
     cost_trace: dict[str, Any]
@@ -190,13 +351,428 @@ def normalize_topics_for_run(topics: list[str] | tuple[str, ...] | None) -> list
     return normalized or list(app_config.DEFAULT_TOPICS)
 
 
+def normalize_topic_text(value: str) -> str:
+    return re.sub(r"\s+", " ", str(value or "").strip().lower())
+
+
+def is_generic_topic(topic: str) -> bool:
+    value = normalize_topic_text(topic)
+    if not value:
+        return True
+    if value in GENERIC_TOPIC_TERMS:
+        return True
+    if len(value.split()) == 1 and len(value) <= 4:
+        return True
+    return False
+
+
+def _to_list_of_strings(value: Any) -> list[str]:
+    if not value:
+        return []
+    if isinstance(value, str):
+        return [value]
+    if not isinstance(value, list):
+        return []
+    return [str(item).strip() for item in value if str(item).strip()]
+
+
+def _safe_int(value: Any, default: int) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_float(value: Any, default: float) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _looks_like_language_region_token(value: str) -> bool:
+    cleaned = normalize_topic_text(value)
+    if not cleaned:
+        return False
+    if cleaned in SUPPORTED_LANGUAGES:
+        return True
+    if LANGUAGE_REGION_TOKEN_RE.match(cleaned):
+        return True
+    return False
+
+
+def _has_geographic_signal(value: str) -> bool:
+    cleaned = re.sub(r"\s+", " ", str(value or "").strip())
+    if not cleaned:
+        return False
+    lowered = cleaned.lower()
+    if lowered in NON_GEOGRAPHIC_LOCALE_TOKENS:
+        return False
+    if _looks_like_language_region_token(cleaned):
+        return False
+    if not any(ch.isalpha() for ch in cleaned):
+        return False
+    if len(cleaned) < 3:
+        return False
+    return True
+
+
+def _normalize_locales(locales: list[str]) -> tuple[list[str], bool]:
+    valid: list[str] = []
+    seen: set[str] = set()
+    had_invalid = False
+    for locale in locales:
+        cleaned = re.sub(r"\s+", " ", str(locale or "").strip())
+        if not cleaned:
+            continue
+        if not _has_geographic_signal(cleaned):
+            had_invalid = True
+            continue
+        key = cleaned.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        valid.append(cleaned)
+    return valid[:3], had_invalid
+
+
+def _extract_subtopic_tokens(topic: str) -> list[str]:
+    cleaned = re.sub(r"[^a-z0-9\s-]", " ", normalize_topic_text(topic))
+    tokens = [token.strip("-") for token in cleaned.split() if token.strip("-")]
+    return [token for token in tokens if token not in TOPIC_TOKEN_STOPWORDS and len(token) >= 3]
+
+
+def deterministic_subtopics_for_topic(topic: str, track_family: str) -> list[str]:
+    normalized_topic = normalize_topic_text(topic)
+    if normalized_topic in DEFAULT_SUBTOPIC_PACKS:
+        return list(DEFAULT_SUBTOPIC_PACKS[normalized_topic].keys())[:4]
+    family_defaults = {
+        "events": ["agenda", "venues", "tickets", "mobility"],
+        "bitcoin": ["price-action", "etf-flow", "regulation", "onchain"],
+        "finance": ["macro", "rates", "equities", "earnings"],
+        "news": ["policy", "economy", "public-safety", "infrastructure"],
+    }
+    selected: list[str] = []
+    for token in _extract_subtopic_tokens(topic):
+        if token not in selected:
+            selected.append(token)
+        if len(selected) >= 4:
+            break
+    for fallback in family_defaults.get(track_family, family_defaults["news"]):
+        if fallback not in selected:
+            selected.append(fallback)
+        if len(selected) >= 4:
+            break
+    return selected[:4]
+
+
+def _parse_llm_json_payload(raw: str) -> dict[str, Any] | None:
+    text = str(raw or "").strip()
+    if not text:
+        return None
+    try:
+        parsed = json.loads(text)
+        return parsed if isinstance(parsed, dict) else None
+    except json.JSONDecodeError:
+        pass
+    match = re.search(r"\{.*\}", text, flags=re.DOTALL)
+    if not match:
+        return None
+    try:
+        parsed = json.loads(match.group(0))
+    except json.JSONDecodeError:
+        return None
+    return parsed if isinstance(parsed, dict) else None
+
+
+def llm_topic_setting(
+    topic: str,
+    track_family: str,
+    user_language: str,
+    context_location: str,
+) -> dict[str, Any] | None:
+    if not llm.llm_enabled():
+        return None
+    response = llm.call_llm(
+        role="utility",
+        system_prompt=(
+            "You extract actionable topic settings for a news research assistant. "
+            "Return strict JSON with keys: subtopics (array of short slugs), objective, "
+            "geo_scope (auto|local|global), locales (array), time_window_days (int), priority (float)."
+        ),
+        user_prompt=(
+            f"topic={topic}\n"
+            f"track_family={track_family}\n"
+            f"user_language={user_language}\n"
+            f"context_location={context_location}\n"
+            "Keep subtopics generic and reusable. Max 4 subtopics."
+        ),
+        temperature=0.1,
+        timeout_seconds=12,
+    )
+    if not response.get("ok"):
+        return None
+    return _parse_llm_json_payload(str(response.get("content") or ""))
+
+
+def normalize_topic_setting(
+    topic: str,
+    raw_setting: dict[str, Any] | None,
+    track_family: str,
+    context_location: str,
+    user_language: str,
+) -> dict[str, Any]:
+    setting = dict(raw_setting or {})
+    subtopics = [token.replace(" ", "-").lower() for token in _to_list_of_strings(setting.get("subtopics"))]
+    subtopics = [token for token in subtopics if token]
+    if not subtopics:
+        subtopics = deterministic_subtopics_for_topic(topic, track_family)
+
+    requested_scope = normalize_topic_text(str(setting.get("geo_scope") or ""))
+    if requested_scope not in TOPIC_SCOPE_VALUES:
+        if track_family == "events":
+            requested_scope = "local"
+        elif is_generic_topic(topic) and track_family == "news":
+            requested_scope = "local"
+        else:
+            requested_scope = "auto"
+
+    raw_locales = _to_list_of_strings(setting.get("locales"))
+    locales, had_invalid_locales = _normalize_locales(raw_locales)
+    locale_validation = "provided"
+    if requested_scope == "local" and not locales:
+        fallback_locale = re.sub(r"\s+", " ", str(context_location or "").strip())
+        if fallback_locale and _has_geographic_signal(fallback_locale):
+            locales = [fallback_locale]
+            locale_validation = "derived_context_invalid_input" if had_invalid_locales else "derived_context"
+        else:
+            locale_validation = "invalid_input" if had_invalid_locales else "missing"
+    elif not locales:
+        locale_validation = "invalid_input" if had_invalid_locales else "missing"
+    elif had_invalid_locales:
+        locale_validation = "partial_invalid_input"
+
+    default_window = 14 if track_family == "events" else 7
+    time_window_days = _safe_int(setting.get("time_window_days"), default_window)
+    if time_window_days <= 0:
+        time_window_days = default_window
+    time_window_days = max(1, min(90, time_window_days))
+
+    priority = _safe_float(setting.get("priority"), 1.0)
+    priority = max(0.25, min(2.0, round(priority, 2)))
+
+    objective = re.sub(r"\s+", " ", str(setting.get("objective") or "").strip())
+    if not objective:
+        if user_language == "it":
+            objective = f"Capire gli sviluppi recenti e rilevanti su {topic}."
+        elif user_language == "nl":
+            objective = f"Recente en relevante ontwikkelingen rond {topic} volgen."
+        else:
+            objective = f"Track recent and relevant developments on {topic}."
+
+    confirmed = bool(setting.get("confirmed", False))
+
+    return {
+        "topic_name": normalize_topic_text(topic),
+        "subtopics": subtopics[:6],
+        "geo_scope": requested_scope,
+        "locales": locales[:3],
+        "locales_validation": locale_validation,
+        "time_window_days": time_window_days,
+        "priority": priority,
+        "objective": objective,
+        "confirmed": confirmed,
+    }
+
+
+def topic_setting_signal_count(setting: dict[str, Any] | None) -> int:
+    if not setting:
+        return 0
+    signals = 0
+    if _to_list_of_strings(setting.get("subtopics")):
+        signals += 1
+    if _to_list_of_strings(setting.get("locales")):
+        signals += 1
+    if _safe_int(setting.get("time_window_days"), 0) > 0:
+        signals += 1
+    return signals
+
+
+def topic_setting_is_actionable(setting: dict[str, Any] | None) -> bool:
+    return topic_setting_signal_count(setting) >= 2
+
+
+def topic_settings_from_profile(profile: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    explicit = dict((profile or {}).get("explicit_preferences") or {})
+    raw = explicit.get("topic_settings") or {}
+    if not isinstance(raw, dict):
+        return {}
+    parsed: dict[str, dict[str, Any]] = {}
+    for topic, value in raw.items():
+        if isinstance(value, dict):
+            parsed[normalize_topic_text(str(topic))] = value
+    return parsed
+
+
+def ensure_topic_settings(
+    user_id: int,
+    topics: list[str],
+    profile: dict[str, Any] | None,
+    context_location: str,
+    user_language: str,
+    db_path: str | None,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    profile_current = profile or {}
+    explicit = dict(profile_current.get("explicit_preferences") or {})
+    existing_settings = topic_settings_from_profile(profile_current)
+    generated = 0
+    updated = False
+    synced_settings: dict[str, dict[str, Any]] = {}
+
+    for topic in topics:
+        normalized_topic = normalize_topic_text(topic)
+        family = infer_track_family(normalized_topic)
+        existing = existing_settings.get(normalized_topic)
+        if not existing:
+            llm_setting = llm_topic_setting(
+                topic=normalized_topic,
+                track_family=family,
+                user_language=user_language,
+                context_location=context_location,
+            )
+            existing = llm_setting or {}
+            generated += 1
+        setting = normalize_topic_setting(
+            topic=normalized_topic,
+            raw_setting=existing,
+            track_family=family,
+            context_location=context_location,
+            user_language=user_language,
+        )
+        if existing_settings.get(normalized_topic) != setting:
+            updated = True
+        synced_settings[normalized_topic] = setting
+
+        active_subtopics = set(setting["subtopics"])
+        for index, subtopic in enumerate(setting["subtopics"][:6]):
+            weight = max(0.2, round(setting["priority"] - index * 0.12, 2))
+            db.set_topic_weight(
+                user_id=user_id,
+                topic=normalized_topic,
+                subtopic=subtopic,
+                weight=weight,
+                enabled=True,
+                source="topic_setting",
+                db_path=db_path,
+            )
+        existing_rows = db.list_topic_weights(user_id=user_id, topic=normalized_topic, db_path=db_path)
+        for row in existing_rows:
+            row_subtopic = str(row.get("subtopic") or "")
+            row_source = str(row.get("source") or "")
+            if row_subtopic and row_subtopic not in active_subtopics and row_source == "topic_setting":
+                db.set_topic_weight(
+                    user_id=user_id,
+                    topic=normalized_topic,
+                    subtopic=row_subtopic,
+                    weight=float(row.get("weight") or 0.1),
+                    enabled=False,
+                    source="topic_setting",
+                    db_path=db_path,
+                )
+
+    merged_topic_settings = dict(existing_settings)
+    merged_topic_settings.update(synced_settings)
+    if explicit.get("topic_settings") != merged_topic_settings:
+        explicit["topic_settings"] = merged_topic_settings
+        explicit["topics"] = topics
+        profile_current = db.upsert_profile(user_id=user_id, explicit_preferences=explicit, db_path=db_path)
+        updated = True
+    trace = {
+        "topic_count": len(topics),
+        "generated_topics": generated,
+        "profile_updated": updated,
+    }
+    return merged_topic_settings, trace
+
+
+def intake_hard_gate_status(
+    user: dict[str, Any],
+    profile: dict[str, Any] | None,
+    topic_settings: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    topics = normalize_topics_for_run(user.get("topics"))
+    profile_obj = profile or {}
+    missing_profile_fields: list[str] = []
+    if not str(profile_obj.get("language") or user.get("language") or "").strip():
+        missing_profile_fields.append("language")
+    if not str(profile_obj.get("home_location") or "").strip():
+        missing_profile_fields.append("home_location")
+    explicit_topics = []
+    explicit = profile_obj.get("explicit_preferences") or {}
+    if isinstance(explicit, dict):
+        explicit_topics = list(explicit.get("topics") or [])
+    if not explicit_topics:
+        missing_profile_fields.append("topics")
+
+    topic_status: dict[str, dict[str, Any]] = {}
+    insufficient_topics: list[str] = []
+    for topic in topics:
+        normalized_topic = normalize_topic_text(topic)
+        setting = topic_settings.get(normalized_topic) or {}
+        track_family = infer_track_family(normalized_topic)
+        requested_scope = str(setting.get("geo_scope") or "auto").strip().lower()
+        locales = _to_list_of_strings(setting.get("locales"))
+        locales_validation = str(setting.get("locales_validation") or "").strip().lower()
+        has_local_signal = any(_has_geographic_signal(locale) for locale in locales)
+        invalid_locales = "invalid_input" in locales_validation
+        is_custom_topic = normalized_topic not in TRACKS
+        strict_local_scope = requested_scope == "local" and (is_custom_topic or track_family in {"events", "news"})
+        signals = topic_setting_signal_count(setting)
+        actionable = topic_setting_is_actionable(setting)
+        is_generic = is_generic_topic(normalized_topic)
+        confirmed = bool(setting.get("confirmed", False))
+        insufficient_reasons: list[str] = []
+        if not actionable:
+            insufficient_reasons.append("not_actionable")
+        if is_generic and not confirmed:
+            insufficient_reasons.append("generic_not_confirmed")
+        if strict_local_scope and not has_local_signal:
+            insufficient_reasons.append("missing_local_scope")
+        if strict_local_scope and invalid_locales:
+            insufficient_reasons.append("invalid_local_scope")
+        insufficient = bool(insufficient_reasons)
+        if insufficient:
+            insufficient_topics.append(normalized_topic)
+        topic_status[normalized_topic] = {
+            "is_generic": is_generic,
+            "signals": signals,
+            "actionable": actionable,
+            "confirmed": confirmed,
+            "insufficient": insufficient,
+            "insufficient_reasons": insufficient_reasons,
+            "locales_validation": locales_validation,
+            "has_local_signal": has_local_signal,
+            "setting": setting,
+        }
+
+    required = bool(missing_profile_fields or insufficient_topics)
+    return {
+        "required": required,
+        "missing_profile_fields": missing_profile_fields,
+        "insufficient_topics": insufficient_topics,
+        "topic_status": topic_status,
+        "topics": topics,
+    }
+
+
 def ensure_default_topic_graph(user_id: int, topics: list[str], db_path: str | None) -> None:
     for topic in topics:
-        subtopics = DEFAULT_SUBTOPIC_PACKS.get(topic, {})
+        topic_key = normalize_topic_text(topic)
+        subtopics = DEFAULT_SUBTOPIC_PACKS.get(topic_key, {})
         for subtopic, weight in subtopics.items():
             db.set_topic_weight(
                 user_id=user_id,
-                topic=topic,
+                topic=topic_key,
                 subtopic=subtopic,
                 weight=weight,
                 enabled=True,
@@ -205,14 +781,25 @@ def ensure_default_topic_graph(user_id: int, topics: list[str], db_path: str | N
             )
 
 
-def build_topic_plan(user_id: int, topics: list[str], db_path: str | None) -> dict[str, list[str]]:
+def build_topic_plan(
+    user_id: int,
+    topics: list[str],
+    db_path: str | None,
+    topic_settings: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, list[str]]:
     ensure_default_topic_graph(user_id=user_id, topics=topics, db_path=db_path)
     plan: dict[str, list[str]] = {}
+    topic_settings = topic_settings or {}
     for topic in topics:
-        rows = db.list_topic_weights(user_id=user_id, topic=topic, db_path=db_path)
+        topic_key = normalize_topic_text(topic)
+        rows = db.list_topic_weights(user_id=user_id, topic=topic_key, db_path=db_path)
         enabled_rows = [row for row in rows if bool(row.get("enabled", True))]
         enabled_rows.sort(key=lambda row: float(row.get("weight", 0.0)), reverse=True)
-        plan[topic] = [str(row.get("subtopic") or "").strip() for row in enabled_rows[:3] if str(row.get("subtopic") or "").strip()]
+        subtopics = [str(row.get("subtopic") or "").strip() for row in enabled_rows[:3] if str(row.get("subtopic") or "").strip()]
+        if not subtopics:
+            fallback = _to_list_of_strings((topic_settings.get(topic_key) or {}).get("subtopics"))
+            subtopics = [token.replace(" ", "-").lower() for token in fallback[:3]]
+        plan[topic_key] = subtopics
     return plan
 
 
@@ -241,103 +828,312 @@ def build_queries(
     user: dict[str, Any],
     topic_plan: dict[str, list[str]],
     context_location: str,
+    topic_settings: dict[str, dict[str, Any]] | None = None,
     max_topics: int | None = None,
-) -> list[dict[str, str]]:
-    topics = normalize_topics_for_run(user.get("topics"))
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    topics = [normalize_topic_text(topic) for topic in normalize_topics_for_run(user.get("topics"))]
     language = normalize_language(str(user.get("language") or app_config.DEFAULT_LANGUAGE))
+    topic_settings = topic_settings or {}
     if max_topics is not None:
         topics = topics[:max_topics]
-
-    current_year = datetime.now(timezone.utc).year
-    query_templates_by_language = {
+    generic_templates = {
         "it": {
-            "news": [
-                "site:nltimes.nl Maastricht Limburg latest news",
-                "site:dutchnews.nl Maastricht Limburg latest news",
-                "Netherlands Limburg Maastricht breaking news",
+            "default": [
+                "{topic_phrase} ultime notizie oggi",
+                "{topic_phrase} aggiornamenti ultime 24 ore",
+                "{topic_phrase} sviluppi principali settimana corrente",
             ],
             "events": [
-                "site:visitmaastricht.com Maastricht events 2026",
-                "site:mecc.nl Maastricht events 2026",
-                "Maastricht events this weekend date location",
-            ],
-            "bitcoin": [
-                "Bitcoin notizie oggi prezzo ETF regolamentazione",
-                "Bitcoin Core aggiornamenti tecnici BIP Lightning mining",
-                "site:bitcoinops.org/en/newsletters/ Bitcoin Optech 2026",
+                "{topic_phrase} eventi prossimi date location",
+                "{topic_phrase} calendario weekend",
+                "{topic_phrase} programma ufficiale eventi",
             ],
         },
         "nl": {
-            "news": [
-                "site:nltimes.nl Maastricht Limburg latest news",
-                "site:dutchnews.nl Maastricht Limburg latest news",
-                "Nederland Limburg Maastricht laatste nieuws",
+            "default": [
+                "{topic_phrase} laatste nieuws vandaag",
+                "{topic_phrase} updates laatste 24 uur",
+                "{topic_phrase} belangrijkste ontwikkelingen deze week",
             ],
             "events": [
-                "site:visitmaastricht.com Maastricht events 2026",
-                "site:mecc.nl Maastricht events 2026",
-                "Maastricht evenementen dit weekend datum locatie",
-            ],
-            "bitcoin": [
-                "Bitcoin nieuws vandaag prijs ETF regelgeving",
-                "Bitcoin Core technische update BIP Lightning mining",
-                "site:bitcoinops.org/en/newsletters/ Bitcoin Optech 2026",
+                "{topic_phrase} komende evenementen data locatie",
+                "{topic_phrase} weekend agenda",
+                "{topic_phrase} officieel evenementenprogramma",
             ],
         },
         "en": {
-            "news": [
-                "site:nltimes.nl Maastricht Limburg latest news",
-                "site:dutchnews.nl Netherlands Limburg Maastricht latest news",
-                "Netherlands Limburg Maastricht latest news",
+            "default": [
+                "{topic_phrase} latest news today",
+                "{topic_phrase} updates in the last 24 hours",
+                "{topic_phrase} key developments this week",
             ],
             "events": [
-                "site:visitmaastricht.com Maastricht events this weekend",
-                "site:mecc.nl Maastricht events 2026",
-                "Maastricht events this weekend date location",
-            ],
-            "bitcoin": [
-                "Bitcoin latest news today market ETF policy",
-                "Bitcoin Core technical updates BIP Lightning mining",
-                "site:bitcoinops.org/en/newsletters/ Bitcoin Optech 2026",
+                "{topic_phrase} upcoming events dates location",
+                "{topic_phrase} weekend calendar",
+                "{topic_phrase} official event schedule",
             ],
         },
     }
-    custom_topic_templates = {
-        "it": [
-            "{topic} ultime notizie oggi",
-            "{topic} aggiornamenti ultime 24 ore",
-            "{topic} sviluppi principali settimana corrente",
-        ],
-        "nl": [
-            "{topic} laatste nieuws vandaag",
-            "{topic} updates laatste 24 uur",
-            "{topic} belangrijkste ontwikkelingen deze week",
-        ],
-        "en": [
-            "{topic} latest news today",
-            "{topic} updates in the last 24 hours",
-            "{topic} key developments this week",
-        ],
-    }
-    query_templates = query_templates_by_language[language]
-    custom_templates = custom_topic_templates[language]
-    queries: list[dict[str, str]] = []
+
+    def _dedupe_keep_order(values: list[str]) -> list[str]:
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for value in values:
+            normalized = " ".join(value.strip().split()).lower()
+            if not normalized or normalized in seen:
+                continue
+            seen.add(normalized)
+            ordered.append(" ".join(value.strip().split()))
+        return ordered
+
+    def _topic_label(topic: str) -> str:
+        return str(topic).replace("-", " ").replace("_", " ").strip()
+
+    def _is_location_sensitive(topic: str, topic_setting: dict[str, Any]) -> bool:
+        value = str(topic or "").strip().lower()
+        if str(topic_setting.get("geo_scope") or "").strip().lower() == "local":
+            return True
+        if value in {"news", "events", "local", "city", "travel"}:
+            return True
+        token_count = len(value.split())
+        if token_count <= 2 and ("event" in value or "news" in value or "local" in value):
+            return True
+        return False
+
+    def _topic_phrase(topic: str, selected_subtopics: list[str], location: str, query_language: str, topic_setting: dict[str, Any]) -> str:
+        topic_value = str(topic or "").strip().lower()
+        family = infer_track_family(topic)
+        if topic_value in {"news", "notizie", "nieuws"}:
+            if query_language == "it":
+                return f"notizie locali {location} olanda".strip()
+            if query_language == "nl":
+                return f"lokaal nieuws {location} nederland".strip()
+            return f"local news {location} netherlands".strip()
+        if topic_value in {"events", "eventi", "evenementen"}:
+            if query_language == "it":
+                return f"eventi {location} weekend famiglie".strip()
+            if query_language == "nl":
+                return f"evenementen {location} weekend gezinnen".strip()
+            return f"events {location} weekend families".strip()
+        if topic_value in {"bitcoin", "btc", "crypto"} and family == "bitcoin":
+            if query_language == "it":
+                return "bitcoin prezzo etf regolamentazione mercati"
+            if query_language == "nl":
+                return "bitcoin prijs etf regelgeving markten"
+            return "bitcoin price etf regulation markets"
+
+        parts: list[str] = [_topic_label(topic)]
+        if location and _is_location_sensitive(topic, topic_setting):
+            normalized_base = " ".join(parts).lower()
+            normalized_location = location.strip().lower()
+            if normalized_location and normalized_location not in normalized_base:
+                parts.append(location.strip())
+        for subtopic in selected_subtopics[:2]:
+            token = str(subtopic).replace("-", " ").replace("_", " ").strip()
+            if token:
+                parts.append(token)
+        return " ".join(part for part in parts if part).strip()
+
+    def _templates_for_topic(topic: str, query_language: str) -> list[str]:
+        family = infer_track_family(topic)
+        language_pack = generic_templates[normalize_language(query_language)]
+        if family == "events":
+            return language_pack["events"]
+        return language_pack["default"]
+
+    def _recency_hint_for_topic(topic: str, topic_setting: dict[str, Any]) -> str:
+        family = infer_track_family(topic)
+        requested_window = _safe_int(topic_setting.get("time_window_days"), 14 if family == "events" else 7)
+        requested_window = max(1, min(45, requested_window))
+        if family == "events":
+            return f"when:{requested_window}d"
+        return f"when:{min(requested_window, 14)}d"
+
+    queries: list[dict[str, Any]] = []
+    analyst_reasoning_topics: dict[str, Any] = {}
+    current_year = datetime.now(timezone.utc).year
+    built_in_topics = {"news", "notizie", "nieuws", "events", "eventi", "evenementen", "bitcoin", "btc", "crypto"}
     for topic in topics:
-        location_hint = f" {context_location}" if topic in {"news", "events"} and context_location else ""
-        selected_subtopics = topic_plan.get(topic, [])
-        topic_queries = query_templates.get(topic)
-        if topic_queries is None:
-            topic_label = topic.replace("-", " ").replace("_", " ")
-            topic_queries = [template.format(topic=f"{topic_label}{location_hint}", year=current_year) for template in custom_templates]
+        raw_setting = topic_settings.get(topic, {})
+        family = infer_track_family(topic)
+        normalized_setting = normalize_topic_setting(
+            topic=topic,
+            raw_setting=raw_setting,
+            track_family=family,
+            context_location=context_location,
+            user_language=language,
+        )
+        selected_subtopics = topic_plan.get(topic, []) or list(normalized_setting.get("subtopics") or [])[:3]
+        topic_value = str(topic or "").strip().lower()
+        is_custom_topic = topic_value not in built_in_topics
+        requested_scope = str(normalized_setting.get("geo_scope") or "auto").strip().lower()
+        if requested_scope not in TOPIC_SCOPE_VALUES:
+            requested_scope = "auto"
+        scope_source = "override"
+        if requested_scope == "auto":
+            local_signals = (
+                family == "events"
+                or _is_location_sensitive(topic, normalized_setting)
+                or bool(_to_list_of_strings(normalized_setting.get("locales")))
+            )
+            topic_scope_decision = "local" if local_signals else "global"
+            scope_source = "auto"
+        else:
+            topic_scope_decision = requested_scope
+        topic_locales = _to_list_of_strings(normalized_setting.get("locales"))
+        if topic_scope_decision == "local" and not topic_locales:
+            topic_locales = [context_location]
+        location_target = topic_locales[0] if topic_locales else context_location
+        retrieval_languages = infer_retrieval_languages(
+            topic=topic,
+            track_family=family,
+            context_location=context_location,
+            user_language=language,
+            geo_scope=topic_scope_decision,
+            topic_locales=topic_locales,
+        )
+        query_language = retrieval_languages[0]
+        phrase = _topic_phrase(
+            topic=topic,
+            selected_subtopics=selected_subtopics,
+            location=location_target,
+            query_language=query_language,
+            topic_setting=normalized_setting,
+        )
+        recency_hint = _recency_hint_for_topic(topic, normalized_setting)
+        template_queries = [
+            f"{template.format(topic_phrase=phrase)} {recency_hint}".strip()
+            for template in _templates_for_topic(topic, query_language=query_language)
+        ]
+        for subtopic in selected_subtopics[:2]:
+            subtopic_text = str(subtopic).replace("-", " ").strip()
+            if subtopic_text:
+                template_queries.append(f"{_topic_label(topic)} {subtopic_text} {recency_hint}".strip())
+        if is_custom_topic:
+            if family == "events":
+                template_queries.extend(
+                    [
+                        f"{phrase} komende evenementen data locatie {recency_hint}".strip()
+                        if query_language == "nl"
+                        else f"{phrase} upcoming events dates location {recency_hint}".strip(),
+                        f"{phrase} upcoming events dates location".strip(),
+                    ]
+                )
+            else:
+                template_queries.extend(
+                    [
+                        f"{phrase} latest developments {recency_hint}".strip(),
+                        f"{phrase} latest developments".strip(),
+                    ]
+                )
+        if family == "events":
+            template_queries.append(
+                f"{phrase} {current_year} {current_year + 1} dates tickets official schedule {recency_hint}".strip()
+            )
+        preferred_domains = sorted(preferred_domains_for_track(topic))
+        site_query_limit = 1 if family in {"news", "events"} else 0
+        site_queries = [f"site:{domain} {phrase} {recency_hint}".strip() for domain in preferred_domains[:site_query_limit]]
+        topic_queries = _dedupe_keep_order(template_queries + site_queries)[:5]
+        analyst_reasoning_topics[topic] = {
+            "intent": str(normalized_setting.get("objective") or ""),
+            "track_family": family,
+            "subtopics_selected": selected_subtopics[:3],
+            "topic_scope_decision": topic_scope_decision,
+            "topic_scope_source": scope_source,
+            "requested_geo_scope": requested_scope,
+            "query_languages": retrieval_languages,
+            "locales": topic_locales,
+            "time_window_days": int(normalized_setting.get("time_window_days") or 7),
+            "queries": topic_queries,
+        }
         for query in topic_queries:
-            enriched_query = f"{query}{location_hint}".strip()
-            is_site_query = query.strip().lower().startswith("site:")
-            if selected_subtopics and topic == "bitcoin":
-                enriched_query = f"{enriched_query} {' '.join(selected_subtopics[:2])}".strip()
-            elif selected_subtopics and topic in {"news", "events"} and not is_site_query:
-                enriched_query = f"{enriched_query} {selected_subtopics[0]}".strip()
-            queries.append({"track_type": topic, "query": enriched_query, "subtopics": selected_subtopics})
-    return queries
+            queries.append(
+                {
+                    "track_type": topic,
+                    "query": query,
+                    "subtopics": selected_subtopics,
+                    "query_language": query_language,
+                    "retrieval_languages": retrieval_languages,
+                    "topic_scope_decision": topic_scope_decision,
+                    "topic_scope_source": scope_source,
+                    "topic_locales": topic_locales,
+                }
+            )
+    return queries, {"topics": analyst_reasoning_topics, "query_count": len(queries)}
+
+
+def build_relaxed_queries(queries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    relaxed: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in queries:
+        query = str(item.get("query") or "").strip()
+        if not query:
+            continue
+        query = re.sub(r"\swhen:\d+d\b", "", query, flags=re.IGNORECASE).strip()
+        query = re.sub(r"^site:[^\s]+\s+", "", query, flags=re.IGNORECASE).strip()
+        normalized = " ".join(query.split()).lower()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        relaxed.append(
+            {
+                "track_type": str(item.get("track_type") or "news"),
+                "query": query,
+                "subtopics": list(item.get("subtopics") or []),
+                "query_language": normalize_language(str(item.get("query_language") or "en")),
+                "retrieval_languages": list(item.get("retrieval_languages") or []),
+                "topic_scope_decision": str(item.get("topic_scope_decision") or "auto"),
+                "topic_scope_source": str(item.get("topic_scope_source") or "auto"),
+                "topic_locales": list(item.get("topic_locales") or []),
+            }
+        )
+    return relaxed
+
+
+def merge_retrieval_trace(
+    base_trace: dict[str, Any],
+    extra_trace: dict[str, Any],
+    fallback_label: str,
+    query_count_initial: int | None = None,
+    query_count_relaxed: int | None = None,
+) -> dict[str, Any]:
+    merged_retriever = ",".join(
+        sorted(
+            {
+                provider
+                for provider in (str(base_trace.get("retriever", "")) + "," + str(extra_trace.get("retriever", ""))).split(",")
+                if provider
+            }
+        )
+    ) or str(base_trace.get("retriever", "fixture"))
+    merged_provider = ",".join(
+        sorted(
+            {
+                provider
+                for provider in (
+                    str(base_trace.get("retrieval_provider", "")) + "," + str(extra_trace.get("retrieval_provider", ""))
+                ).split(",")
+                if provider
+            }
+        )
+    ) or str(base_trace.get("retrieval_provider", "local_fixture"))
+    chain = list(base_trace.get("fallback_chain", []))
+    if fallback_label not in chain:
+        chain.append(fallback_label)
+    merged = {
+        **base_trace,
+        "fallback_chain": chain,
+        "providers_used": list(base_trace.get("providers_used", [])) + list(extra_trace.get("providers_used", [])),
+        "retriever": merged_retriever,
+        "retrieval_provider": merged_provider,
+        "live_errors": list(base_trace.get("live_errors", [])) + list(extra_trace.get("live_errors", [])),
+        "web_errors": list(base_trace.get("web_errors", [])) + list(extra_trace.get("web_errors", [])),
+    }
+    if query_count_initial is not None:
+        merged["query_count_initial"] = query_count_initial
+    if query_count_relaxed is not None:
+        merged["query_count_relaxed"] = query_count_relaxed
+    return merged
 
 
 def tavily_search(query: str, max_results: int) -> list[dict[str, Any]]:
@@ -412,6 +1208,7 @@ def google_news_rss_search_with_locale(query: str, max_results: int, locale: dic
         link = (item.findtext("link") or "").strip()
         description_raw = item.findtext("description") or ""
         description = strip_html(description_raw)
+        published_at = parse_rss_pubdate(item.findtext("pubDate"))
         description_url = extract_first_href(description_raw)
         source_tag = item.find("source")
         source_text = (source_tag.text or "").strip() if source_tag is not None else ""
@@ -429,6 +1226,8 @@ def google_news_rss_search_with_locale(query: str, max_results: int, locale: dic
                 "score": 0.55,
                 "source_label": source_text,
                 "source_url": best_source_url,
+                "published_at": published_at,
+                "published_at_confidence": 0.9 if published_at else 0.0,
             }
         )
     return results
@@ -467,6 +1266,7 @@ def bing_news_rss_search(query: str, max_results: int, language: str) -> list[di
         title = (item.findtext("title") or "").strip()
         link = decode_bing_apiclick_url((item.findtext("link") or "").strip())
         description = strip_html(item.findtext("description") or "")
+        published_at = parse_rss_pubdate(item.findtext("pubDate"))
         if not link:
             continue
         source_label = ""
@@ -480,6 +1280,8 @@ def bing_news_rss_search(query: str, max_results: int, language: str) -> list[di
                 "score": 0.6,
                 "source_label": source_label,
                 "source_url": link,
+                "published_at": published_at,
+                "published_at_confidence": 0.85 if published_at else 0.0,
             }
         )
     return results
@@ -640,37 +1442,121 @@ def resolve_search_result_url(raw_url: str, source_url: str = "") -> str:
 
 
 def fixture_results(track_type: str) -> list[dict[str, Any]]:
+    now_iso = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     fixtures = {
         "news": [
             {
                 "title": "Limburg mobility plan gets fresh funding",
                 "url": "https://example.com/2026/04/22/limburg-mobility-plan",
-                "content": "A recent Limburg mobility update with local impact around Maastricht.",
+                "content": (
+                    "Regional authorities approved new mobility funding around Maastricht, including "
+                    "updated public transport timelines and road safety interventions for commuters."
+                ),
                 "score": 0.82,
+                "published_at": now_iso,
+                "published_at_confidence": 1.0,
             }
         ],
         "events": [
             {
                 "title": "Family science weekend in Maastricht",
                 "url": "https://example.com/events/2026-04-25-family-science-maastricht",
-                "content": "A near-term family friendly event in Maastricht with explicit date and location.",
+                "content": (
+                    "A city-wide science weekend announces workshops for families in Maastricht with "
+                    "confirmed dates, venue details, and ticket windows for the coming week."
+                ),
                 "score": 0.78,
+                "published_at": now_iso,
+                "published_at_confidence": 1.0,
             }
         ],
         "bitcoin": [
             {
                 "title": "Bitcoin Core release candidate testing continues",
                 "url": "https://github.com/bitcoin/bitcoin/issues/33368",
-                "content": "Recent Bitcoin Core testing discussion with practical technical relevance.",
+                "content": (
+                    "Developers continue release-candidate validation for Bitcoin Core, reporting "
+                    "test outcomes, pending fixes, and rollout notes with immediate technical impact."
+                ),
                 "score": 0.8,
+                "published_at": now_iso,
+                "published_at_confidence": 1.0,
+            }
+        ],
+        "finance": [
+            {
+                "title": "Eurozone inflation slows as policy outlook stabilizes",
+                "url": "https://example.com/finance/2026-04-23-eurozone-inflation-policy-outlook",
+                "content": (
+                    "New macro data shows eurozone inflation easing while policymakers signal cautious "
+                    "rate decisions, with direct implications for household spending and investment planning."
+                ),
+                "score": 0.79,
+                "published_at": now_iso,
+                "published_at_confidence": 1.0,
             }
         ],
     }
-    return fixtures.get(track_type, [])
+    direct = fixtures.get(track_type)
+    if direct is not None:
+        return direct
+    family = infer_track_family(track_type)
+    family_rows = fixtures.get(family, [])
+    if not family_rows:
+        return []
+    slug = re.sub(r"[^a-z0-9]+", "-", str(track_type).lower()).strip("-") or family
+    scoped: list[dict[str, Any]] = []
+    for row in family_rows:
+        cloned = dict(row)
+        base_url = str(cloned.get("url") or "").rstrip("/")
+        if base_url:
+            separator = "&" if "?" in base_url else "?"
+            cloned["url"] = f"{base_url}{separator}topic={slug}"
+        scoped.append(cloned)
+    return scoped
+
+
+def rss_results_for_languages(
+    query: str,
+    max_results_per_query: int,
+    retrieval_languages: list[str],
+    include_google: bool,
+    include_bing: bool,
+) -> tuple[list[dict[str, Any]], list[str]]:
+    results: list[dict[str, Any]] = []
+    providers: list[str] = []
+    errors: list[str] = []
+
+    for language_code in retrieval_languages:
+        lang = normalize_language(language_code)
+        if include_bing:
+            try:
+                bing_rows = bing_news_rss_search(query, max_results_per_query, lang)
+                if bing_rows:
+                    providers.append(f"bing_news_rss:{lang}")
+                    results.extend(bing_rows)
+            except RuntimeError as exc:
+                errors.append(str(exc))
+        if include_google:
+            try:
+                google_rows = google_news_rss_search(query, max_results_per_query, lang)
+                if google_rows:
+                    providers.append(f"google_news_rss:{lang}")
+                    results.extend(google_rows)
+            except RuntimeError as exc:
+                errors.append(str(exc))
+
+    if not results and errors:
+        raise RuntimeError("; ".join(errors[:3]))
+
+    provider_multiplier = int(include_google) + int(include_bing)
+    provider_multiplier = provider_multiplier if provider_multiplier > 0 else 1
+    cap = max_results_per_query * max(1, len(retrieval_languages)) * provider_multiplier
+    return results[:cap], providers
 
 
 def retrieve_candidates(
-    queries: list[dict[str, str]],
+    queries: list[dict[str, Any]],
     mode: str,
     max_results_per_query: int,
     language: str,
@@ -689,8 +1575,17 @@ def retrieve_candidates(
 
     for query_item in queries:
         track_type = query_item["track_type"]
+        track_family = infer_track_family(track_type)
         query_text = str(query_item.get("query") or "")
         is_site_query = query_text.strip().lower().startswith("site:")
+        retrieval_languages_raw = query_item.get("retrieval_languages") or [language]
+        retrieval_languages: list[str] = []
+        for entry in retrieval_languages_raw:
+            normalized = normalize_language(str(entry))
+            if normalized not in retrieval_languages:
+                retrieval_languages.append(normalized)
+        if not retrieval_languages:
+            retrieval_languages = [normalize_language(language)]
         provider_used = "fixture"
         if effective_mode == "live":
             try:
@@ -699,18 +1594,33 @@ def retrieve_candidates(
             except RuntimeError as exc:
                 live_errors.append(str(exc))
                 try:
-                    if track_type in {"news", "events"} or is_site_query:
-                        results = google_news_rss_search(query_item["query"], max_results_per_query, language)
-                        provider_used = "google_news_rss"
-                        if not results:
-                            results = bing_news_rss_search(query_item["query"], max_results_per_query, language)
-                            provider_used = "bing_news_rss"
+                    if track_family in {"finance", "bitcoin"}:
+                        results, providers_for_query = rss_results_for_languages(
+                            query_item["query"],
+                            max_results_per_query,
+                            retrieval_languages,
+                            include_google=False,
+                            include_bing=True,
+                        )
+                        provider_used = "+".join(providers_for_query) if providers_for_query else "bing_news_rss"
+                    elif track_family in {"news", "events"} or is_site_query:
+                        results, providers_for_query = rss_results_for_languages(
+                            query_item["query"],
+                            max_results_per_query,
+                            retrieval_languages,
+                            include_google=True,
+                            include_bing=True,
+                        )
+                        provider_used = "+".join(providers_for_query) if providers_for_query else "bing_news_rss+google_news_rss"
                     else:
-                        results = bing_news_rss_search(query_item["query"], max_results_per_query, language)
-                        provider_used = "bing_news_rss"
-                        if not results:
-                            results = google_news_rss_search(query_item["query"], max_results_per_query, language)
-                            provider_used = "google_news_rss"
+                        results, providers_for_query = rss_results_for_languages(
+                            query_item["query"],
+                            max_results_per_query,
+                            retrieval_languages,
+                            include_google=True,
+                            include_bing=True,
+                        )
+                        provider_used = "+".join(providers_for_query) if providers_for_query else "bing_news_rss+google_news_rss"
                     fallback_chain.append(f"live->web_fallback:{provider_used}")
                     effective_mode = "web_fallback" if results else effective_mode
                 except RuntimeError as web_exc:
@@ -721,18 +1631,33 @@ def retrieve_candidates(
                     provider_used = "fixture"
         elif effective_mode == "web_fallback":
             try:
-                if track_type in {"news", "events"} or is_site_query:
-                    results = google_news_rss_search(query_item["query"], max_results_per_query, language)
-                    provider_used = "google_news_rss"
-                    if not results:
-                        results = bing_news_rss_search(query_item["query"], max_results_per_query, language)
-                        provider_used = "bing_news_rss"
+                if track_family in {"finance", "bitcoin"}:
+                    results, providers_for_query = rss_results_for_languages(
+                        query_item["query"],
+                        max_results_per_query,
+                        retrieval_languages,
+                        include_google=False,
+                        include_bing=True,
+                    )
+                    provider_used = "+".join(providers_for_query) if providers_for_query else "bing_news_rss"
+                elif track_family in {"news", "events"} or is_site_query:
+                    results, providers_for_query = rss_results_for_languages(
+                        query_item["query"],
+                        max_results_per_query,
+                        retrieval_languages,
+                        include_google=True,
+                        include_bing=True,
+                    )
+                    provider_used = "+".join(providers_for_query) if providers_for_query else "bing_news_rss+google_news_rss"
                 else:
-                    results = bing_news_rss_search(query_item["query"], max_results_per_query, language)
-                    provider_used = "bing_news_rss"
-                    if not results:
-                        results = google_news_rss_search(query_item["query"], max_results_per_query, language)
-                        provider_used = "google_news_rss"
+                    results, providers_for_query = rss_results_for_languages(
+                        query_item["query"],
+                        max_results_per_query,
+                        retrieval_languages,
+                        include_google=True,
+                        include_bing=True,
+                    )
+                    provider_used = "+".join(providers_for_query) if providers_for_query else "bing_news_rss+google_news_rss"
             except RuntimeError as web_exc:
                 web_errors.append(str(web_exc))
                 results = fixture_results(track_type)
@@ -754,17 +1679,24 @@ def retrieve_candidates(
             cached = db.get_article_by_url(url, db_path=db_path)
             if cached is not None:
                 cache_hits += 1
-            article_enrichment = enrich_article_from_url(url)
+            article_enrichment = enrich_article_from_url(url, track_family=track_family)
             summary_text = clean_summary(str(result.get("content") or result.get("summary") or "").strip())
             if "<script" in summary_text.lower() or "nocollect" in summary_text.lower():
                 summary_text = ""
             source = domain_from_url(source_url) if source_url else ""
             if not source or source == "news.google.com":
                 source = domain_from_url(str(url or source_url))
-            trust_tier = int(SOURCE_TRUST_TIERS.get(track_type, {}).get(source, 1))
+            trust_tier = source_trust_tier_for_track(track_type, source)
+            published_at = str(result.get("published_at") or (cached or {}).get("published_at") or "").strip()
+            published_at_confidence = float(
+                result.get("published_at_confidence")
+                or (cached or {}).get("published_at_confidence")
+                or (0.85 if published_at else 0.0)
+            )
             candidate = {
                 "item_id": db.article_id_for_url(url),
                 "track_type": track_type,
+                "track_family": track_family,
                 "query": query_item["query"],
                 "title": str(result.get("title", "")).strip() or url,
                 "url": url,
@@ -775,15 +1707,26 @@ def retrieve_candidates(
                 "source_label": str(result.get("source_label") or ""),
                 "source_url": source_url,
                 "retrieval_provider": provider_used,
+                "query_language": str(query_item.get("query_language") or retrieval_languages[0]),
+                "retrieval_languages": retrieval_languages,
+                "topic_scope_decision": str(query_item.get("topic_scope_decision") or "auto"),
+                "topic_scope_source": str(query_item.get("topic_scope_source") or "auto"),
+                "topic_locales": list(query_item.get("topic_locales") or []),
                 "article_text_excerpt": str(article_enrichment.get("article_text_excerpt") or ""),
                 "article_body_markdown": str(article_enrichment.get("article_body_markdown") or ""),
-                "published_at_confidence": 0.35,
+                "published_at": published_at,
+                "published_at_confidence": round(published_at_confidence, 3),
                 "source_trust_tier": trust_tier,
             }
             if not candidate["article_text_excerpt"]:
                 candidate["article_text_excerpt"] = clean_summary(candidate["summary"], max_length=240)
             if candidate["article_text_excerpt"] and candidate["summary"] and len(candidate["summary"]) < 100:
                 candidate["summary"] = candidate["article_text_excerpt"]
+            candidate["source_type"] = classify_source_type(
+                url=candidate["url"],
+                title=candidate["title"],
+                summary=candidate["summary"],
+            )
             candidate["quality_score"] = score_candidate(candidate)
             candidate["selection_reason"] = selection_reason(candidate)
             db.cache_article(
@@ -793,6 +1736,7 @@ def retrieve_candidates(
                     "url": candidate["url"],
                     "category": track_type,
                     "domain": candidate["source"],
+                    "published_at": candidate.get("published_at"),
                     "summary": candidate["summary"],
                     "article_text_excerpt": candidate["article_text_excerpt"],
                     "article_body_markdown": candidate["article_body_markdown"],
@@ -846,6 +1790,23 @@ def url_query(url: str) -> str:
     return urlparse(url).query.lower()
 
 
+def classify_source_type(url: str, title: str, summary: str) -> str:
+    path = url_path(url)
+    query = url_query(url)
+    combined = f"{title} {summary}".lower()
+    if any(token in path for token in ["/tag/", "/category/", "/topics/", "/search", "/archive"]) or any(
+        token in query for token in ["s=", "search=", "q=", "page="]
+    ):
+        return "listing"
+    if any(token in combined for token in ["guide", "how to", "travel", "itinerary", "walking tour", "things to do"]):
+        return "guide"
+    if any(token in combined for token in ["breaking", "report", "investigation", "analysis", "announced", "approved"]):
+        return "report"
+    if any(token in combined for token in ["live updates", "breaking news", "developing"]):
+        return "breaking"
+    return "article"
+
+
 def extract_date(text: str) -> datetime | None:
     match = re.search(r"(20\d{2})[-/](\d{2})[-/](\d{2})", text)
     if match:
@@ -869,6 +1830,19 @@ def extract_date(text: str) -> datetime | None:
         return datetime(year, month, day, tzinfo=timezone.utc)
     except ValueError:
         return None
+
+
+def parse_iso_datetime(value: str | None) -> datetime | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
 def clean_summary(summary: str, max_length: int = 420) -> str:
@@ -933,6 +1907,9 @@ def looks_like_javascript_payload(text: str) -> bool:
         "<script",
         "nocollect",
         "gstatic.com/_/mss/boq-dots",
+        "@font-face",
+        "fonts.gstatic.com",
+        "format('truetype')",
     ]
     hit_count = sum(1 for marker in markers if marker in sample)
     return hit_count >= 2
@@ -960,7 +1937,26 @@ def looks_like_navigation_text(text: str) -> bool:
     return False
 
 
-def enrich_article_from_url(url: str, timeout_seconds: int = 12) -> dict[str, Any]:
+def _normalize_compare_text(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
+
+
+def is_low_information_excerpt(excerpt: str, title: str, summary: str) -> bool:
+    excerpt_norm = _normalize_compare_text(excerpt)
+    title_norm = _normalize_compare_text(title)
+    summary_norm = _normalize_compare_text(summary)
+    if len(excerpt_norm) < 90:
+        return True
+    if title_norm and excerpt_norm == title_norm:
+        return True
+    if title_norm and excerpt_norm.startswith(title_norm) and len(excerpt_norm) < 180:
+        return True
+    if summary_norm and excerpt_norm == summary_norm and len(excerpt_norm) < 120:
+        return True
+    return False
+
+
+def enrich_article_from_url(url: str, track_family: str = "news", timeout_seconds: int = 12) -> dict[str, Any]:
     try:
         request = urllib.request.Request(
             url,
@@ -975,17 +1971,21 @@ def enrich_article_from_url(url: str, timeout_seconds: int = 12) -> dict[str, An
     except Exception:
         return {"article_text_excerpt": "", "article_body_markdown": "", "article_fetch_ok": False}
 
+    min_paragraph_len = 28 if track_family == "events" else 40
+    fallback_body_len = 90 if track_family == "events" else 120
+    min_excerpt_len = 45 if track_family == "events" else 60
+
     paragraphs = re.findall(r"(?is)<p[^>]*>(.*?)</p>", html)
     clean_paragraphs = [_strip_html_tags(paragraph) for paragraph in paragraphs]
     clean_paragraphs = [
         paragraph
         for paragraph in clean_paragraphs
-        if len(paragraph) > 40 and not looks_like_navigation_text(paragraph)
+        if len(paragraph) > min_paragraph_len and not looks_like_navigation_text(paragraph)
     ]
     if not clean_paragraphs:
         body_text = _strip_html_tags(html)
         body_text = clean_summary(body_text, max_length=5000)
-        clean_paragraphs = [body_text] if len(body_text) > 120 and not looks_like_navigation_text(body_text) else []
+        clean_paragraphs = [body_text] if len(body_text) > fallback_body_len and not looks_like_navigation_text(body_text) else []
 
     body_text = "\n\n".join(clean_paragraphs[:10]).strip()
     excerpt = clean_summary(" ".join(clean_paragraphs[:2]), max_length=420)
@@ -996,7 +1996,7 @@ def enrich_article_from_url(url: str, timeout_seconds: int = 12) -> dict[str, An
         or looks_like_navigation_text(body_text)
     ):
         return {"article_text_excerpt": "", "article_body_markdown": "", "article_fetch_ok": False}
-    if len(excerpt) < 60:
+    if len(excerpt) < min_excerpt_len:
         excerpt = ""
     return {
         "article_text_excerpt": excerpt,
@@ -1012,7 +2012,22 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
     title = candidate["title"].lower()
     summary = candidate.get("summary", "").lower()
     track_type = candidate["track_type"]
+    track_family = str(candidate.get("track_family") or infer_track_family(track_type))
     source = candidate.get("source", "")
+    source_type = str(candidate.get("source_type") or classify_source_type(candidate.get("url", ""), candidate.get("title", ""), candidate.get("summary", "")))
+    def _has_event_signal(text: str) -> bool:
+        lowered = text.lower()
+        return any(
+            token in lowered
+            for token in ["event", "events", "festival", "concert", "weekend", "conference", "carnival", "expo", "tickets", "agenda"]
+        )
+
+    def _has_future_event_hint(text: str) -> bool:
+        lowered = text.lower()
+        if str(now.year + 1) in lowered or str(now.year) in lowered:
+            return True
+        return any(month_name in lowered for month_name in MONTHS.keys())
+
     if domain_from_url(candidate["url"]) != "news.google.com" and path in {"", "/"}:
         return "not_article_page", "root_homepage_url"
     if source in LOW_VALUE_DOMAINS:
@@ -1021,12 +2036,16 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
         key in query for key in ["s=", "search=", "q=", "page="]
     ):
         return "generic_listing", "listing_or_archive_url"
-    if track_type == "news" and (
+    if track_family in {"news", "finance", "bitcoin"} and source_type == "listing":
+        return "generic_listing", "listing_page_for_news_slot"
+    if track_family == "news" and source_type == "guide":
+        return "low_relevance_news", "guide_or_evergreen_page"
+    if track_family == "news" and (
         any(title == word for word in ["news", "latest news", "112"])
         or any(word in title for word in ["headlines today", "local news, events", "breaking news headlines"])
     ):
         return "not_article_page", "static_news_title"
-    if track_type == "news" and any(
+    if track_family == "news" and any(
         word in title + " " + summary
         for word in [
             "tour a piedi",
@@ -1039,7 +2058,7 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
         ]
     ):
         return "low_relevance_news", "travel_video_or_tour"
-    if track_type == "events" and (
+    if track_family == "events" and (
         "calendar" in title
         or "event calendar" in title
         or "activities" in title
@@ -1047,7 +2066,7 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
         or "/events/?" in url
     ):
         return "generic_listing", "event_listing_page"
-    if track_type == "bitcoin" and (
+    if track_family == "bitcoin" and (
         url.rstrip("/").endswith(("github.com/bitcoin/bitcoin", "bitcoin.org"))
         or path.rstrip("/").endswith("/newsletters")
         or "/zh/" in path
@@ -1057,26 +2076,55 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
     ):
         return "low_value_bitcoin", "root_or_overview_page"
     excerpt = str(candidate.get("article_text_excerpt") or "").strip()
+    summary_text = str(candidate.get("summary") or "").strip()
+    title_text = str(candidate.get("title") or "").strip()
+    event_text = f"{title_text} {summary_text}".strip()
     if looks_like_javascript_payload(excerpt) or looks_like_javascript_payload(str(candidate.get("summary") or "")):
         return "not_article_page", "noisy_extracted_content"
     if looks_like_navigation_text(excerpt) or looks_like_navigation_text(str(candidate.get("summary") or "")):
         return "not_article_page", "navigation_text_extract"
+    if is_low_information_excerpt(excerpt, title_text, summary_text):
+        if track_family == "events":
+            has_event_signal = _has_event_signal(event_text)
+            has_timestamp = parse_iso_datetime(str(candidate.get("published_at") or "")) is not None
+            if not (has_event_signal and has_timestamp):
+                return "not_article_page", "low_information_excerpt"
+        else:
+            return "not_article_page", "low_information_excerpt"
     if len(excerpt) < 80:
-        return "not_article_page", "missing_article_body"
+        if track_family == "events":
+            has_event_signal = _has_event_signal(event_text)
+            has_timestamp = parse_iso_datetime(str(candidate.get("published_at") or "")) is not None
+            if not (has_event_signal and has_timestamp and len(title_text) >= 30):
+                return "not_article_page", "missing_article_body"
+        else:
+            return "not_article_page", "missing_article_body"
 
-    date = extract_date(url + " " + title + " " + summary)
+    date = parse_iso_datetime(str(candidate.get("published_at") or "")) or extract_date(url + " " + title + " " + summary)
     if date is not None:
         age_days = (now - date).days
-        if track_type == "news" and age_days > 14:
+        if track_family == "news" and age_days > MAX_NEWS_AGE_DAYS:
             return "not_recent", f"age_days={age_days}"
-        if track_type == "events" and age_days > 1:
-            return "not_recent", f"event_age_days={age_days}"
-        if track_type == "events" and age_days < -45:
+        if track_family == "finance" and age_days > MAX_FINANCE_AGE_DAYS:
+            return "not_recent", f"finance_age_days={age_days}"
+        if track_family == "bitcoin" and age_days > MAX_BITCOIN_AGE_DAYS:
+            return "not_recent", f"bitcoin_age_days={age_days}"
+        if track_family == "events" and age_days > MAX_EVENT_PAST_DAYS:
+            if not (_has_event_signal(event_text) and _has_future_event_hint(event_text)):
+                return "not_recent", f"event_age_days={age_days}"
+        if track_family == "events" and age_days < -MAX_EVENT_FUTURE_DAYS:
             return "too_far_future", f"event_age_days={age_days}"
-        if track_type not in TRACKS and age_days > 21:
+        if track_family not in TRACKS and age_days > MAX_NEWS_AGE_DAYS:
             return "not_recent", f"custom_topic_age_days={age_days}"
-    elif track_type == "events" and not any(word in url + title for word in ["event", "weekend", "maastricht"]):
-        return "missing_specific_date", "event_without_date_signal"
+    elif track_family in {"news", "finance", "bitcoin"}:
+        return "missing_publish_date", "missing_publish_date_signal"
+    elif track_family == "events":
+        event_signal = any(
+            word in url + " " + title + " " + summary
+            for word in ["event", "festival", "concert", "weekend", "meetup", "conference", "agenda", "calendar", "2026", "2027"]
+        )
+        if not event_signal:
+            return "missing_specific_date", "event_without_date_signal"
     return None, ""
 
 
@@ -1096,33 +2144,86 @@ def validate_candidates(candidates: list[dict[str, Any]]) -> tuple[list[dict[str
     return valid, rejected, reason_counts
 
 
-def select_items(validated: list[dict[str, Any]], topics: list[str], per_track: int = 2) -> list[dict[str, Any]]:
+def _subtopic_match_score(item: dict[str, Any], subtopics: list[str]) -> float:
+    if not subtopics:
+        return 0.0
+    haystack = normalize_topic_text(
+        " ".join(
+            [
+                str(item.get("title") or ""),
+                str(item.get("summary") or ""),
+                str(item.get("query") or ""),
+            ]
+        )
+    )
+    if not haystack:
+        return 0.0
+    hits = 0
+    for subtopic in subtopics:
+        token = normalize_topic_text(str(subtopic).replace("-", " "))
+        if token and token in haystack:
+            hits += 1
+    return round(min(1.0, hits / max(1, len(subtopics))), 3)
+
+
+def select_items(
+    validated: list[dict[str, Any]],
+    topics: list[str],
+    per_track: int = 2,
+    topic_settings: dict[str, dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
     selected: list[dict[str, Any]] = []
+    topic_settings = topic_settings or {}
     for track in topics:
-        track_items = [item for item in validated if item["track_type"] == track]
-        selected.extend(sorted(track_items, key=lambda item: item.get("quality_score", 0), reverse=True)[:per_track])
+        track_key = normalize_topic_text(track)
+        track_items = [item for item in validated if normalize_topic_text(str(item.get("track_type") or "")) == track_key]
+        subtopics = _to_list_of_strings((topic_settings.get(track_key) or {}).get("subtopics"))
+        ranked_items: list[dict[str, Any]] = []
+        for item in track_items:
+            subtopic_score = _subtopic_match_score(item, subtopics)
+            base_score = float(item.get("final_score", item.get("quality_score", item.get("score", 0.0))))
+            composite = round(base_score + subtopic_score * 0.2, 4)
+            ranked_items.append(
+                {
+                    **item,
+                    "subtopic_match_score": subtopic_score,
+                    "final_score": composite,
+                    "quality_score": composite,
+                }
+            )
+        selected.extend(sorted(ranked_items, key=lambda item: item.get("final_score", 0), reverse=True)[:per_track])
     return selected
 
 
 def score_candidate(candidate: dict[str, Any]) -> float:
     score = float(candidate.get("score") or 0.0)
     track_type = candidate["track_type"]
+    track_family = str(candidate.get("track_family") or infer_track_family(track_type))
     source = candidate.get("source", "")
     title = candidate["title"].lower()
     url = candidate["url"].lower()
     summary = candidate.get("summary", "").lower()
+    source_type = str(candidate.get("source_type") or "article").lower()
 
-    if source in PREFERRED_DOMAINS.get(track_type, set()):
+    if source in preferred_domains_for_track(track_type):
         score += 0.35
     if source in LOW_VALUE_DOMAINS:
         score -= 0.75
     if any(word in url for word in ["/tag/", "/category/", "/search", "/archive", "/interest/"]):
         score -= 0.45
-    if track_type == "events" and any(word in title + summary for word in ["maastricht", "limburg", "weekend", "april", "2026"]):
+    if source_type == "listing":
+        score -= 0.65
+    elif source_type == "guide":
+        score -= 0.45
+    elif source_type in {"report", "breaking"}:
+        score += 0.2
+    if track_family == "events" and any(
+        word in title + summary for word in ["maastricht", "limburg", "weekend", "april", "2026", "family", "festival", "concert"]
+    ):
         score += 0.25
-    if track_type == "bitcoin" and any(word in title + summary + url for word in ["issue", "pull request", "optech", "newsletter", "core"]):
+    if track_family == "bitcoin" and any(word in title + summary + url for word in ["issue", "pull request", "optech", "newsletter", "core"]):
         score += 0.3
-    if track_type == "news" and any(word in title + summary for word in ["maastricht", "limburg", "netherlands", "dutch"]):
+    if track_family in {"news", "finance"} and any(word in title + summary for word in ["maastricht", "limburg", "netherlands", "dutch"]):
         score += 0.2
     score += min(0.25, max(0.0, float(candidate.get("source_trust_tier", 0)) * 0.05))
     if candidate.get("article_text_excerpt"):
@@ -1133,15 +2234,18 @@ def score_candidate(candidate: dict[str, Any]) -> float:
 def selection_reason(candidate: dict[str, Any]) -> str:
     source = candidate.get("source", "unknown source")
     track_type = candidate["track_type"]
-    if source in PREFERRED_DOMAINS.get(track_type, set()):
+    if source in preferred_domains_for_track(track_type):
         return f"preferred {track_type} source: {source}"
-    if track_type == "bitcoin" and "github.com/bitcoin/bitcoin" in candidate["url"]:
+    if infer_track_family(track_type) == "bitcoin" and "github.com/bitcoin/bitcoin" in candidate["url"]:
         return "Bitcoin Core technical signal"
     return f"matched {track_type} query from {source}"
 
 
 def selected_counts(items: list[dict[str, Any]], topics: list[str]) -> dict[str, int]:
-    return {track: sum(1 for item in items if item["track_type"] == track) for track in topics}
+    return {
+        track: sum(1 for item in items if normalize_topic_text(str(item.get("track_type") or "")) == normalize_topic_text(track))
+        for track in topics
+    }
 
 
 def _feedback_delta_from_stats(stats: dict[str, int]) -> float:
@@ -1372,6 +2476,19 @@ def infer_key_fact(item: dict[str, Any]) -> str:
     return " | ".join(parts)
 
 
+def _newsletter_summary(item: dict[str, Any]) -> str:
+    summary = str(item.get("short_summary") or item.get("summary") or "").strip()
+    excerpt = str(item.get("article_text_excerpt") or "").strip()
+    if excerpt and excerpt.lower() not in summary.lower():
+        summary = f"{summary} {excerpt}".strip() if summary else excerpt
+    return clean_summary(summary, max_length=620)
+
+
+def _newsletter_detail(item: dict[str, Any]) -> str:
+    detail = str(item.get("article_text_excerpt") or item.get("summary") or "").strip()
+    return clean_summary(detail, max_length=320)
+
+
 def is_generic_context_line(text: str) -> bool:
     value = (text or "").strip().lower()
     if not value:
@@ -1406,7 +2523,11 @@ def build_outputs(
     ]
     for track in topics:
         report_lines.extend(["", f"### {topic_display_name(track, language)}"])
-        track_items = [item for item in enriched_items if item["track_type"] == track]
+        track_items = [
+            item
+            for item in enriched_items
+            if normalize_topic_text(str(item.get("track_type") or "")) == normalize_topic_text(track)
+        ]
         if not track_items:
             report_lines.append(f"- {labels['none_selected']}")
         for item in track_items:
@@ -1437,21 +2558,13 @@ def build_outputs(
     else:
         for item in enriched_items[:MAX_ITEMS_TO_OUTPUT]:
             category = str(item.get("track_type") or "news")
-            summary = str(item.get("short_summary") or item.get("summary") or "").strip()
-            if len(summary) > 420:
-                summary = summary[:417].rstrip() + "..."
-            why = str(item.get("why_it_matters") or "").strip()
-            if len(why) > 260:
-                why = why[:257].rstrip() + "..."
+            summary = _newsletter_summary(item)
+            detail = _newsletter_detail(item)
             newsletter_lines.append(f"- {category}: {md_link(item)}")
             if summary:
                 newsletter_lines.append(f"  - {labels['what_happened']}: {summary}")
-            if why and not is_generic_context_line(why):
-                newsletter_lines.append(f"  - {labels['context_now']}: {why}")
-            newsletter_lines.append(f"  - {labels['key_facts']}: {infer_key_fact(item)}")
-            action = str(item.get("suggested_action") or "").strip()
-            if action:
-                newsletter_lines.append(f"  - {labels['suggested_action']}: {action}")
+            if detail and detail.lower() not in summary.lower():
+                newsletter_lines.append(f"  - {labels['key_facts']}: {detail}")
             newsletter_lines.append(f"  - {labels['source_link']}: {item.get('url', '')}")
     return "\n".join(report_lines), "\n".join(newsletter_lines)
 
@@ -1465,19 +2578,35 @@ def run_research_digest(
     runtime_db_path = config.runtime_db_path
     user = db_users.ensure_user(chat_id=chat_id, db_path=runtime_db_path)
     run_language = normalize_language(str(user.get("language") or config.default_language))
-    topics_for_run = normalize_topics_for_run(user.get("topics"))
+    topics_for_run = [normalize_topic_text(topic) for topic in normalize_topics_for_run(user.get("topics"))]
     profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path)
     temporary_contexts = (
         db.list_active_temporary_contexts(user_id=int(user["id"]), db_path=runtime_db_path)
         if env_flag("PRA_FLAG_TEMP_CONTEXTS", default=True)
         else []
     )
-    topic_plan = (
-        build_topic_plan(user_id=int(user["id"]), topics=topics_for_run, db_path=runtime_db_path)
-        if env_flag("PRA_FLAG_SUBTOPIC_GRAPH", default=True)
-        else {topic: [] for topic in topics_for_run}
-    )
     location_for_run = active_location_context(profile, temporary_contexts)
+    topic_settings, topic_settings_trace = ensure_topic_settings(
+        user_id=int(user["id"]),
+        topics=topics_for_run,
+        profile=profile,
+        context_location=location_for_run,
+        user_language=run_language,
+        db_path=runtime_db_path,
+    )
+    if topic_settings_trace.get("profile_updated"):
+        profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path)
+    hard_gate = intake_hard_gate_status(user=user, profile=profile, topic_settings=topic_settings)
+    topic_plan = (
+        build_topic_plan(
+            user_id=int(user["id"]),
+            topics=topics_for_run,
+            db_path=runtime_db_path,
+            topic_settings=topic_settings,
+        )
+        if env_flag("PRA_FLAG_SUBTOPIC_GRAPH", default=True)
+        else {topic: list((topic_settings.get(topic) or {}).get("subtopics") or [])[:3] for topic in topics_for_run}
+    )
     run_id = db.log_run(
         user_id=int(user["id"]),
         quality_status="running",
@@ -1497,12 +2626,35 @@ def run_research_digest(
         stage="pipeline_start",
         status="ok",
         message="run_started",
-        payload={"mode": mode, "location": location_for_run, "topics": topics_for_run, "topic_plan": topic_plan},
+        payload={
+            "mode": mode,
+            "location": location_for_run,
+            "topics": topics_for_run,
+            "topic_plan": topic_plan,
+            "topic_settings_trace": topic_settings_trace,
+            "hard_gate": hard_gate,
+        },
         db_path=runtime_db_path,
     )
 
     try:
-        queries = build_queries(user=user, topic_plan=topic_plan, context_location=location_for_run)
+        if env_flag("PRA_FLAG_HARD_INTAKE_GATE", default=True) and bool(hard_gate.get("required")):
+            raise RuntimeError(
+                "INTAKE_REQUIRED: "
+                + json.dumps(
+                    {
+                        "missing_profile_fields": hard_gate.get("missing_profile_fields", []),
+                        "insufficient_topics": hard_gate.get("insufficient_topics", []),
+                    },
+                    sort_keys=True,
+                )
+            )
+        queries, topic_reasoning = build_queries(
+            user=user,
+            topic_plan=topic_plan,
+            context_location=location_for_run,
+            topic_settings=topic_settings,
+        )
         write_json(
             debug_dir / "01_input.json",
             "input",
@@ -1513,19 +2665,74 @@ def run_research_digest(
                 "profile": profile or {},
                 "temporary_contexts": temporary_contexts,
                 "topic_plan": topic_plan,
+                "topic_settings": topic_settings,
+                "topic_settings_trace": topic_settings_trace,
+                "hard_gate": hard_gate,
                 "context_location": location_for_run,
                 "queries": queries,
+                "analyst_reasoning_topics": topic_reasoning.get("topics", {}),
             },
         )
         candidates, retrieval_trace = retrieve_candidates(queries, mode, max_results_per_query, run_language, runtime_db_path)
+        retrieval_trace["query_languages"] = sorted(
+            {normalize_language(str(query.get("query_language") or run_language)) for query in queries}
+        )
+        retrieval_trace["topic_scope_decisions"] = {
+            topic: str(payload.get("topic_scope_decision") or "auto")
+            for topic, payload in dict(topic_reasoning.get("topics") or {}).items()
+        }
+        relaxed_queries = build_relaxed_queries(queries)
+        if not candidates and mode in {"auto", "live", "web_fallback"}:
+            if relaxed_queries:
+                relaxed_candidates, relaxed_trace = retrieve_candidates(
+                    relaxed_queries,
+                    mode,
+                    max_results_per_query,
+                    run_language,
+                    runtime_db_path,
+                )
+                if relaxed_candidates:
+                    candidates = relaxed_candidates
+                    retrieval_trace = merge_retrieval_trace(
+                        retrieval_trace,
+                        relaxed_trace,
+                        fallback_label="query_relaxation",
+                        query_count_initial=len(queries),
+                        query_count_relaxed=len(relaxed_queries),
+                    )
+        validated, rejected, reason_counts = validate_candidates(candidates)
+        if not validated and candidates and mode in {"auto", "live", "web_fallback"}:
+            already_relaxed = "query_relaxation" in list(retrieval_trace.get("fallback_chain", []))
+            if relaxed_queries and not already_relaxed:
+                relaxed_candidates, relaxed_trace = retrieve_candidates(
+                    relaxed_queries,
+                    mode,
+                    max_results_per_query,
+                    run_language,
+                    runtime_db_path,
+                )
+                if relaxed_candidates:
+                    candidates = dedupe_candidates(candidates + relaxed_candidates)
+                    retrieval_trace = merge_retrieval_trace(
+                        retrieval_trace,
+                        relaxed_trace,
+                        fallback_label="query_relaxation_post_validation",
+                        query_count_initial=len(queries),
+                        query_count_relaxed=len(relaxed_queries),
+                    )
+                    validated, rejected, reason_counts = validate_candidates(candidates)
         write_json(
             debug_dir / "02_retrieval.json",
             "retrieval",
             retrieval_trace["mode_used"],
             context,
-            {"candidate_count": len(candidates), "trace": retrieval_trace, "candidate_preview": candidates[:10]},
+            {
+                "candidate_count": len(candidates),
+                "trace": retrieval_trace,
+                "analyst_reasoning_topics": topic_reasoning.get("topics", {}),
+                "candidate_preview": candidates[:10],
+            },
         )
-        validated, rejected, reason_counts = validate_candidates(candidates)
         processing_candidates, processing_skipped = cap_items_for_processing(validated, MAX_ITEMS_TO_PROCESS)
         feedback_profile = db.feedback_profile_for_user(user_id=int(user["id"]), db_path=runtime_db_path)
         adjusted_validated, feedback_trace = apply_feedback_adjustments(processing_candidates, feedback_profile)
@@ -1540,6 +2747,19 @@ def run_research_digest(
             payload={"feedback_trace": feedback_trace, "source_pref_trace": source_pref_trace},
             db_path=runtime_db_path,
         )
+        rejection_path = [
+            {
+                "item_id": item.get("item_id"),
+                "track_type": item.get("track_type"),
+                "url": item.get("url"),
+                "source": item.get("source"),
+                "source_type": item.get("source_type"),
+                "reason": item.get("reason"),
+                "reason_detail": item.get("reason_detail"),
+                "topic_scope_decision": item.get("topic_scope_decision"),
+            }
+            for item in rejected
+        ]
         write_json(
             debug_dir / "02_validator.json",
             "validator",
@@ -1557,9 +2777,10 @@ def run_research_digest(
                 "rejected_preview": rejected[:10],
                 "feedback_adjustment": feedback_trace,
                 "source_preference_adjustment": source_pref_trace,
+                "rejection_path": rejection_path[:80],
             },
         )
-        selected = select_items(adjusted_validated, topics_for_run)
+        selected = select_items(adjusted_validated, topics_for_run, topic_settings=topic_settings)
         selected = trim_selected_items(selected, MAX_ITEMS_TO_OUTPUT)
         counts = selected_counts(selected, topics_for_run)
         flags = quality_flags(counts, retrieval_trace["mode_used"], reason_counts, topics_for_run)
@@ -1612,6 +2833,7 @@ def run_research_digest(
                 "item_id": item.get("item_id"),
                 "track_type": item.get("track_type"),
                 "source": item.get("source"),
+                "source_type": item.get("source_type"),
                 "base_score": item.get("base_score"),
                 "feedback_delta": item.get("feedback_delta"),
                 "final_score": item.get("final_score", item.get("quality_score")),
@@ -1619,9 +2841,32 @@ def run_research_digest(
                 "llm_provider": item.get("llm_provider", ""),
                 "llm_model": item.get("llm_model", ""),
                 "language": item.get("language", run_language),
+                "topic_scope_decision": item.get("topic_scope_decision", "auto"),
+                "query_language": item.get("query_language"),
             }
             for item in enriched_items
         ]
+        selected_reasoning = [
+            {
+                "item_id": item.get("item_id"),
+                "track_type": item.get("track_type"),
+                "source": item.get("source"),
+                "source_type": item.get("source_type"),
+                "base_score": item.get("base_score", item.get("score")),
+                "feedback_delta": item.get("feedback_delta", 0.0),
+                "final_score": item.get("final_score", item.get("quality_score")),
+                "topic_scope_decision": item.get("topic_scope_decision", "auto"),
+                "query_language": item.get("query_language"),
+                "query": item.get("query"),
+                "selection_reason": item.get("selection_reason"),
+            }
+            for item in selected
+        ]
+        analyst_reasoning = {
+            "topics": topic_reasoning.get("topics", {}),
+            "selected_items": selected_reasoning,
+            "rejection_path": rejection_path[:120],
+        }
         write_json(
             debug_dir / "03_interpretation.json",
             "interpretation",
@@ -1631,6 +2876,7 @@ def run_research_digest(
                 "enriched_count": len(enriched_items),
                 "cost_trace": cost_trace,
                 "items": scored_items,
+                "analyst_reasoning": analyst_reasoning,
             },
         )
         report_path = debug_dir / "report.md"
@@ -1649,6 +2895,7 @@ def run_research_digest(
                 "quality_gate_status": {"status": quality, "selected": counts, "mode": retrieval_trace["mode_used"], "flags": flags},
                 "cost_trace": cost_trace,
                 "selected_items_scored": scored_items,
+                "analyst_reasoning": analyst_reasoning,
             },
         )
         write_json(
@@ -1668,10 +2915,12 @@ def run_research_digest(
                     "retrieval_trace": retrieval_trace,
                     "cost_trace": cost_trace,
                     "selected_items_scored": scored_items,
+                    "analyst_reasoning": analyst_reasoning,
                     "personalization_source": {
                         "profile_version": int((profile or {}).get("profile_version", 0) or 0),
                         "temporary_contexts_applied": len(temporary_contexts),
                         "topic_plan": topic_plan,
+                        "topic_settings": topic_settings,
                         "location": location_for_run,
                     },
                 },
@@ -1681,6 +2930,7 @@ def run_research_digest(
             "profile_version": int((profile or {}).get("profile_version", 0) or 0),
             "temporary_contexts": temporary_contexts,
             "topic_plan": topic_plan,
+            "topic_settings": topic_settings,
             "location": location_for_run,
             "source_preferences": source_preferences,
         }
@@ -1702,6 +2952,7 @@ def run_research_digest(
                 "quality_flags": flags,
                 "retrieval_trace": retrieval_trace,
                 "cost_trace": cost_trace,
+                "analyst_reasoning": analyst_reasoning,
                 "personalization": personalization_payload,
             },
         )
@@ -1739,6 +2990,7 @@ def run_research_digest(
             selected_counts=counts,
             mode=retrieval_trace["mode_used"],
             language=run_language,
+            quality_flags=flags,
             enriched_items=enriched_items,
             telegram_compact=telegram_compact,
             cost_trace=cost_trace,

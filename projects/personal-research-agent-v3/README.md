@@ -38,6 +38,25 @@ source .env
 set +a
 ```
 
+### LLM Routing (Generic Names)
+
+The interpretation layer now uses generic role-based names:
+
+- `LLM_PROVIDER`: default provider (`google`, `openrouter`, `openai`)
+- `LLM_FALLBACK_PROVIDERS`: comma-separated fallback order
+- `LLM_MODEL`: global fallback model
+- `LLM_UTILITY_MODEL`, `LLM_REASONING_MODEL`, `LLM_WEB_MODEL`: role-specific models
+- `LLM_UTILITY_PROVIDER`, `LLM_REASONING_PROVIDER`, `LLM_WEB_PROVIDER`: optional role-specific provider overrides
+- `LLM_ENABLED`: hard on/off switch for LLM calls
+
+Supported keys:
+
+- `GOOGLE_API_KEY`
+- `OPENROUTER_API_KEY`
+- `OPENAI_API_KEY`
+
+Backward compatibility remains for `INTERPRET_WITH_LLM` and `PRA_FAST_MODEL`.
+
 ## Run
 
 From this folder:

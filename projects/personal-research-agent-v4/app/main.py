@@ -87,6 +87,8 @@ def run_for_chat_detailed(
             "run_id": result.run_id,
             "mode": result.mode,
             "language": result.language,
+            "quality_status": result.quality_status,
+            "quality_flags": result.quality_flags,
             "debug_dir": result.debug_dir,
             "newsletter_path": result.newsletter_path,
             "report_path": result.report_path,

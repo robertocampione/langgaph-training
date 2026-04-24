@@ -1,0 +1,115 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 0,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "6c909faa74cd3cbf0778402b",
+          "source": "ilsussidiario.net",
+          "track_type": "news"
+        }
+      ],
+      "applied_items": 1,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 1,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 1,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 436
+  },
+  "created_at": "2026-04-23T17:38:52+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 2,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin": [
+        "market",
+        "core-dev",
+        "onchain"
+      ],
+      "events": [
+        "local-calendar",
+        "family",
+        "culture"
+      ],
+      "news": [
+        "safety",
+        "economy",
+        "infrastructure"
+      ]
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback",
+    "missing_events",
+    "missing_bitcoin",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 6,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 3,
+    "mode_requested": "web_fallback",
+    "mode_used": "web_fallback",
+    "providers_used": [
+      "bing_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss"
+    ],
+    "query_count": 9,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 27,
+    "retrieval_provider": "bing_news_rss,google_news_rss",
+    "retriever": "bing_news_rss,google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-39",
+  "selected_counts": {
+    "bitcoin": 0,
+    "events": 0,
+    "news": 1
+  }
+}

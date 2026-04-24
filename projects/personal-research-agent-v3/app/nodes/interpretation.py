@@ -139,78 +139,24 @@ def _normalize_text(value: str) -> str:
     return " ".join(value.strip().lower().split())
 
 
-def _first_sentences(text: str, max_sentences: int = 2) -> str:
-    normalized = " ".join(str(text or "").strip().split())
-    if not normalized:
-        return ""
-    chunks = []
-    for piece in normalized.replace("!", ".").replace("?", ".").split("."):
-        value = piece.strip()
-        if value:
-            chunks.append(value)
-    if not chunks:
-        return normalized
-    selected = ". ".join(chunks[:max_sentences]).strip()
-    if selected and not selected.endswith("."):
-        selected += "."
-    return selected
-
-
-def _best_detail_text(item: dict[str, Any]) -> str:
-    body = str(item.get("article_body_markdown") or "").strip()
-    excerpt = str(item.get("article_text_excerpt") or "").strip()
-    summary = str(item.get("summary") or "").strip()
-    for candidate in (_first_sentences(body, 2), excerpt, summary):
-        candidate_norm = _normalize_text(candidate)
-        if len(candidate_norm) >= 80:
-            return candidate.strip()
-    return (excerpt or summary or body).strip()
-
-
 def _short_summary(item: dict[str, Any], language: str) -> str:
-    summary = _best_detail_text(item) or str(item.get("summary") or "").strip()
-    excerpt = str(item.get("article_text_excerpt") or "").strip()
+    summary = str(item.get("summary") or "").strip()
     title = str(item.get("title") or "").strip()
     source = str(item.get("source") or "unknown source")
-    if excerpt and summary and excerpt.lower() not in summary.lower():
-        summary = f"{summary} {excerpt}".strip()
-    elif excerpt and not summary:
-        summary = excerpt
+    category = str(item.get("category") or item.get("track_type") or "news").strip()
     if not summary:
         summary = title
-    summary_norm = _normalize_text(summary)
-    title_norm = _normalize_text(title)
-    summary_is_weak = len(summary_norm) < 70 or summary_norm == title_norm
-    if title_norm and summary_norm.startswith(title_norm) and len(summary_norm) < 170:
-        summary_is_weak = True
+    summary_is_weak = len(summary) < 70 or _normalize_text(summary) == _normalize_text(title)
     if summary_is_weak and title:
-        detail_fallback = _best_detail_text(item)
-        if detail_fallback and _normalize_text(detail_fallback) != title_norm:
-            summary = detail_fallback
-        elif excerpt:
-            summary = excerpt
-        elif language == "it":
-            summary = f"{title}. Fonte: {source}."
+        if language == "it":
+            summary = f"{title}. Aggiornamento recente sul tema {category}, pubblicato da {source}."
         elif language == "nl":
-            summary = f"{title}. Bron: {source}."
+            summary = f"{title}. Recente update over {category}, gepubliceerd door {source}."
         else:
-            summary = f"{title}. Source: {source}."
-    if len(summary) > 360:
-        summary = summary[:357].rstrip() + "..."
+            summary = f"{title}. Recent update on {category}, published by {source}."
+    if len(summary) > 220:
+        summary = summary[:217].rstrip() + "..."
     return summary
-
-
-def _looks_low_information_summary(text: str) -> bool:
-    value = _normalize_text(text)
-    if len(value) < 90:
-        return True
-    markers = (
-        "aggiornamento recente sul tema",
-        "recent update on",
-        "recente update over",
-    )
-    lower = value.lower()
-    return any(marker in lower for marker in markers)
 
 
 def deterministic_interpretation(item: dict[str, Any], language: str) -> dict[str, str]:
@@ -238,7 +184,7 @@ def _cache_is_recent(cached_at: str, ttl_hours: int) -> bool:
     return ts >= now_utc() - timedelta(hours=ttl_hours)
 
 
-def get_cached_interpretation(item: dict[str, Any], language: str, ttl_hours: int, db_path: str | None) -> dict[str, Any] | None:
+def get_cached_interpretation(item: dict[str, Any], language: str, ttl_hours: int, db_path: str) -> dict[str, Any] | None:
     cached = db.get_cache_value(_cache_key(item, language), db_path=db_path)
     if not cached:
         return None
@@ -250,7 +196,7 @@ def get_cached_interpretation(item: dict[str, Any], language: str, ttl_hours: in
     return cached
 
 
-def set_cached_interpretation(item: dict[str, Any], language: str, enriched_fields: dict[str, str], db_path: str | None) -> None:
+def set_cached_interpretation(item: dict[str, Any], language: str, enriched_fields: dict[str, str], db_path: str) -> None:
     payload = {
         "cached_at": now_iso(),
         "short_summary": enriched_fields.get("short_summary", ""),
@@ -281,7 +227,6 @@ def call_llm_interpretation(item: dict[str, Any], language: str) -> dict[str, st
         f"Source: {item.get('source', '')}\n"
         f"Category: {item.get('category', item.get('track_type', 'news'))}\n"
         f"Snippet: {item.get('summary', '')}\n"
-        f"Article excerpt: {item.get('article_text_excerpt', '')}\n"
         f"URL: {item.get('url', '')}\n"
     )
     response = llm.call_llm(
@@ -341,7 +286,7 @@ def enrich_items(
     user_context: dict[str, Any],
     budget_ctx: dict[str, Any],
     config: InterpretationConfig,
-    db_path: str | None,
+    db_path: str,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     language = str(user_context.get("language") or "en").strip().lower() or "en"
     max_items = max(1, int(config.max_items_to_output))
@@ -368,9 +313,7 @@ def enrich_items(
         )
         cached_mode = str((cached or {}).get("interpretation_mode") or "").strip().lower()
         cached_has_llm = cached_mode == "llm"
-        cached_summary = str((cached or {}).get("short_summary") or "")
-        cached_usable = cached and not _looks_low_information_summary(cached_summary)
-        if cached_usable and (cached_has_llm or not wants_llm):
+        if cached and (cached_has_llm or not wants_llm):
             cache_hits += 1
             enriched = {
                 **normalized_item,
@@ -446,15 +389,13 @@ def format_for_telegram(enriched_items: list[dict[str, Any]], user_language: str
         emoji = _category_emoji(category)
         label_key = f"{category}_label"
         category_label = str(pack.get(label_key) or category.title())
-        source = str(item.get("source") or "unknown")
-        summary = str(item.get("short_summary") or "").strip()
-        if len(summary) > 280:
-            summary = summary[:277].rstrip() + "..."
         lines.append(f"{emoji} {category_label}")
         lines.append(str(item.get("title") or "Untitled"))
-        if summary:
-            lines.append(summary)
-        lines.append(f"Source: {source}")
+        lines.append(str(item.get("short_summary") or ""))
+        lines.append(f"{pack['why_prefix']}: {item.get('why_it_matters', '')}")
+        action = str(item.get("suggested_action") or "")
+        if action:
+            lines.append(f"{pack['action_prefix']}: {action}")
         lines.append(str(item.get("url") or ""))
         lines.append("")
     return "\n".join(lines).strip()

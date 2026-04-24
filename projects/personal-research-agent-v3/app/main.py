@@ -83,6 +83,16 @@ def run_for_chat_detailed(
             "newsletter": result.newsletter,
             "report": result.report,
             "summary": pipeline.format_console_summary(result),
+            "run_id": result.run_id,
+            "mode": result.mode,
+            "language": result.language,
+            "debug_dir": result.debug_dir,
+            "newsletter_path": result.newsletter_path,
+            "report_path": result.report_path,
+            "selected_counts": result.selected_counts,
+            "enriched_items": result.enriched_items,
+            "telegram_compact": result.telegram_compact,
+            "cost_trace": result.cost_trace,
         }
     except Exception as exc:
         if not fallback_to_stub:

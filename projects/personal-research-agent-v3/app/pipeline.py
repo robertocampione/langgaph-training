@@ -12,15 +12,20 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import parse_qs, quote_plus, urlparse
 
 from app import config as app_config
 from app import db
 from app import db_users
+from app.nodes import interpretation as interpretation_node
 
 
 TRACKS = ("news", "events", "bitcoin")
 DEFAULT_MAX_RESULTS_PER_QUERY = 2
+MAX_ITEMS_TO_PROCESS = 10
+MAX_ITEMS_TO_OUTPUT = 5
+MAX_TOKENS_PER_RUN = 20000
+MAX_LLM_ITEMS_PER_RUN = 3
 TAVILY_ENDPOINT = "https://api.tavily.com/search"
 GOOGLE_NEWS_RSS_ENDPOINT = "https://news.google.com/rss/search"
 LOW_VALUE_DOMAINS = {
@@ -54,6 +59,8 @@ RSS_LOCALE = {
     "it": {"hl": "it", "gl": "IT", "ceid": "IT:it"},
     "nl": {"hl": "nl", "gl": "NL", "ceid": "NL:nl"},
 }
+GOOGLE_NEWS_RESOLVE_TIMEOUT_SECONDS = 7
+URL_RESOLVE_CACHE: dict[str, str] = {}
 
 
 def normalize_language(language: str | None) -> str:
@@ -75,6 +82,9 @@ class PipelineResult:
     selected_counts: dict[str, int]
     mode: str
     language: str
+    enriched_items: list[dict[str, Any]]
+    telegram_compact: str
+    cost_trace: dict[str, Any]
 
 
 def utc_now() -> str:
@@ -186,19 +196,19 @@ def build_queries(user: dict[str, Any], max_topics: int | None = None) -> list[d
     }
     custom_topic_templates = {
         "it": [
-            "{topic} ultime notizie {year}",
-            "{topic} aggiornamenti ufficiali {year}",
-            "{topic} analisi e sviluppi principali {year}",
+            "{topic} ultime notizie oggi",
+            "{topic} aggiornamenti ultime 24 ore",
+            "{topic} sviluppi principali settimana corrente",
         ],
         "nl": [
-            "{topic} laatste updates {year}",
-            "{topic} officieel nieuws {year}",
-            "{topic} analyse en belangrijkste ontwikkelingen {year}",
+            "{topic} laatste nieuws vandaag",
+            "{topic} updates laatste 24 uur",
+            "{topic} belangrijkste ontwikkelingen deze week",
         ],
         "en": [
-            "{topic} latest updates {year}",
-            "{topic} official news {year}",
-            "{topic} analysis and key developments {year}",
+            "{topic} latest news today",
+            "{topic} updates in the last 24 hours",
+            "{topic} key developments this week",
         ],
     }
     query_templates = query_templates_by_language[language]
@@ -303,6 +313,48 @@ def google_news_rss_search(query: str, max_results: int, language: str) -> list[
     return google_news_rss_search_with_locale(query, max_results, RSS_LOCALE["en"])
 
 
+def resolve_google_news_url(raw_url: str, source_url: str = "") -> str:
+    if not raw_url:
+        return raw_url
+    domain = domain_from_url(raw_url)
+    if domain != "news.google.com":
+        return raw_url
+
+    cached = URL_RESOLVE_CACHE.get(raw_url)
+    if cached:
+        return cached
+
+    resolved = raw_url
+    try:
+        request = urllib.request.Request(
+            raw_url,
+            headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) PRA-v3/1.0"},
+            method="GET",
+        )
+        with urllib.request.urlopen(request, timeout=GOOGLE_NEWS_RESOLVE_TIMEOUT_SECONDS) as response:
+            response_url = str(response.geturl() or "").strip()
+            if response_url:
+                resolved = response_url
+    except Exception:
+        resolved = raw_url
+
+    parsed = urlparse(resolved)
+    query = parse_qs(parsed.query)
+    direct_url = (query.get("url", [None])[0] or query.get("u", [None])[0] or "").strip()
+    if direct_url:
+        resolved = direct_url
+
+    # If redirection collapses to a generic publisher homepage, preserve the
+    # Google article URL instead of returning a weak root-domain link.
+    resolved_domain = domain_from_url(resolved)
+    resolved_path = urlparse(resolved).path.strip()
+    if resolved_domain != "news.google.com" and resolved_path in {"", "/"}:
+        resolved = raw_url
+
+    URL_RESOLVE_CACHE[raw_url] = resolved
+    return resolved
+
+
 def fixture_results(track_type: str) -> list[dict[str, Any]]:
     fixtures = {
         "news": [
@@ -378,9 +430,11 @@ def retrieve_candidates(
             results = fixture_results(track_type)
 
         for result in results[:max_results_per_query]:
-            url = str(result.get("url", "")).strip()
-            if not url:
+            raw_url = str(result.get("url", "")).strip()
+            source_url = str(result.get("source_url", "")).strip()
+            if not raw_url:
                 continue
+            url = resolve_google_news_url(raw_url, source_url)
             cached = db.get_article_by_url(url, db_path)
             if cached is not None:
                 cache_hits += 1
@@ -390,9 +444,10 @@ def retrieve_candidates(
                 "query": query_item["query"],
                 "title": str(result.get("title", "")).strip() or url,
                 "url": url,
+                "raw_url": raw_url,
                 "summary": clean_summary(str(result.get("content") or result.get("summary") or "").strip()),
                 "score": float(result.get("score") or 0.0),
-                "source": domain_from_url(str(result.get("source_url") or url)),
+                "source": domain_from_url(str(source_url or url)),
                 "source_label": str(result.get("source_label") or ""),
             }
             candidate["quality_score"] = score_candidate(candidate)
@@ -514,6 +569,8 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
     summary = candidate.get("summary", "").lower()
     track_type = candidate["track_type"]
     source = candidate.get("source", "")
+    if domain_from_url(candidate["url"]) != "news.google.com" and path in {"", "/"}:
+        return "not_article_page", "root_homepage_url"
     if source in LOW_VALUE_DOMAINS:
         return "low_value_source", f"domain={source}"
     if any(part in url for part in ["/tag/", "/category/", "/topics/", "/search", "/archive", "/interest/"]) or any(
@@ -552,6 +609,8 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
             return "not_recent", f"event_age_days={age_days}"
         if track_type == "events" and age_days < -45:
             return "too_far_future", f"event_age_days={age_days}"
+        if track_type not in TRACKS and age_days > 21:
+            return "not_recent", f"custom_topic_age_days={age_days}"
     elif track_type == "events" and not any(word in url + title for word in ["event", "weekend", "maastricht"]):
         return "missing_specific_date", "event_without_date_signal"
     return None, ""
@@ -618,6 +677,79 @@ def selected_counts(items: list[dict[str, Any]], topics: list[str]) -> dict[str,
     return {track: sum(1 for item in items if item["track_type"] == track) for track in topics}
 
 
+def _feedback_delta_from_stats(stats: dict[str, int]) -> float:
+    likes = int(stats.get("like", 0))
+    dislikes = int(stats.get("dislike", 0))
+    delta = 0.0
+    if likes >= 2 and likes > dislikes:
+        delta += min(0.2, 0.05 * (likes - dislikes))
+    if dislikes >= 3 and dislikes > likes:
+        delta -= min(0.3, 0.08 * (dislikes - likes))
+    return delta
+
+
+def apply_feedback_adjustments(
+    validated_items: list[dict[str, Any]],
+    feedback_profile: dict[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    topic_stats = feedback_profile.get("topics", {}) if isinstance(feedback_profile, dict) else {}
+    domain_stats = feedback_profile.get("domains", {}) if isinstance(feedback_profile, dict) else {}
+    adjusted: list[dict[str, Any]] = []
+    adjustments_preview: list[dict[str, Any]] = []
+
+    for item in validated_items:
+        base_score = float(item.get("quality_score", item.get("score", 0.0)))
+        track = str(item.get("track_type") or "").strip().lower()
+        source = str(item.get("source") or "").strip().lower()
+        feedback_delta = 0.0
+        if track and track in topic_stats:
+            feedback_delta += _feedback_delta_from_stats(topic_stats[track])
+        if source and source in domain_stats:
+            feedback_delta += _feedback_delta_from_stats(domain_stats[source])
+        feedback_delta = max(-0.45, min(0.35, feedback_delta))
+        final_score = round(base_score + feedback_delta, 4)
+        adjusted_item = {
+            **item,
+            "base_score": round(base_score, 4),
+            "feedback_delta": round(feedback_delta, 4),
+            "final_score": final_score,
+            "quality_score": final_score,
+        }
+        adjusted.append(adjusted_item)
+        adjustments_preview.append(
+            {
+                "item_id": adjusted_item.get("item_id"),
+                "track_type": track,
+                "source": source,
+                "base_score": adjusted_item["base_score"],
+                "feedback_delta": adjusted_item["feedback_delta"],
+                "final_score": adjusted_item["final_score"],
+            }
+        )
+
+    trace = {
+        "feedback_profile_sample_size": int(feedback_profile.get("sample_size", 0)) if isinstance(feedback_profile, dict) else 0,
+        "feedback_totals": feedback_profile.get("totals", {}) if isinstance(feedback_profile, dict) else {},
+        "applied_items": len(adjusted),
+        "adjustments_preview": adjustments_preview[:20],
+    }
+    return adjusted, trace
+
+
+def cap_items_for_processing(items: list[dict[str, Any]], max_items: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    if len(items) <= max_items:
+        return items, []
+    ranked = sorted(items, key=lambda item: item.get("quality_score", item.get("score", 0.0)), reverse=True)
+    return ranked[:max_items], ranked[max_items:]
+
+
+def trim_selected_items(items: list[dict[str, Any]], max_items: int) -> list[dict[str, Any]]:
+    if len(items) <= max_items:
+        return items
+    ranked = sorted(items, key=lambda item: item.get("final_score", item.get("quality_score", 0.0)), reverse=True)
+    return ranked[:max_items]
+
+
 def quality_flags(counts: dict[str, int], mode_used: str, reason_counts: dict[str, int], topics: list[str]) -> list[str]:
     flags: list[str] = []
     if mode_used in {"fixture_fallback", "web_fallback"}:
@@ -662,6 +794,8 @@ def output_labels_for_language(language: str) -> dict[str, str]:
             "source": "Fonte",
             "why_selected": "Perché selezionato",
             "summary": "Riepilogo",
+            "why_it_matters": "Perché conta",
+            "suggested_action": "Azione suggerita",
             "query": "Query",
             "no_strong_item": "nessun elemento forte selezionato",
         },
@@ -676,6 +810,8 @@ def output_labels_for_language(language: str) -> dict[str, str]:
             "source": "Bron",
             "why_selected": "Waarom geselecteerd",
             "summary": "Samenvatting",
+            "why_it_matters": "Waarom belangrijk",
+            "suggested_action": "Voorgestelde actie",
             "query": "Query",
             "no_strong_item": "geen sterk item geselecteerd",
         },
@@ -690,6 +826,8 @@ def output_labels_for_language(language: str) -> dict[str, str]:
             "source": "Source",
             "why_selected": "Why selected",
             "summary": "Summary",
+            "why_it_matters": "Why it matters",
+            "suggested_action": "Suggested action",
             "query": "Query",
             "no_strong_item": "no strong item selected",
         },
@@ -699,7 +837,7 @@ def output_labels_for_language(language: str) -> dict[str, str]:
 
 def build_outputs(
     user: dict[str, Any],
-    selected: list[dict[str, Any]],
+    enriched_items: list[dict[str, Any]],
     counts: dict[str, int],
     quality: str,
     topics: list[str],
@@ -716,16 +854,21 @@ def build_outputs(
     ]
     for track in topics:
         report_lines.extend(["", f"### {topic_display_name(track, language)}"])
-        track_items = [item for item in selected if item["track_type"] == track]
+        track_items = [item for item in enriched_items if item["track_type"] == track]
         if not track_items:
             report_lines.append(f"- {labels['none_selected']}")
         for item in track_items:
+            score_value = item.get("final_score", item.get("quality_score", item.get("score", 0)))
             report_lines.append(f"- {md_link(item)}")
             report_lines.append(
-                f"  - {labels['source']}: {item.get('source', 'unknown')} | Score: {item.get('quality_score', item.get('score', 0))}"
+                f"  - {labels['source']}: {item.get('source', 'unknown')} | Score: {score_value}"
             )
             report_lines.append(f"  - {labels['why_selected']}: {item.get('selection_reason', 'matched query')}")
-            report_lines.append(f"  - {labels['summary']}: {item.get('summary') or 'No summary available.'}")
+            report_lines.append(f"  - {labels['summary']}: {item.get('short_summary') or item.get('summary') or 'No summary available.'}")
+            report_lines.append(f"  - {labels['why_it_matters']}: {item.get('why_it_matters') or '-'}")
+            action = str(item.get("suggested_action") or "").strip()
+            if action:
+                report_lines.append(f"  - {labels['suggested_action']}: {action}")
             report_lines.append(f"  - {labels['query']}: `{item.get('query', '')}`")
 
     newsletter_lines = [
@@ -735,16 +878,25 @@ def build_outputs(
         f"{labels['selected']}: " + ", ".join(f"{topic}={counts.get(topic, 0)}" for topic in topics),
         "",
     ]
-    for track in topics:
-        track_items = [item for item in selected if item["track_type"] == track]
-        if not track_items:
-            newsletter_lines.append(f"- {track}: {labels['no_strong_item']}")
-            continue
-        for item in track_items[:2]:
-            summary = item.get("summary") or ""
+    if not enriched_items:
+        newsletter_lines.append(f"- {labels['no_strong_item']}")
+    else:
+        for item in enriched_items[:MAX_ITEMS_TO_OUTPUT]:
+            category = str(item.get("track_type") or "news")
+            summary = str(item.get("short_summary") or item.get("summary") or "").strip()
             if len(summary) > 170:
                 summary = summary[:167].rstrip() + "..."
-            newsletter_lines.append(f"- {track}: {md_link(item)} - {summary}")
+            why = str(item.get("why_it_matters") or "").strip()
+            if len(why) > 150:
+                why = why[:147].rstrip() + "..."
+            newsletter_lines.append(f"- {category}: {md_link(item)}")
+            if summary:
+                newsletter_lines.append(f"  - {labels['summary']}: {summary}")
+            if why:
+                newsletter_lines.append(f"  - {labels['why_it_matters']}: {why}")
+            action = str(item.get("suggested_action") or "").strip()
+            if action:
+                newsletter_lines.append(f"  - {labels['suggested_action']}: {action}")
     return "\n".join(report_lines), "\n".join(newsletter_lines)
 
 
@@ -789,6 +941,9 @@ def run_research_digest(
             {"candidate_count": len(candidates), "trace": retrieval_trace, "candidate_preview": candidates[:10]},
         )
         validated, rejected, reason_counts = validate_candidates(candidates)
+        processing_candidates, processing_skipped = cap_items_for_processing(validated, MAX_ITEMS_TO_PROCESS)
+        feedback_profile = db.feedback_profile_for_user(user_id=int(user["id"]), db_path=config.db_path)
+        adjusted_validated, feedback_trace = apply_feedback_adjustments(processing_candidates, feedback_profile)
         write_json(
             debug_dir / "02_validator.json",
             "validator",
@@ -797,18 +952,89 @@ def run_research_digest(
             {
                 "candidate_count": len(candidates),
                 "valid_count": len(validated),
+                "valid_count_after_processing_cap": len(processing_candidates),
                 "rejected_count": len(rejected),
+                "processing_skipped_count": len(processing_skipped),
                 "reason_counts": reason_counts,
                 "tracks_seen": sorted({item["track_type"] for item in candidates}),
-                "validated_preview": validated[:10],
+                "validated_preview": adjusted_validated[:10],
                 "rejected_preview": rejected[:10],
+                "feedback_adjustment": feedback_trace,
             },
         )
-        selected = select_items(validated, topics_for_run)
+        selected = select_items(adjusted_validated, topics_for_run)
+        selected = trim_selected_items(selected, MAX_ITEMS_TO_OUTPUT)
         counts = selected_counts(selected, topics_for_run)
         flags = quality_flags(counts, retrieval_trace["mode_used"], reason_counts, topics_for_run)
         quality = quality_status(flags)
-        report, newsletter = build_outputs(user, selected, counts, quality, topics_for_run, run_language)
+        interpretation_config = interpretation_node.InterpretationConfig(
+            max_items_to_output=MAX_ITEMS_TO_OUTPUT,
+            max_tokens_per_run=MAX_TOKENS_PER_RUN,
+            max_llm_items_per_run=MAX_LLM_ITEMS_PER_RUN,
+        )
+        budget_ctx: dict[str, Any] = {
+            "tokens_used_estimate": 0,
+            "llm_calls": 0,
+            "llm_fallbacks": 0,
+            "budget_exceeded": False,
+        }
+        enriched_items, interpretation_trace = interpretation_node.enrich_items(
+            selected_items=selected,
+            user_context={"language": run_language},
+            budget_ctx=budget_ctx,
+            config=interpretation_config,
+            db_path=config.db_path,
+        )
+        telegram_compact = interpretation_node.format_for_telegram(
+            enriched_items,
+            user_language=run_language,
+            max_items=MAX_ITEMS_TO_OUTPUT,
+        )
+        report, newsletter = build_outputs(user, enriched_items, counts, quality, topics_for_run, run_language)
+        cost_trace = {
+            "max_items_to_process": MAX_ITEMS_TO_PROCESS,
+            "max_items_to_output": MAX_ITEMS_TO_OUTPUT,
+            "max_tokens_per_run": MAX_TOKENS_PER_RUN,
+            "max_llm_items_per_run": MAX_LLM_ITEMS_PER_RUN,
+            "processed_items": len(processing_candidates),
+            "skipped_items_processing_limit": len(processing_skipped),
+            "llm_calls": int(interpretation_trace.get("llm_calls", 0)),
+            "tokens_used_estimate": int(interpretation_trace.get("tokens_used_estimate", 0)),
+            "cached_hits": int(interpretation_trace.get("cache_hits", 0)),
+            "skipped_items": int(interpretation_trace.get("skipped_items", 0)),
+            "budget_exceeded": bool(interpretation_trace.get("budget_exceeded", False)),
+            "llm_enabled": bool(interpretation_trace.get("llm_enabled", False)),
+            "llm_providers_configured": interpretation_trace.get("llm_providers_configured", []),
+            "llm_providers_used": interpretation_trace.get("llm_providers_used", []),
+            "llm_models_used": interpretation_trace.get("llm_models_used", []),
+            "feedback_adjustment": feedback_trace,
+        }
+        scored_items = [
+            {
+                "item_id": item.get("item_id"),
+                "track_type": item.get("track_type"),
+                "source": item.get("source"),
+                "base_score": item.get("base_score"),
+                "feedback_delta": item.get("feedback_delta"),
+                "final_score": item.get("final_score", item.get("quality_score")),
+                "interpretation_mode": item.get("interpretation_mode", "deterministic"),
+                "llm_provider": item.get("llm_provider", ""),
+                "llm_model": item.get("llm_model", ""),
+                "language": item.get("language", run_language),
+            }
+            for item in enriched_items
+        ]
+        write_json(
+            debug_dir / "03_interpretation.json",
+            "interpretation",
+            retrieval_trace["mode_used"],
+            context,
+            {
+                "enriched_count": len(enriched_items),
+                "cost_trace": cost_trace,
+                "items": scored_items,
+            },
+        )
         report_path = debug_dir / "report.md"
         newsletter_path = debug_dir / "newsletter.md"
         report_path.write_text(report, encoding="utf-8")
@@ -823,6 +1049,8 @@ def run_research_digest(
                 "newsletter_len": len(newsletter),
                 "selected_counts": counts,
                 "quality_gate_status": {"status": quality, "selected": counts, "mode": retrieval_trace["mode_used"], "flags": flags},
+                "cost_trace": cost_trace,
+                "selected_items_scored": scored_items,
             },
         )
         write_json(
@@ -840,6 +1068,8 @@ def run_research_digest(
                     "quality_gate_status": {"status": quality, "selected": counts, "flags": flags},
                     "quality_flags_summary": flags,
                     "retrieval_trace": retrieval_trace,
+                    "cost_trace": cost_trace,
+                    "selected_items_scored": scored_items,
                 },
             },
         )
@@ -862,6 +1092,9 @@ def run_research_digest(
             selected_counts=counts,
             mode=retrieval_trace["mode_used"],
             language=run_language,
+            enriched_items=enriched_items,
+            telegram_compact=telegram_compact,
+            cost_trace=cost_trace,
         )
     except Exception as exc:
         write_json(debug_dir / "error.json", "error", mode, context, {"error": str(exc)})

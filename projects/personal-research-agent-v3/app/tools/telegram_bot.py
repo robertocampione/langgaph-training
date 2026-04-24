@@ -22,6 +22,13 @@ from app import main as agent_main  # noqa: E402
 LOGGER = logging.getLogger(__name__)
 SUPPORTED_LANGUAGES = {"en", "it", "nl"}
 TELEGRAM_MESSAGE_LIMIT = 4096
+MAX_TELEGRAM_ITEMS = 5
+
+VOTE_TO_RATING = {
+    "dislike": 1,
+    "star": 4,
+    "like": 5,
+}
 
 
 def split_message(text: str, limit: int = TELEGRAM_MESSAGE_LIMIT) -> list[str]:
@@ -46,7 +53,7 @@ def greeting_for(user: dict[str, Any]) -> str:
         f"Hi {user['name']}. Personal Research Agent v3 is ready.\n"
         f"Language: {user['language']}\n"
         f"Topics: {topics}\n\n"
-        "Commands: /ping, /run, /topics juventus, /topics juventus, bitcoin, /language en, /feedback 5 useful notes"
+        "Commands: /ping, /run, /topics juventus, bitcoin, /language en, /feedback 5 useful notes"
     )
 
 
@@ -77,6 +84,44 @@ async def send_text(update: Any, text: str) -> None:
         return
     for chunk in split_message(text):
         await update.effective_chat.send_message(chunk)
+
+
+def _feedback_labels(language: str) -> tuple[str, str]:
+    if language == "it":
+        return ("Valuta questo item:", "Grazie, feedback per-item salvato.")
+    if language == "nl":
+        return ("Beoordeel dit item:", "Bedankt, item-feedback opgeslagen.")
+    return ("Rate this item:", "Thanks, item feedback saved.")
+
+
+async def send_markdown_file(update: Any, path: str, caption: str) -> bool:
+    chat = update.effective_chat
+    if chat is None:
+        return False
+    file_path = Path(path)
+    if not file_path.exists():
+        return False
+    try:
+        with file_path.open("rb") as handle:
+            await chat.send_document(document=handle, filename=file_path.name, caption=caption)
+        return True
+    except Exception:
+        LOGGER.exception("Unable to send file %s", file_path)
+        return False
+
+
+def item_feedback_keyboard(item_id: str) -> Any:
+    from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
+    return InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("👎", callback_data=f"fb:{item_id}:dislike"),
+                InlineKeyboardButton("⭐", callback_data=f"fb:{item_id}:star"),
+                InlineKeyboardButton("👍", callback_data=f"fb:{item_id}:like"),
+            ]
+        ]
+    )
 
 
 async def start_handler(update: Any, context: Any) -> None:
@@ -119,18 +164,32 @@ async def run_handler(update: Any, context: Any) -> None:
         LOGGER.exception("Pipeline run failed for chat_id=%s", chat.id)
         await send_text(update, "Sorry, I could not process that request.")
         return
-    
-    # Send summary first
+
     if result.get("summary"):
         await send_text(update, result["summary"])
-    
-    # Send newsletter
-    if result.get("newsletter"):
-        await send_text(update, f"📰 **Newsletter**\n\n{result['newsletter']}")
-    
-    # Send report
-    if result.get("report"):
-        await send_text(update, f"📋 **Report**\n\n{result['report']}")
+
+    language = str(result.get("language") or "en").strip().lower()
+    compact = str(result.get("telegram_compact") or "").strip()
+    if compact:
+        await send_text(update, compact)
+
+    enriched_items = result.get("enriched_items", [])
+    prompt_label, _ = _feedback_labels(language)
+    for item in enriched_items[:MAX_TELEGRAM_ITEMS]:
+        item_id = str(item.get("item_id") or "").strip()
+        title = str(item.get("title") or "Untitled")
+        url = str(item.get("url") or "")
+        if not item_id:
+            continue
+        text = f"{prompt_label}\n{title}\n{url}".strip()
+        await chat.send_message(text=text, reply_markup=item_feedback_keyboard(item_id))
+
+    newsletter_sent = await send_markdown_file(update, str(result.get("newsletter_path") or ""), "Newsletter")
+    report_sent = await send_markdown_file(update, str(result.get("report_path") or ""), "Report")
+    if not newsletter_sent and result.get("newsletter"):
+        await send_text(update, result["newsletter"])
+    if not report_sent and result.get("report"):
+        await send_text(update, result["report"])
 
 
 async def topics_handler(update: Any, context: Any) -> None:
@@ -198,6 +257,51 @@ async def feedback_handler(update: Any, context: Any) -> None:
     await send_text(update, f"Thanks. Feedback saved with id {feedback_id}.")
 
 
+async def item_feedback_callback_handler(update: Any, context: Any) -> None:
+    query = getattr(update, "callback_query", None)
+    if query is None:
+        return
+    data = str(query.data or "").strip()
+    parts = data.split(":")
+    if len(parts) != 3 or parts[0] != "fb":
+        await query.answer("Invalid feedback action.", show_alert=False)
+        return
+    _, item_id, vote = parts
+    rating = VOTE_TO_RATING.get(vote)
+    if rating is None:
+        await query.answer("Invalid vote.", show_alert=False)
+        return
+
+    config = app_config.load_app_config()
+    chat = update.effective_chat if update.effective_chat is not None else getattr(query.message, "chat", None)
+    if chat is None:
+        await query.answer("Chat not found.", show_alert=False)
+        return
+    user = db_users.ensure_user(chat_id=int(chat.id), db_path=config.db_path)
+    notes = f"telegram_item_vote:{vote}"
+    try:
+        feedback_id = db.create_feedback(
+            user_id=int(user["id"]),
+            article_id=item_id,
+            rating=rating,
+            notes=notes,
+            db_path=config.db_path,
+        )
+    except Exception:
+        LOGGER.exception("Failed to persist item feedback item_id=%s chat_id=%s", item_id, chat.id)
+        await query.answer("Could not save feedback.", show_alert=False)
+        return
+    language = db_users.get_user_language(chat_id=int(chat.id), db_path=config.db_path) or config.default_language
+    _, ack = _feedback_labels(str(language).strip().lower())
+    try:
+        await query.answer(ack, show_alert=False)
+        if query.message is not None:
+            await query.message.reply_text(f"{ack} (id={feedback_id})")
+            await query.edit_message_reply_markup(reply_markup=None)
+    except Exception:
+        LOGGER.exception("Could not ack callback feedback for chat_id=%s", chat.id)
+
+
 async def fallback_handler(update: Any, context: Any) -> None:
     text = update.message.text.strip() if update.message and update.message.text else ""
     if text:
@@ -205,7 +309,7 @@ async def fallback_handler(update: Any, context: Any) -> None:
 
 
 def build_application(token: str) -> Any:
-    from telegram.ext import Application, CommandHandler, MessageHandler, filters
+    from telegram.ext import Application, CallbackQueryHandler, CommandHandler, MessageHandler, filters
 
     application = Application.builder().token(token).build()
     application.add_handler(CommandHandler("start", start_handler))
@@ -214,6 +318,7 @@ def build_application(token: str) -> Any:
     application.add_handler(CommandHandler(["topics", "settopics"], topics_handler))
     application.add_handler(CommandHandler("language", language_handler))
     application.add_handler(CommandHandler("feedback", feedback_handler))
+    application.add_handler(CallbackQueryHandler(item_feedback_callback_handler, pattern=r"^fb:[^:]+:(like|dislike|star)$"))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, fallback_handler))
     return application
 

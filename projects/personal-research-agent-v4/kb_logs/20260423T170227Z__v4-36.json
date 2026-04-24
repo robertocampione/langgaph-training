@@ -1,0 +1,179 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 0,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "4ff3d4e5fd942875bdae2e39",
+          "source": "dutchnews.nl",
+          "track_type": "netherlands economic policy"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "53b11725d374d871fb782666",
+          "source": "dutchtimes.nl",
+          "track_type": "netherlands economic policy"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "e735c41a571e65eec316e3dd",
+          "source": "analyticsinsight.net",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "a97284af76163608a86af85b",
+          "source": "livebitcoinnews.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "bd43da4b792ce96e6fb9937f",
+          "source": "analyticsinsight.net",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "05eec897e824c50c049afacf",
+          "source": "msn.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "bae7f2961e36584cf174d583",
+          "source": "blockonomi.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "fbb62df44e1fb2966a3df923",
+          "source": "msn.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "3d64bc862c06f23f5c0775c7",
+          "source": "ndtvprofit.com",
+          "track_type": "global finance report"
+        },
+        {
+          "base_score": 0.75,
+          "feedback_delta": 0.0,
+          "final_score": 0.75,
+          "item_id": "2492951d5a6bd74652ad8d2f",
+          "source": "freiheit.org",
+          "track_type": "netherlands economic policy"
+        }
+      ],
+      "applied_items": 10,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 3,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 10,
+    "skipped_items": 2,
+    "skipped_items_processing_limit": 7,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 1234
+  },
+  "created_at": "2026-04-23T17:02:27+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 2,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin price action": [],
+      "global finance report": [],
+      "maastricht family events": [],
+      "netherlands economic policy": []
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback",
+    "missing_maastricht family events",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 4,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 3,
+    "mode_requested": "web_fallback",
+    "mode_used": "web_fallback",
+    "providers_used": [
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss"
+    ],
+    "query_count": 12,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 36,
+    "retrieval_provider": "bing_news_rss,google_news_rss",
+    "retriever": "bing_news_rss,google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-36",
+  "selected_counts": {
+    "bitcoin price action": 2,
+    "global finance report": 1,
+    "maastricht family events": 0,
+    "netherlands economic policy": 2
+  }
+}

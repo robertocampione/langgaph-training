@@ -1,0 +1,170 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 0,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "259fe5628526d69f2fa1b53a",
+          "source": "bitcoinmagazine.nl",
+          "track_type": "bitcoin quantistic fud?"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "524e109d84182a3b6e1ce6e3",
+          "source": "newsbit.nl",
+          "track_type": "bitcoin latest price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "d29d2d25bbd88b5a565d01e5",
+          "source": "msn.com",
+          "track_type": "bitcoin latest price action"
+        }
+      ],
+      "applied_items": 3,
+      "feedback_profile_sample_size": 4,
+      "feedback_totals": {
+        "dislike": 3,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 3,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 3,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 1222
+  },
+  "created_at": "2026-04-23T19:40:55+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 10,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin latest price action": [],
+      "bitcoin quantistic fud?": [],
+      "events eventi o festival a maastricht e dintorni nel weekend": [],
+      "finance geopolitic": [],
+      "italy news palermo": [],
+      "netherlands main news": []
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback",
+    "missing_events eventi o festival a maastricht e dintorni nel weekend",
+    "missing_finance geopolitic",
+    "missing_italy news palermo",
+    "missing_netherlands main news",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 2,
+    "fallback_chain": [
+      "query_relaxation_post_validation"
+    ],
+    "live_errors": [],
+    "max_results_per_query": 3,
+    "mode_requested": "web_fallback",
+    "mode_used": "web_fallback",
+    "providers_used": [
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss+google_news_rss"
+    ],
+    "query_count": 24,
+    "query_count_initial": 24,
+    "query_count_relaxed": 24,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 72,
+    "retrieval_provider": "bing_news_rss,bing_news_rss+google_news_rss,google_news_rss",
+    "retriever": "bing_news_rss,bing_news_rss+google_news_rss,google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-60",
+  "selected_counts": {
+    "bitcoin latest price action": 2,
+    "bitcoin quantistic fud?": 1,
+    "events eventi o festival a maastricht e dintorni nel weekend": 0,
+    "finance geopolitic": 0,
+    "italy news palermo": 0,
+    "netherlands main news": 0
+  }
+}

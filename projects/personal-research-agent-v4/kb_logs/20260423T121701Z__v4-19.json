@@ -1,0 +1,188 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 1,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.2,
+          "feedback_delta": 0.0,
+          "final_score": 1.2,
+          "item_id": "a87f1d05ab4bf3f1e88bc2c1",
+          "source": "coindesk.com",
+          "track_type": "bitcoin"
+        },
+        {
+          "base_score": 1.2,
+          "feedback_delta": 0.0,
+          "final_score": 1.2,
+          "item_id": "baae8707d4584f63c8c912c9",
+          "source": "coindesk.com",
+          "track_type": "bitcoin"
+        },
+        {
+          "base_score": 1.1,
+          "feedback_delta": 0.0,
+          "final_score": 1.1,
+          "item_id": "c9a26cd5bcc4a15b4d2fcc4f",
+          "source": "coinjournal.net",
+          "track_type": "bitcoin"
+        },
+        {
+          "base_score": 1.0,
+          "feedback_delta": 0.0,
+          "final_score": 1.0,
+          "item_id": "f6066934294a75f77a1f2b8e",
+          "source": "news.google.com",
+          "track_type": "events"
+        },
+        {
+          "base_score": 1.0,
+          "feedback_delta": 0.0,
+          "final_score": 1.0,
+          "item_id": "cf88be3898166dcf059d36a5",
+          "source": "news.google.com",
+          "track_type": "events"
+        },
+        {
+          "base_score": 1.0,
+          "feedback_delta": 0.0,
+          "final_score": 1.0,
+          "item_id": "0604b96913d7586606c1e03c",
+          "source": "news.google.com",
+          "track_type": "events"
+        },
+        {
+          "base_score": 0.95,
+          "feedback_delta": 0.0,
+          "final_score": 0.95,
+          "item_id": "1eebb4c2be8fc993e73b3237",
+          "source": "news.google.com",
+          "track_type": "news"
+        },
+        {
+          "base_score": 0.95,
+          "feedback_delta": 0.0,
+          "final_score": 0.95,
+          "item_id": "be1697922b33e9d6295c6ddd",
+          "source": "news.google.com",
+          "track_type": "news"
+        },
+        {
+          "base_score": 0.95,
+          "feedback_delta": 0.0,
+          "final_score": 0.95,
+          "item_id": "6b9c7462fa59e5e9052105e4",
+          "source": "news.google.com",
+          "track_type": "news"
+        },
+        {
+          "base_score": 0.95,
+          "feedback_delta": 0.0,
+          "final_score": 0.95,
+          "item_id": "1a7ce6f1f27163ddb5cd62f9",
+          "source": "news.google.com",
+          "track_type": "news"
+        }
+      ],
+      "applied_items": 10,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 3,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 10,
+    "skipped_items": 1,
+    "skipped_items_processing_limit": 3,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 1298
+  },
+  "created_at": "2026-04-23T12:17:01+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 1,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin": [
+        "market",
+        "core-dev",
+        "onchain"
+      ],
+      "events": [
+        "local-calendar",
+        "family",
+        "culture"
+      ],
+      "news": [
+        "safety",
+        "economy",
+        "infrastructure"
+      ]
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 4,
+    "fallback_chain": [
+      "live->web_fallback:google_news_rss"
+    ],
+    "live_errors": [
+      "Tavily retrieval failed: HTTP 432: {\"detail\":{\"error\":\"This request exceeds your plan's set usage limit. Please upgrade your plan or contact support@tavily.com\"}}"
+    ],
+    "max_results_per_query": 2,
+    "mode_requested": "live",
+    "mode_used": "web_fallback",
+    "providers_used": [
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss"
+    ],
+    "query_count": 9,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 18,
+    "retrieval_provider": "bing_news_rss,google_news_rss",
+    "retriever": "bing_news_rss,google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-19",
+  "selected_counts": {
+    "bitcoin": 2,
+    "events": 2,
+    "news": 1
+  }
+}

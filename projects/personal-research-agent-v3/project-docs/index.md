@@ -33,6 +33,8 @@ Trace-validating smoke test:
 python3 scripts/smoke_test_pipeline.py --mode live --max-results-per-query 1
 ```
 
+The smoke test also checks deterministic rejection of known weak page shapes: generic news aggregators, event-calendar listings, and Bitcoin newsletter/index pages.
+
 ## Telegram
 
 Run a configuration-only check without a token:

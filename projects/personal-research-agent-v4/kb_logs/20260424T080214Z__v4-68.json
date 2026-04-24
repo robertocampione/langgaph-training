@@ -1,0 +1,393 @@
+{
+  "analyst_reasoning": {
+    "rejection_path": [],
+    "selected_items": [
+      {
+        "base_score": 0.99,
+        "feedback_delta": 0.0,
+        "final_score": 1.09,
+        "item_id": "4951470f3362da27b04a2d37",
+        "query": "netherlands economic policy nl-NL fiscal policy monetary policy latest news today when:14d",
+        "query_language": "en",
+        "selection_reason": "matched netherlands economic policy query from example.com",
+        "source": "example.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "netherlands economic policy"
+      },
+      {
+        "base_score": 1.23,
+        "feedback_delta": 0.0,
+        "final_score": 1.33,
+        "item_id": "66afac611159f878cbd8efc6",
+        "query": "maastricht family events it-IT family activities children events upcoming events dates location when:14d",
+        "query_language": "en",
+        "selection_reason": "matched maastricht family events query from example.com",
+        "source": "example.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "maastricht family events"
+      },
+      {
+        "base_score": 1.95,
+        "feedback_delta": 0.0,
+        "final_score": 2.05,
+        "item_id": "c884cf10db528e9459d7ed5f",
+        "query": "bitcoin price action price market trends latest news today when:14d",
+        "query_language": "en",
+        "selection_reason": "preferred bitcoin price action source: github.com",
+        "source": "github.com",
+        "source_type": "report",
+        "topic_scope_decision": "local",
+        "track_type": "bitcoin price action"
+      },
+      {
+        "base_score": 0.99,
+        "feedback_delta": 0.0,
+        "final_score": 1.09,
+        "item_id": "375659ea060300049070706a",
+        "query": "global finance report economic growth inflation latest news today when:14d",
+        "query_language": "en",
+        "selection_reason": "matched global finance report query from example.com",
+        "source": "example.com",
+        "source_type": "article",
+        "topic_scope_decision": "global",
+        "track_type": "global finance report"
+      }
+    ],
+    "topics": {
+      "bitcoin price action": {
+        "intent": "monitor",
+        "locales": [
+          "it"
+        ],
+        "queries": [
+          "bitcoin price action price market trends latest news today when:14d",
+          "bitcoin price action price market trends updates in the last 24 hours when:14d",
+          "bitcoin price action price market trends key developments this week when:14d",
+          "bitcoin price action price when:14d",
+          "bitcoin price action market trends when:14d"
+        ],
+        "query_languages": [
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "auto",
+        "subtopics_selected": [
+          "price",
+          "market-trends",
+          "technical-analysis"
+        ],
+        "time_window_days": 14,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "auto",
+        "track_family": "bitcoin"
+      },
+      "global finance report": {
+        "intent": "Provide a comprehensive overview of the current global financial landscape, highlighting key economic indicators and trends.",
+        "locales": [
+          "it"
+        ],
+        "queries": [
+          "global finance report economic growth inflation latest news today when:14d",
+          "global finance report economic growth inflation updates in the last 24 hours when:14d",
+          "global finance report economic growth inflation key developments this week when:14d",
+          "global finance report economic growth when:14d",
+          "global finance report inflation when:14d"
+        ],
+        "query_languages": [
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "global",
+        "subtopics_selected": [
+          "economic-growth",
+          "inflation",
+          "interest-rates"
+        ],
+        "time_window_days": 30,
+        "topic_scope_decision": "global",
+        "topic_scope_source": "override",
+        "track_family": "finance"
+      },
+      "maastricht family events": {
+        "intent": "research family events",
+        "locales": [
+          "it-IT"
+        ],
+        "queries": [
+          "maastricht family events it-IT family activities children events upcoming events dates location when:14d",
+          "maastricht family events it-IT family activities children events weekend calendar when:14d",
+          "maastricht family events it-IT family activities children events official event schedule when:14d",
+          "maastricht family events family activities when:14d",
+          "maastricht family events children events when:14d"
+        ],
+        "query_languages": [
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "family-activities",
+          "children-events",
+          "parenting-resources"
+        ],
+        "time_window_days": 14,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "events"
+      },
+      "netherlands economic policy": {
+        "intent": "research",
+        "locales": [
+          "nl-NL"
+        ],
+        "queries": [
+          "netherlands economic policy nl-NL fiscal policy monetary policy latest news today when:14d",
+          "netherlands economic policy nl-NL fiscal policy monetary policy updates in the last 24 hours when:14d",
+          "netherlands economic policy nl-NL fiscal policy monetary policy key developments this week when:14d",
+          "netherlands economic policy fiscal policy when:14d",
+          "netherlands economic policy monetary policy when:14d"
+        ],
+        "query_languages": [
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "fiscal-policy",
+          "monetary-policy",
+          "trade-policy"
+        ],
+        "time_window_days": 90,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "finance"
+      }
+    }
+  },
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 4,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 0.99,
+          "feedback_delta": 0.0,
+          "final_score": 0.99,
+          "item_id": "4951470f3362da27b04a2d37",
+          "source": "example.com",
+          "track_type": "netherlands economic policy"
+        },
+        {
+          "base_score": 1.23,
+          "feedback_delta": 0.0,
+          "final_score": 1.23,
+          "item_id": "66afac611159f878cbd8efc6",
+          "source": "example.com",
+          "track_type": "maastricht family events"
+        },
+        {
+          "base_score": 1.95,
+          "feedback_delta": 0.0,
+          "final_score": 1.95,
+          "item_id": "c884cf10db528e9459d7ed5f",
+          "source": "github.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.99,
+          "feedback_delta": 0.0,
+          "final_score": 0.99,
+          "item_id": "375659ea060300049070706a",
+          "source": "example.com",
+          "track_type": "global finance report"
+        }
+      ],
+      "applied_items": 4,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 0,
+    "llm_enabled": true,
+    "llm_models_used": [],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 4,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 0
+  },
+  "created_at": "2026-04-24T08:02:14+00:00",
+  "mode": "fixture",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 4,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin price action": [
+        "price",
+        "market-trends",
+        "technical-analysis"
+      ],
+      "global finance report": [
+        "economic-growth",
+        "inflation",
+        "interest-rates"
+      ],
+      "maastricht family events": [
+        "family-activities",
+        "children-events",
+        "parenting-resources"
+      ],
+      "netherlands economic policy": [
+        "fiscal-policy",
+        "monetary-policy",
+        "trade-policy"
+      ]
+    },
+    "topic_settings": {
+      "bitcoin price action": {
+        "confirmed": false,
+        "geo_scope": "auto",
+        "locales": [
+          "it"
+        ],
+        "objective": "monitor",
+        "priority": 0.7,
+        "subtopics": [
+          "price",
+          "market-trends",
+          "technical-analysis",
+          "investor-sentiment"
+        ],
+        "time_window_days": 14,
+        "topic_name": "bitcoin price action"
+      },
+      "global finance report": {
+        "confirmed": false,
+        "geo_scope": "global",
+        "locales": [
+          "it"
+        ],
+        "objective": "Provide a comprehensive overview of the current global financial landscape, highlighting key economic indicators and trends.",
+        "priority": 0.8,
+        "subtopics": [
+          "economic-growth",
+          "inflation",
+          "interest-rates",
+          "unemployment"
+        ],
+        "time_window_days": 30,
+        "topic_name": "global finance report"
+      },
+      "maastricht family events": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "it-IT"
+        ],
+        "objective": "research family events",
+        "priority": 0.8,
+        "subtopics": [
+          "family-activities",
+          "children-events",
+          "parenting-resources",
+          "local-entertainment"
+        ],
+        "time_window_days": 14,
+        "topic_name": "maastricht family events"
+      },
+      "netherlands economic policy": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "nl-NL"
+        ],
+        "objective": "research",
+        "priority": 0.8,
+        "subtopics": [
+          "fiscal-policy",
+          "monetary-policy",
+          "trade-policy",
+          "labor-market-policy"
+        ],
+        "time_window_days": 90,
+        "topic_name": "netherlands economic policy"
+      }
+    }
+  },
+  "quality_flags": [],
+  "quality_status": "ok",
+  "retrieval_trace": {
+    "cache_hits": 20,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 1,
+    "mode_requested": "fixture",
+    "mode_used": "fixture",
+    "providers_used": [
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture"
+    ],
+    "query_count": 20,
+    "query_languages": [
+      "en"
+    ],
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 20,
+    "retrieval_provider": "fixture",
+    "retriever": "fixture",
+    "topic_scope_decisions": {
+      "bitcoin price action": "local",
+      "global finance report": "global",
+      "maastricht family events": "local",
+      "netherlands economic policy": "local"
+    },
+    "web_errors": []
+  },
+  "run_id": "v4-68",
+  "selected_counts": {
+    "bitcoin price action": 1,
+    "global finance report": 1,
+    "maastricht family events": 1,
+    "netherlands economic policy": 1
+  }
+}

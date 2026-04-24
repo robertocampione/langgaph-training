@@ -38,6 +38,25 @@ source .env
 set +a
 ```
 
+### LLM Routing (Generic Names)
+
+The interpretation layer now uses generic role-based names:
+
+- `LLM_PROVIDER`: default provider (`google`, `openrouter`, `openai`)
+- `LLM_FALLBACK_PROVIDERS`: comma-separated fallback order
+- `LLM_MODEL`: global fallback model
+- `LLM_UTILITY_MODEL`, `LLM_REASONING_MODEL`, `LLM_WEB_MODEL`: role-specific models
+- `LLM_UTILITY_PROVIDER`, `LLM_REASONING_PROVIDER`, `LLM_WEB_PROVIDER`: optional role-specific provider overrides
+- `LLM_ENABLED`: hard on/off switch for LLM calls
+
+Supported keys:
+
+- `GOOGLE_API_KEY`
+- `OPENROUTER_API_KEY`
+- `OPENAI_API_KEY`
+
+Backward compatibility remains for `INTERPRET_WITH_LLM` and `PRA_FAST_MODEL`.
+
 ## Run
 
 From this folder:
@@ -61,6 +80,8 @@ Or run the trace-validating smoke script:
 python3 scripts/smoke_test_pipeline.py --mode fixture --max-results-per-query 1
 python3 scripts/smoke_test_pipeline.py --mode live --max-results-per-query 1
 ```
+
+The pipeline prefers source-specific queries and rejects common low-value listing pages such as search pages, event calendars, generic news aggregators, and Bitcoin index pages. If the live retriever is unavailable or capped, the run falls back to fixture mode and records `quality=warn` with a `retrieval_fallback` trace flag.
 
 ## Users and Persistence
 

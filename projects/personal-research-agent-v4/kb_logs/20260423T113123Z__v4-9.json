@@ -1,0 +1,107 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 2,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.5,
+          "feedback_delta": 0.0,
+          "final_score": 1.5,
+          "item_id": "92bda5c61cc360a159010a03",
+          "source": "bitcoinops.org",
+          "track_type": "bitcoin"
+        },
+        {
+          "base_score": 1.15,
+          "feedback_delta": 0.0,
+          "final_score": 1.15,
+          "item_id": "d08f53005f2e68ec9820a92f",
+          "source": "coindesk.com",
+          "track_type": "bitcoin"
+        }
+      ],
+      "applied_items": 2,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 0,
+    "llm_enabled": true,
+    "llm_models_used": [],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 2,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 0
+  },
+  "created_at": "2026-04-23T11:31:23+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 1,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin": [
+        "market",
+        "core-dev",
+        "onchain"
+      ],
+      "events": [
+        "local-calendar",
+        "family",
+        "culture"
+      ],
+      "news": [
+        "safety",
+        "economy",
+        "infrastructure"
+      ]
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback",
+    "missing_news",
+    "missing_events"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 2,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 1,
+    "mode_requested": "web_fallback",
+    "mode_used": "web_fallback",
+    "query_count": 9,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 9,
+    "retrieval_provider": "google_news_rss",
+    "retriever": "google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-9",
+  "selected_counts": {
+    "bitcoin": 2,
+    "events": 0,
+    "news": 0
+  }
+}

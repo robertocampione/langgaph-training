@@ -65,11 +65,57 @@ def run_for_chat(
         return readiness_stub(effective_chat_id) + f" Fallback reason: {exc}"
 
 
+def run_for_chat_detailed(
+    chat_id: int | None = None,
+    mode: str = "auto",
+    max_results_per_query: int = pipeline.DEFAULT_MAX_RESULTS_PER_QUERY,
+    fallback_to_stub: bool = True,
+) -> dict:
+    """Run the v3 digest pipeline and return newsletter and report content."""
+    effective_chat_id = chat_id if chat_id is not None else 0
+    try:
+        result = pipeline.run_research_digest(
+            chat_id=effective_chat_id,
+            mode=mode,
+            max_results_per_query=max_results_per_query,
+        )
+        return {
+            "newsletter": result.newsletter,
+            "report": result.report,
+            "summary": pipeline.format_console_summary(result),
+            "run_id": result.run_id,
+            "mode": result.mode,
+            "language": result.language,
+            "debug_dir": result.debug_dir,
+            "newsletter_path": result.newsletter_path,
+            "report_path": result.report_path,
+            "selected_counts": result.selected_counts,
+            "enriched_items": result.enriched_items,
+            "telegram_compact": result.telegram_compact,
+            "cost_trace": result.cost_trace,
+        }
+    except Exception as exc:
+        if not fallback_to_stub:
+            raise
+        fallback_msg = readiness_stub(effective_chat_id) + f" Fallback reason: {exc}"
+        return {
+            "newsletter": "",
+            "report": "",
+            "summary": fallback_msg,
+            "error": True,
+        }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=None, help="External chat identifier for the run.")
     parser.add_argument("--init-db", action="store_true", help="Initialize the DB and seed configured users before running.")
-    parser.add_argument("--mode", choices=("auto", "live", "fixture"), default="auto", help="Retrieval mode.")
+    parser.add_argument(
+        "--mode",
+        choices=("auto", "live", "web_fallback", "fixture"),
+        default="auto",
+        help="Retrieval mode.",
+    )
     parser.add_argument("--max-results-per-query", type=int, default=pipeline.DEFAULT_MAX_RESULTS_PER_QUERY, help="Bounded retrieval cap.")
     parser.add_argument("--no-fallback", action="store_true", help="Raise pipeline errors instead of returning the readiness stub.")
     args = parser.parse_args()

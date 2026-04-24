@@ -1,0 +1,152 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 4,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.0,
+          "feedback_delta": 0.0,
+          "final_score": 1.0,
+          "item_id": "9786940525c7e9540afe4241",
+          "source": "iamexpat.nl",
+          "track_type": "maastricht family events"
+        },
+        {
+          "base_score": 1.0,
+          "feedback_delta": 0.0,
+          "final_score": 1.0,
+          "item_id": "97af125a4a7bee3b4b149cab",
+          "source": "redbull.com",
+          "track_type": "maastricht family events"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "d29d2d25bbd88b5a565d01e5",
+          "source": "msn.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.8,
+          "feedback_delta": 0.0,
+          "final_score": 0.8,
+          "item_id": "dcbc13e4aea31c62b1e2651e",
+          "source": "finance.yahoo.com",
+          "track_type": "bitcoin price action"
+        }
+      ],
+      "applied_items": 4,
+      "feedback_profile_sample_size": 4,
+      "feedback_totals": {
+        "dislike": 3,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 0,
+    "llm_enabled": true,
+    "llm_models_used": [],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 4,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 0
+  },
+  "created_at": "2026-04-23T19:22:18+00:00",
+  "mode": "web_fallback",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 4,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin price action": [],
+      "global finance report": [],
+      "maastricht family events": [],
+      "netherlands economic policy": []
+    }
+  },
+  "quality_flags": [
+    "retrieval_fallback",
+    "missing_netherlands economic policy",
+    "missing_global finance report",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 0,
+    "fallback_chain": [
+      "query_relaxation"
+    ],
+    "live_errors": [],
+    "max_results_per_query": 3,
+    "mode_requested": "web_fallback",
+    "mode_used": "web_fallback",
+    "providers_used": [
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "google_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss",
+      "bing_news_rss"
+    ],
+    "query_count": 16,
+    "query_count_initial": 16,
+    "query_count_relaxed": 16,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 48,
+    "retrieval_provider": "bing_news_rss,google_news_rss",
+    "retriever": "bing_news_rss,google_news_rss",
+    "web_errors": []
+  },
+  "run_id": "v4-57",
+  "selected_counts": {
+    "bitcoin price action": 2,
+    "global finance report": 0,
+    "maastricht family events": 2,
+    "netherlands economic policy": 0
+  }
+}

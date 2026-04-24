@@ -1,0 +1,124 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 3,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.22,
+          "feedback_delta": 0.0,
+          "final_score": 1.22,
+          "item_id": "09df72e97325d98a332d0e12",
+          "source": "example.com",
+          "track_type": "news"
+        },
+        {
+          "base_score": 1.23,
+          "feedback_delta": 0.0,
+          "final_score": 1.23,
+          "item_id": "d6771b6c8fe511496b090058",
+          "source": "example.com",
+          "track_type": "events"
+        },
+        {
+          "base_score": 1.75,
+          "feedback_delta": 0.0,
+          "final_score": 1.75,
+          "item_id": "b6490aaf40dc74626f5d60ff",
+          "source": "github.com",
+          "track_type": "bitcoin"
+        }
+      ],
+      "applied_items": 3,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 0,
+    "llm_enabled": true,
+    "llm_models_used": [],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 3,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 0
+  },
+  "created_at": "2026-04-23T17:45:14+00:00",
+  "mode": "fixture",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 2,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin": [
+        "market",
+        "core-dev",
+        "onchain"
+      ],
+      "events": [
+        "local-calendar",
+        "family",
+        "culture"
+      ],
+      "news": [
+        "safety",
+        "economy",
+        "infrastructure"
+      ]
+    }
+  },
+  "quality_flags": [],
+  "quality_status": "ok",
+  "retrieval_trace": {
+    "cache_hits": 11,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 2,
+    "mode_requested": "fixture",
+    "mode_used": "fixture",
+    "providers_used": [
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture"
+    ],
+    "query_count": 11,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 22,
+    "retrieval_provider": "fixture",
+    "retriever": "fixture",
+    "web_errors": []
+  },
+  "run_id": "v4-42",
+  "selected_counts": {
+    "bitcoin": 1,
+    "events": 1,
+    "news": 1
+  }
+}

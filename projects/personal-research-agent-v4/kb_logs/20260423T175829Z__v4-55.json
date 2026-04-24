@@ -1,0 +1,131 @@
+{
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 0,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 0.99,
+          "feedback_delta": 0.0,
+          "final_score": 0.99,
+          "item_id": "4951470f3362da27b04a2d37",
+          "source": "example.com",
+          "track_type": "netherlands economic policy"
+        },
+        {
+          "base_score": 1.23,
+          "feedback_delta": 0.0,
+          "final_score": 1.23,
+          "item_id": "66afac611159f878cbd8efc6",
+          "source": "example.com",
+          "track_type": "maastricht family events"
+        },
+        {
+          "base_score": 1.75,
+          "feedback_delta": 0.0,
+          "final_score": 1.75,
+          "item_id": "c884cf10db528e9459d7ed5f",
+          "source": "github.com",
+          "track_type": "bitcoin price action"
+        },
+        {
+          "base_score": 0.99,
+          "feedback_delta": 0.0,
+          "final_score": 0.99,
+          "item_id": "375659ea060300049070706a",
+          "source": "example.com",
+          "track_type": "global finance report"
+        }
+      ],
+      "applied_items": 4,
+      "feedback_profile_sample_size": 0,
+      "feedback_totals": {
+        "dislike": 0,
+        "like": 0,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 3,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 4,
+    "skipped_items": 1,
+    "skipped_items_processing_limit": 0,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 1191
+  },
+  "created_at": "2026-04-23T17:58:29+00:00",
+  "mode": "fixture",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 2,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "bitcoin price action": [],
+      "global finance report": [],
+      "maastricht family events": [],
+      "netherlands economic policy": []
+    }
+  },
+  "quality_flags": [],
+  "quality_status": "ok",
+  "retrieval_trace": {
+    "cache_hits": 12,
+    "fallback_chain": [],
+    "live_errors": [],
+    "max_results_per_query": 2,
+    "mode_requested": "fixture",
+    "mode_used": "fixture",
+    "providers_used": [
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture",
+      "fixture"
+    ],
+    "query_count": 16,
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 32,
+    "retrieval_provider": "fixture",
+    "retriever": "fixture",
+    "web_errors": []
+  },
+  "run_id": "v4-55",
+  "selected_counts": {
+    "bitcoin price action": 1,
+    "global finance report": 1,
+    "maastricht family events": 1,
+    "netherlands economic policy": 1
+  }
+}

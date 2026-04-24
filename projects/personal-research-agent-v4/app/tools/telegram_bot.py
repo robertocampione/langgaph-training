@@ -125,6 +125,13 @@ NON_GEOGRAPHIC_AREA_VALUES = {
 }
 
 
+def _flag_enabled(name: str, default: bool = True) -> bool:
+    raw = str(os.getenv(name, "")).strip().lower()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
 def split_message(text: str, limit: int = TELEGRAM_MESSAGE_LIMIT) -> list[str]:
     if len(text) <= limit:
         return [text]
@@ -147,7 +154,69 @@ def greeting_for(user: dict[str, Any]) -> str:
         f"Hi {user['name']}. Personal Research Agent v4 is ready.\n"
         f"Language: {user['language']}\n"
         f"Topics: {topics}\n\n"
-        "Commands: /run, /detail, /profile, /topic_scope, /location, /travel, /sources, /subtopics, /memory, /topics, /language, /onboard, /reset_intake, /feedback"
+        "Commands: /run, /help, /detail, /profile, /intake_status, /topic_scope, /location, /travel, /sources, /subtopics, /memory, /topics, /language, /onboard, /reset_intake, /feedback"
+    )
+
+
+def _help_text(language: str) -> str:
+    if language == "it":
+        return (
+            "Comandi principali:\n"
+            "- /run (oppure /run continue per bypass esplicito intake)\n"
+            "- /help\n"
+            "- /intake_status\n"
+            "- /detail <numero>\n"
+            "- /profile\n"
+            "- /topics <t1, t2>\n"
+            "- /topic_scope <topic> auto|local|global\n"
+            "- /location <luogo>\n"
+            "- /travel <destinazione> [giorni]\n"
+            "- /sources add|deny|remove <dominio>\n"
+            "- /subtopics promote|demote|enable|disable <topic> <subtopic>\n"
+            "- /memory, /memory_clear [tipo]\n"
+            "- /language en|it|nl\n"
+            "- /onboard [full]\n"
+            "- /reset_intake\n"
+            "- /feedback <1-5> <note>"
+        )
+    if language == "nl":
+        return (
+            "Belangrijkste commando's:\n"
+            "- /run (of /run continue voor expliciete intake-bypass)\n"
+            "- /help\n"
+            "- /intake_status\n"
+            "- /detail <nummer>\n"
+            "- /profile\n"
+            "- /topics <t1, t2>\n"
+            "- /topic_scope <topic> auto|local|global\n"
+            "- /location <plaats>\n"
+            "- /travel <bestemming> [dagen]\n"
+            "- /sources add|deny|remove <domein>\n"
+            "- /subtopics promote|demote|enable|disable <topic> <subtopic>\n"
+            "- /memory, /memory_clear [type]\n"
+            "- /language en|it|nl\n"
+            "- /onboard [full]\n"
+            "- /reset_intake\n"
+            "- /feedback <1-5> <notities>"
+        )
+    return (
+        "Main commands:\n"
+        "- /run (or /run continue for explicit intake bypass)\n"
+        "- /help\n"
+        "- /intake_status\n"
+        "- /detail <number>\n"
+        "- /profile\n"
+        "- /topics <t1, t2>\n"
+        "- /topic_scope <topic> auto|local|global\n"
+        "- /location <place>\n"
+        "- /travel <destination> [days]\n"
+        "- /sources add|deny|remove <domain>\n"
+        "- /subtopics promote|demote|enable|disable <topic> <subtopic>\n"
+        "- /memory, /memory_clear [type]\n"
+        "- /language en|it|nl\n"
+        "- /onboard [full]\n"
+        "- /reset_intake\n"
+        "- /feedback <1-5> <notes>"
     )
 
 
@@ -1043,6 +1112,71 @@ async def ping_handler(update: Any, context: Any) -> None:
     )
 
 
+async def help_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    config = app_config.load_app_config()
+    language = db_users.get_user_language(chat_id=int(chat.id), db_path=runtime_db_path(config)) or config.default_language
+    await send_text(update, _help_text(str(language).strip().lower()))
+
+
+async def intake_status_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    config = app_config.load_app_config()
+    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
+    profile, _topic_settings, gate = _ensure_topic_settings_and_gate(user, config)
+    session = db.get_onboarding_session(user_id=int(user["id"]), db_path=runtime_db_path(config))
+    language = str(user.get("language") or config.default_language).strip().lower()
+    missing_profile = list(gate.get("missing_profile_fields") or [])
+    insufficient_topics = list(gate.get("insufficient_topics") or [])
+    gate_required = bool(gate.get("required"))
+    if language == "it":
+        lines = [
+            "Stato intake:",
+            f"- gate_required: {gate_required}",
+            f"- campi profilo mancanti: {', '.join(missing_profile) if missing_profile else '-'}",
+            f"- topic insufficienti: {', '.join(insufficient_topics) if insufficient_topics else '-'}",
+            f"- profilo base: {'completo' if not _profile_incomplete(profile) else 'incompleto'}",
+        ]
+    elif language == "nl":
+        lines = [
+            "Intake-status:",
+            f"- gate_required: {gate_required}",
+            f"- ontbrekende profielvelden: {', '.join(missing_profile) if missing_profile else '-'}",
+            f"- onvoldoende topics: {', '.join(insufficient_topics) if insufficient_topics else '-'}",
+            f"- basisprofiel: {'compleet' if not _profile_incomplete(profile) else 'onvolledig'}",
+        ]
+    else:
+        lines = [
+            "Intake status:",
+            f"- gate_required: {gate_required}",
+            f"- missing profile fields: {', '.join(missing_profile) if missing_profile else '-'}",
+            f"- insufficient topics: {', '.join(insufficient_topics) if insufficient_topics else '-'}",
+            f"- base profile: {'complete' if not _profile_incomplete(profile) else 'incomplete'}",
+        ]
+    if session:
+        step = str(session.get("step") or "").strip() or "-"
+        pending_question = str(session.get("pending_question") or "").strip()
+        answers = session.get("answers") or {}
+        if isinstance(answers, str):
+            try:
+                answers = json.loads(answers)
+            except json.JSONDecodeError:
+                answers = {}
+        attempts = answers.get("attempts") if isinstance(answers, dict) else {}
+        lines.append(f"- active_session_step: {step}")
+        if attempts:
+            lines.append(f"- attempts: {attempts}")
+        if pending_question:
+            lines.append("")
+            lines.append("Pending question:")
+            lines.append(pending_question)
+    await send_text(update, "\n".join(lines), disable_preview=True)
+
+
 async def _execute_digest_run(
     update: Any,
     context: Any,
@@ -1066,6 +1200,25 @@ async def _execute_digest_run(
         )
     except Exception:
         LOGGER.exception("Pipeline run failed for chat_id=%s", chat_id)
+        try:
+            config = app_config.load_app_config()
+            user = db_users.ensure_user(chat_id=int(chat_id), db_path=runtime_db_path(config))
+            db.append_execution_log(
+                user_id=int(user["id"]),
+                run_id=None,
+                stage="telegram_run_delivery",
+                status="error",
+                message="run_failed",
+                payload={
+                    "chat_id": int(chat_id),
+                    "mode": mode,
+                    "max_results_per_query": max_results_per_query,
+                    "fallback_to_stub": fallback_to_stub,
+                },
+                db_path=runtime_db_path(config),
+            )
+        except Exception:
+            LOGGER.debug("telegram run failure log skipped chat_id=%s", chat_id, exc_info=True)
         await send_text(update, "Sorry, I could not process that request.")
         return None
 
@@ -1132,6 +1285,28 @@ async def _execute_digest_run(
                     + ", ".join(missing)
                     + ". You can refine topics with /topics and run /run again.",
                 )
+    try:
+        config = app_config.load_app_config()
+        user = db_users.ensure_user(chat_id=int(chat_id), db_path=runtime_db_path(config))
+        db.append_execution_log(
+            user_id=int(user["id"]),
+            run_id=int(result.get("run_id") or 0) or None,
+            stage="telegram_run_delivery",
+            status="ok",
+            message="run_delivered",
+            payload={
+                "chat_id": int(chat_id),
+                "run_id": int(result.get("run_id") or 0),
+                "mode": str(result.get("mode") or mode),
+                "quality_status": str(result.get("quality_status") or ""),
+                "selected_counts": selected_counts,
+                "max_results_per_query": max_results_per_query,
+                "fallback_to_stub": fallback_to_stub,
+            },
+            db_path=runtime_db_path(config),
+        )
+    except Exception:
+        LOGGER.debug("telegram run delivery log skipped chat_id=%s", chat_id, exc_info=True)
     return result
 
 
@@ -1149,10 +1324,16 @@ async def run_handler(update: Any, context: Any) -> None:
     session = db.get_onboarding_session(user_id=int(user["id"]), db_path=runtime_db_path(config))
     if session and str(session.get("step") or "").strip().lower() in {"clarify_topics", "intake_topic_details"} and not force_run:
         prompt = str(session.get("pending_question") or "").strip()
+        language = str(user.get("language") or config.default_language).strip().lower()
         if prompt:
             await send_text(update, prompt)
         else:
-            await send_text(update, "Please reply to the intake question or run /run continue.")
+            if language == "it":
+                await send_text(update, "Rispondi alla domanda intake oppure usa /run continue.")
+            elif language == "nl":
+                await send_text(update, "Beantwoord de intake-vraag of gebruik /run continue.")
+            else:
+                await send_text(update, "Please reply to the intake question or run /run continue.")
         return
 
     profile_current, _topic_settings, gate = _ensure_topic_settings_and_gate(user, config)
@@ -1646,9 +1827,9 @@ async def feedback_handler(update: Any, context: Any) -> None:
         return
 
     config = app_config.load_app_config()
-    runtime_db_path = config.runtime_db_path
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path)
-    latest_run = db.latest_run_for_user(int(user["id"]), db_path=runtime_db_path)
+    _db_path = config.runtime_db_path
+    user = db_users.ensure_user(chat_id=int(chat.id), db_path=_db_path)
+    latest_run = db.latest_run_for_user(int(user["id"]), db_path=_db_path)
     if latest_run is None:
         await send_text(update, "Run /run before sending feedback.")
         return
@@ -1659,7 +1840,7 @@ async def feedback_handler(update: Any, context: Any) -> None:
         run_id=int(latest_run["id"]),
         rating=rating,
         notes=notes,
-        db_path=runtime_db_path,
+        db_path=_db_path,
     )
     await send_text(update, f"Thanks. Feedback saved with id {feedback_id}.")
 
@@ -1684,8 +1865,8 @@ async def item_feedback_callback_handler(update: Any, context: Any) -> None:
     if chat is None:
         await query.answer("Chat not found.", show_alert=False)
         return
-    runtime_db_path = config.runtime_db_path
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path)
+    _db_path = config.runtime_db_path
+    user = db_users.ensure_user(chat_id=int(chat.id), db_path=_db_path)
     notes = f"telegram_item_vote:{vote}"
     try:
         feedback_id = db.create_feedback(
@@ -1693,13 +1874,13 @@ async def item_feedback_callback_handler(update: Any, context: Any) -> None:
             article_id=item_id,
             rating=rating,
             notes=notes,
-            db_path=runtime_db_path,
+            db_path=_db_path,
         )
     except Exception:
         LOGGER.exception("Failed to persist item feedback item_id=%s chat_id=%s", item_id, chat.id)
         await query.answer("Could not save feedback.", show_alert=False)
         return
-    language = db_users.get_user_language(chat_id=int(chat.id), db_path=runtime_db_path) or config.default_language
+    language = db_users.get_user_language(chat_id=int(chat.id), db_path=_db_path) or config.default_language
     _, ack = _feedback_labels(str(language).strip().lower())
     try:
         await query.answer(ack, show_alert=False)
@@ -1821,9 +2002,59 @@ async def fallback_handler(update: Any, context: Any) -> None:
                     missing_fields=missing,
                 )
                 if current_attempt >= INTAKE_MAX_ATTEMPTS:
-                    if str(user.get("language") or "en").strip().lower() == "it":
+                    user_language = str(user.get("language") or "en").strip().lower()
+                    auto_continue = _flag_enabled("PRA_FLAG_INTAKE_AUTO_CONTINUE", default=True)
+                    if auto_continue:
+                        db.clear_onboarding_session(user_id=int(user["id"]), db_path=runtime_db_path(config))
+                        db.append_profile_event(
+                            user_id=int(user["id"]),
+                            event_type="hard_gate_auto_bypass_after_max_attempts",
+                            payload={
+                                "topic": current_topic,
+                                "attempts": current_attempt,
+                                "missing_fields": missing,
+                                "source": "telegram_intake_loop",
+                            },
+                            db_path=runtime_db_path(config),
+                        )
+                        if user_language == "it":
+                            await send_text(
+                                update,
+                                "Intake non ancora completo su questo topic, ma ho raggiunto il limite tentativi. "
+                                "Procedo ora con una run assistita (bypass controllato).",
+                            )
+                        elif user_language == "nl":
+                            await send_text(
+                                update,
+                                "Intake is nog niet volledig voor dit topic, maar het maximum aantal pogingen is bereikt. "
+                                "Ik ga nu verder met een begeleide run (gecontroleerde bypass).",
+                            )
+                        else:
+                            await send_text(
+                                update,
+                                "Intake is still incomplete for this topic, but the max attempts threshold is reached. "
+                                "Proceeding with an assisted run (controlled bypass).",
+                            )
+                        await _execute_digest_run(
+                            update=update,
+                            context=context,
+                            chat_id=int(chat.id),
+                            mode=str(answers.get("mode") or context.application.bot_data.get("run_mode", "auto")),
+                            max_results_per_query=int(
+                                answers.get("max_results_per_query")
+                                or context.application.bot_data.get("max_results_per_query", 2)
+                            ),
+                            fallback_to_stub=bool(
+                                answers.get("fallback_to_stub")
+                                if "fallback_to_stub" in answers
+                                else context.application.bot_data.get("fallback_to_stub", True)
+                            ),
+                            announce="Running with controlled intake bypass.",
+                        )
+                        return
+                    if user_language == "it":
                         prompt += "\n\nPuoi anche forzare con /run continue."
-                    elif str(user.get("language") or "en").strip().lower() == "nl":
+                    elif user_language == "nl":
                         prompt += "\n\nJe kunt ook forceren met /run continue."
                     else:
                         prompt += "\n\nYou can also override with /run continue."
@@ -1926,16 +2157,56 @@ async def fallback_handler(update: Any, context: Any) -> None:
                 attempts = int(answers.get("clarify_attempts", 0) or 0) + 1
                 language = str(user.get("language") or config.default_language).strip().lower()
                 if attempts >= CLARIFY_MAX_ATTEMPTS:
+                    if _flag_enabled("PRA_FLAG_INTAKE_AUTO_CONTINUE", default=True):
+                        db.clear_onboarding_session(user_id=int(user["id"]), db_path=runtime_db_path(config))
+                        db.append_profile_event(
+                            user_id=int(user["id"]),
+                            event_type="clarification_auto_bypass_after_max_attempts",
+                            payload={"attempts": attempts, "generic_topics": generic},
+                            db_path=runtime_db_path(config),
+                        )
+                        if language == "it":
+                            await send_text(
+                                update,
+                                "Le risposte restano troppo generiche dopo vari tentativi. "
+                                "Avvio una run assistita con i topic attuali; poi possiamo rifinire insieme.",
+                            )
+                        elif language == "nl":
+                            await send_text(
+                                update,
+                                "De antwoorden blijven te algemeen na meerdere pogingen. "
+                                "Ik start een begeleide run met de huidige topics; daarna verfijnen we samen.",
+                            )
+                        else:
+                            await send_text(
+                                update,
+                                "Answers are still too generic after multiple attempts. "
+                                "I am starting an assisted run with current topics, then we can refine together.",
+                            )
+                        await _execute_digest_run(
+                            update=update,
+                            context=context,
+                            chat_id=int(chat.id),
+                            mode=str(answers.get("mode") or context.application.bot_data.get("run_mode", "auto")),
+                            max_results_per_query=int(
+                                answers.get("max_results_per_query")
+                                or context.application.bot_data.get("max_results_per_query", 2)
+                            ),
+                            fallback_to_stub=bool(
+                                answers.get("fallback_to_stub")
+                                if "fallback_to_stub" in answers
+                                else context.application.bot_data.get("fallback_to_stub", True)
+                            ),
+                            announce="Running with controlled clarification bypass.",
+                        )
+                        return
                     if language == "it":
                         tail = "\n\nUsa /run continue se vuoi procedere comunque."
                     elif language == "nl":
                         tail = "\n\nGebruik /run continue om toch door te gaan."
                     else:
                         tail = "\n\nUse /run continue to proceed anyway."
-                    prompt = (
-                        _clarification_followup_prompt(language, attempts, generic)
-                        + tail
-                    )
+                    prompt = _clarification_followup_prompt(language, attempts, generic) + tail
                 else:
                     prompt = _clarification_followup_prompt(language, attempts, generic)
                 db.upsert_onboarding_session(
@@ -2047,7 +2318,7 @@ async def fallback_handler(update: Any, context: Any) -> None:
 
     await send_text(
         update,
-        "Send /run to generate a digest. Controls: /detail /profile /topic_scope /location /travel /sources /subtopics /memory /memory_clear /onboard /reset_intake /feedback.",
+        "Send /run to generate a digest. Controls: /help /detail /profile /intake_status /topic_scope /location /travel /sources /subtopics /memory /memory_clear /onboard /reset_intake /feedback.",
     )
 
 
@@ -2066,12 +2337,14 @@ def build_application(token: str) -> Any:
     application = Application.builder().token(token).build()
     application.add_handler(CommandHandler("start", _audit_handler(start_handler, "cmd_start")))
     application.add_handler(CommandHandler("ping", _audit_handler(ping_handler, "cmd_ping")))
+    application.add_handler(CommandHandler("help", _audit_handler(help_handler, "cmd_help")))
     application.add_handler(CommandHandler("run", _audit_handler(run_handler, "cmd_run")))
     application.add_handler(CommandHandler("detail", _audit_handler(detail_handler, "cmd_detail")))
     application.add_handler(CommandHandler(["topics", "settopics"], _audit_handler(topics_handler, "cmd_topics")))
     application.add_handler(CommandHandler("topic_scope", _audit_handler(topic_scope_handler, "cmd_topic_scope")))
     application.add_handler(CommandHandler("language", _audit_handler(language_handler, "cmd_language")))
     application.add_handler(CommandHandler("profile", _audit_handler(profile_handler, "cmd_profile")))
+    application.add_handler(CommandHandler("intake_status", _audit_handler(intake_status_handler, "cmd_intake_status")))
     application.add_handler(CommandHandler("location", _audit_handler(location_handler, "cmd_location")))
     application.add_handler(CommandHandler("travel", _audit_handler(travel_handler, "cmd_travel")))
     application.add_handler(CommandHandler("sources", _audit_handler(sources_handler, "cmd_sources")))
@@ -2101,7 +2374,20 @@ def main() -> None:
     parser.add_argument("--no-fallback", action="store_true", help="Raise pipeline errors instead of returning the readiness stub.")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+    # Logging setup: console + file
+    root_dir = Path(__file__).resolve().parents[2]
+    log_path = root_dir / "logs" / "telegram_bot.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    handlers: list[logging.Handler] = [
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler(log_path, encoding="utf-8")
+    ]
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        handlers=handlers
+    )
     logging.getLogger("httpx").setLevel(logging.WARNING)
     config = app_config.load_app_config(args.env_file)
     db.initialize_database(config.runtime_db_path)

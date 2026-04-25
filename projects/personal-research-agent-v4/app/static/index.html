@@ -303,7 +303,7 @@
         async function loadProfile() {
             try {
                 const initData = tg.initData || "mockInitData"; 
-                const res = await fetch('/api/profile', { headers: { 'Authorization': `tma ${initData}` } });
+                const res = await fetch('/api/profile', { headers: { 'Authorization': `tma ${initData}`, 'ngrok-skip-browser-warning': 'true' } });
                 if (!res.ok) throw new Error('API Reject');
                 
                 const data = await res.json();
@@ -346,7 +346,7 @@
                 const initData = tg.initData || "mockInitData"; 
                 const res = await fetch('/api/profile', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `tma ${initData}` },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `tma ${initData}`, 'ngrok-skip-browser-warning': 'true' },
                     body: JSON.stringify(payload)
                 });
                 

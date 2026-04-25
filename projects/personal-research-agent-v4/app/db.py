@@ -36,6 +36,7 @@ JSON_COLUMNS = {
     "inferred_preferences",
     "active_context",
     "fact_value",
+    "queries",
 }
 
 SQLITE_SCHEMA_STATEMENTS = (
@@ -218,6 +219,79 @@ SQLITE_SCHEMA_STATEMENTS = (
         FOREIGN KEY(run_id) REFERENCES runs(id)
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS clarification_sessions (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        run_id INTEGER,
+        status TEXT NOT NULL DEFAULT 'pending',
+        ambiguity_type TEXT NOT NULL,
+        question_text TEXT NOT NULL,
+        answer_text TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(run_id) REFERENCES runs(id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS semantic_audit_logs (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        run_id INTEGER,
+        coherence_score REAL,
+        confidence_score REAL,
+        payload TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(run_id) REFERENCES runs(id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS topic_query_audit (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        run_id INTEGER,
+        topic TEXT NOT NULL,
+        language TEXT NOT NULL,
+        geo_scope TEXT,
+        queries TEXT NOT NULL DEFAULT '[]',
+        payload TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(run_id) REFERENCES runs(id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS memory_candidates (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        run_id INTEGER,
+        candidate_type TEXT NOT NULL,
+        source_signal TEXT NOT NULL,
+        payload TEXT NOT NULL DEFAULT '{}',
+        confidence REAL NOT NULL DEFAULT 0.5,
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(run_id) REFERENCES runs(id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS memory_promotions (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        candidate_id INTEGER,
+        promotion_reason TEXT NOT NULL,
+        target_table TEXT NOT NULL,
+        payload TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(candidate_id) REFERENCES memory_candidates(id)
+    )
+    """,
+
 )
 
 POSTGRES_SCHEMA_STATEMENTS = (
@@ -231,6 +305,69 @@ POSTGRES_SCHEMA_STATEMENTS = (
         created_at TIMESTAMPTZ NOT NULL
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS clarification_sessions (
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL REFERENCES users(id),
+        run_id BIGINT REFERENCES runs(id),
+        status TEXT NOT NULL DEFAULT 'pending',
+        ambiguity_type TEXT NOT NULL,
+        question_text TEXT NOT NULL,
+        answer_text TEXT,
+        created_at TIMESTAMPTZ NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS semantic_audit_logs (
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL REFERENCES users(id),
+        run_id BIGINT REFERENCES runs(id),
+        coherence_score DOUBLE PRECISION,
+        confidence_score DOUBLE PRECISION,
+        payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS topic_query_audit (
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL REFERENCES users(id),
+        run_id BIGINT REFERENCES runs(id),
+        topic TEXT NOT NULL,
+        language TEXT NOT NULL,
+        geo_scope TEXT,
+        queries JSONB NOT NULL DEFAULT '[]'::jsonb,
+        payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS memory_candidates (
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL REFERENCES users(id),
+        run_id BIGINT REFERENCES runs(id),
+        candidate_type TEXT NOT NULL,
+        source_signal TEXT NOT NULL,
+        payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+        confidence DOUBLE PRECISION NOT NULL DEFAULT 0.5,
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at TIMESTAMPTZ NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS memory_promotions (
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL REFERENCES users(id),
+        candidate_id BIGINT REFERENCES memory_candidates(id),
+        promotion_reason TEXT NOT NULL,
+        target_table TEXT NOT NULL,
+        payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL
+    )
+    """,
+
     """
     CREATE TABLE IF NOT EXISTS runs (
         id BIGSERIAL PRIMARY KEY,
@@ -1687,4 +1824,156 @@ def list_workflow_logs(
         db_path=db_path,
         database_url=database_url,
         fetchall=True,
+    )
+
+def append_clarification_session(
+    user_id: int,
+    run_id: int | None,
+    ambiguity_type: str,
+    question_text: str,
+    answer_text: str | None = None,
+    status: str = "pending",
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> int:
+    initialize_database(db_path=db_path, database_url=database_url)
+    backend = resolve_backend(db_path=db_path, database_url=database_url)
+    with get_connection(db_path=db_path, database_url=database_url) as connection:
+        if backend.kind == "sqlite":
+            cursor = connection.execute(
+                """
+                INSERT INTO clarification_sessions (
+                    user_id, run_id, status, ambiguity_type, question_text, answer_text, created_at, updated_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (user_id, run_id, status, ambiguity_type, question_text, answer_text, utc_now(), utc_now()),
+            )
+            connection.commit()
+            return int(cursor.lastrowid)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO clarification_sessions (
+                    user_id, run_id, status, ambiguity_type, question_text, answer_text, created_at, updated_at
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s::timestamptz, %s::timestamptz)
+                RETURNING id
+                """,
+                (user_id, run_id, status, ambiguity_type, question_text, answer_text, utc_now(), utc_now()),
+            )
+            row = cursor.fetchone()
+        connection.commit()
+        return int(row["id"]) if row else 0
+
+def append_semantic_audit_log(
+    user_id: int,
+    run_id: int | None,
+    coherence_score: float | None = None,
+    confidence_score: float | None = None,
+    payload: dict[str, Any] | None = None,
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> None:
+    _execute(
+        """
+        INSERT INTO semantic_audit_logs (user_id, run_id, coherence_score, confidence_score, payload, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        """
+        INSERT INTO semantic_audit_logs (user_id, run_id, coherence_score, confidence_score, payload, created_at)
+        VALUES (%s, %s, %s, %s, %s::jsonb, %s::timestamptz)
+        """,
+        (user_id, run_id, coherence_score, confidence_score, _json_dumps(payload or {}), utc_now()),
+        db_path=db_path,
+        database_url=database_url,
+    )
+
+def append_topic_query_audit(
+    user_id: int,
+    run_id: int | None,
+    topic: str,
+    language: str,
+    geo_scope: str | None = None,
+    queries: list[str] | None = None,
+    payload: dict[str, Any] | None = None,
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> None:
+    _execute(
+        """
+        INSERT INTO topic_query_audit (user_id, run_id, topic, language, geo_scope, queries, payload, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        """
+        INSERT INTO topic_query_audit (user_id, run_id, topic, language, geo_scope, queries, payload, created_at)
+        VALUES (%s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s::timestamptz)
+        """,
+        (user_id, run_id, topic, language, geo_scope, _json_dumps(queries or []), _json_dumps(payload or {}), utc_now()),
+        db_path=db_path,
+        database_url=database_url,
+    )
+
+def append_memory_candidate(
+    user_id: int,
+    run_id: int | None,
+    candidate_type: str,
+    source_signal: str,
+    payload: dict[str, Any] | None = None,
+    confidence: float = 0.5,
+    status: str = "pending",
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> int:
+    initialize_database(db_path=db_path, database_url=database_url)
+    backend = resolve_backend(db_path=db_path, database_url=database_url)
+    with get_connection(db_path=db_path, database_url=database_url) as connection:
+        if backend.kind == "sqlite":
+            cursor = connection.execute(
+                """
+                INSERT INTO memory_candidates (
+                    user_id, run_id, candidate_type, source_signal, payload, confidence, status, created_at, updated_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (user_id, run_id, candidate_type, source_signal, _json_dumps(payload or {}), confidence, status, utc_now(), utc_now()),
+            )
+            connection.commit()
+            return int(cursor.lastrowid)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO memory_candidates (
+                    user_id, run_id, candidate_type, source_signal, payload, confidence, status, created_at, updated_at
+                )
+                VALUES (%s, %s, %s, %s, %s::jsonb, %s, %s, %s::timestamptz, %s::timestamptz)
+                RETURNING id
+                """,
+                (user_id, run_id, candidate_type, source_signal, _json_dumps(payload or {}), confidence, status, utc_now(), utc_now()),
+            )
+            row = cursor.fetchone()
+        connection.commit()
+        return int(row["id"]) if row else 0
+
+def append_memory_promotion(
+    user_id: int,
+    candidate_id: int | None,
+    promotion_reason: str,
+    target_table: str,
+    payload: dict[str, Any] | None = None,
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> None:
+    _execute(
+        """
+        INSERT INTO memory_promotions (user_id, candidate_id, promotion_reason, target_table, payload, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        """
+        INSERT INTO memory_promotions (user_id, candidate_id, promotion_reason, target_table, payload, created_at)
+        VALUES (%s, %s, %s, %s, %s::jsonb, %s::timestamptz)
+        """,
+        (user_id, candidate_id, promotion_reason, target_table, _json_dumps(payload or {}), utc_now()),
+        db_path=db_path,
+        database_url=database_url,
     )

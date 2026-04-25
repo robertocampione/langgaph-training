@@ -24,6 +24,16 @@ class ResearchGraphState(TypedDict, total=False):
     newsletter: str
     debug_dir: str
     quality_status: str
+    # ── Explicit Multi-Agent States ───────────────────────────────────────────
+    semantic_audit_results: dict[str, Any]  # Governance check
+    analyst_pre_report: dict[str, Any]      # Planning phase report
+    clarification_needed: bool              # Trigger HITL
+    clarification_request: dict[str, Any]   # Data payload for the HITL question
+    query_bundles: list[dict[str, Any]]     # Generated parallel query bundles
+    branch_results: dict[str, list[dict[str, Any]]] # Fan-out results
+    merged_results: dict[str, list[dict[str, Any]]] # Fan-in deduped results
+    analyst_post_report: dict[str, Any]     # Quality Check post-retrieval
+    promoted_memories: int                  # Result of memory promotion
     # ── Retrieval diagnostics (populated in quality_guard) ────────────────────
     retrieval_stats: dict[str, Any]         # {coverage_pct, topics_empty, topics_ok}
     quality_guard_passed: bool              # True when quality_status == "ok"

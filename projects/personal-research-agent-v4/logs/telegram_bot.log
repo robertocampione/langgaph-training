@@ -9,3 +9,21 @@
 2026-04-25 05:19:06,549 WARNING __main__: Transient Telegram network error: NetworkError
 2026-04-25 05:38:21,760 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
 2026-04-25 05:38:21,816 INFO app.pipeline: Retrieval started mode=auto topics=['borgharen', 'borgharen', 'borgharen', 'borgharen', 'borgharen', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 12:23:22,296 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 12:23:22,453 INFO telegram.ext.Application: Application started
+2026-04-25 12:23:44,882 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 12:23:45,930 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=123
+2026-04-25 12:23:45,940 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 12:23:47,464 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=136
+2026-04-25 12:23:47,475 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 12:23:48,210 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=128
+2026-04-25 12:23:48,226 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 12:23:49,405 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=108
+2026-04-25 12:23:49,419 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 12:23:50,439 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=131
+2026-04-25 12:27:39,137 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 12:27:40,548 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=134
+2026-04-25 12:27:40,677 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
+2026-04-25 12:27:40,721 INFO app.pipeline: Retrieval started mode=auto topics=['maastricht today', 'maastricht today', 'maastricht today', 'maastricht today', 'borgharen', 'borgharen', 'borgharen', 'borgharen', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 12:28:42,414 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 12:28:43,833 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=131

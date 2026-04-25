@@ -1,0 +1,832 @@
+{
+  "analyst_reasoning": {
+    "rejection_path": [
+      {
+        "item_id": "9453fedd82d3726ca3c6f2df",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "euronews.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "maastricht today",
+        "url": "https://www.euronews.com/my-europe/2026/04/20/timmy-the-whale-stranded-off-germanys-coast-swims-off-and-gets-stuckagain"
+      },
+      {
+        "item_id": "4a0a49dc06b6be4b8cbbb76b",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "edition.cnn.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "maastricht today",
+        "url": "https://edition.cnn.com/2026/04/19/sport/video/usain-bolt-manchester-united-coach-michael-carrick-vrtc"
+      },
+      {
+        "item_id": "7e93923512a7fd6cdcae98ca",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "aol.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "borgharen",
+        "url": "https://www.aol.com/news/columbia-council-swearing-members-monday-085726890.html"
+      },
+      {
+        "item_id": "a2962faebe62f001582d755e",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "bozemandailychronicle.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "borgharen",
+        "url": "https://www.bozemandailychronicle.com/classifieds/legals/legals/notice-of-public-hearings-may-12-19-2026/pdfdisplayad_b8f4b9f3-b010-5d10-8fc1-24ed5be90705.html"
+      },
+      {
+        "item_id": "1026b38fa870c5a8850fb50a",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "bozemandailychronicle.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "borgharen",
+        "url": "https://www.bozemandailychronicle.com/classifieds/legals/legals/notice-of-public-hearing-may-12/pdfdisplayad_f06e6cda-d135-5721-8cff-8c9460a5dfd6.html"
+      },
+      {
+        "item_id": "6cab24f0e7fc268b6eca305d",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "axios.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.axios.com/local/richmond/2026/04/23/richmond-events-this-weekend-the-wiz-train-day"
+      },
+      {
+        "item_id": "fcabe32b27268c8079dec08c",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "axios.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.axios.com/local/detroit/2026/04/23/weekend-events-metro-detroit-april-24-26-independent-bookstore-day"
+      },
+      {
+        "item_id": "8b66fb9c9b7a9b97cf80790c",
+        "reason": "missing_specific_date",
+        "reason_detail": "event_without_date_signal",
+        "source": "maastrichtbereikbaar.nl",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.maastrichtbereikbaar.nl/en/how-do-i-travel/i-drive-my-car/pr-maastricht-noord"
+      },
+      {
+        "item_id": "b2519a94204fc53d0fd48029",
+        "reason": "missing_specific_date",
+        "reason_detail": "event_without_date_signal",
+        "source": "maastrichtbereikbaar.nl",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.maastrichtbereikbaar.nl/en/hoe-reis-ik/ik-neem-de-auto/pr-maastricht-noord"
+      },
+      {
+        "item_id": "8452075932e302be08e09180",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "galvnews.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale",
+        "url": "https://www.galvnews.com/india-agriculture/image_1a0f3b99-17f3-5a18-babe-c66fefdf4940.html"
+      },
+      {
+        "item_id": "bd04e7da544c6a27e0061e54",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "modernghana.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale",
+        "url": "https://www.modernghana.com/videonews/cnn/1/640530/"
+      },
+      {
+        "item_id": "a421910c839d4449fc5c6466",
+        "reason": "not_recent",
+        "reason_detail": "age_days=7",
+        "source": "edition.cnn.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://edition.cnn.com/2026/04/18/world/video/naples-italy-bank-robbery-hostages-vrtc"
+      },
+      {
+        "item_id": "f24a7a2e004ef9c61a93580c",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "travelweekly.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.travelweekly.com/World-of-Luxury/New-luxury-spots-to-visit-in-Italy-Florence-Rome-Sicily-and-Milan-openings"
+      },
+      {
+        "item_id": "b93f7d48d417a881de0f4c72",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "modernghana.com",
+        "source_type": "report",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.modernghana.com/videonews/bbc/4/638067/"
+      }
+    ],
+    "selected_items": [
+      {
+        "base_score": 1.5102,
+        "feedback_delta": 0.1,
+        "final_score": 1.6436,
+        "item_id": "884474a781c2784c026da8b0",
+        "query": "site:1limburg.nl lokale politiek Maastricht when:7d",
+        "query_language": "nl",
+        "selection_reason": "preferred politica locale source: 1limburg.nl",
+        "source": "1limburg.nl",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale"
+      },
+      {
+        "base_score": 0.9273,
+        "feedback_delta": 0.1,
+        "final_score": 1.0607,
+        "item_id": "12f1343cf269bfc682d2f9da",
+        "query": "ultime notizie Italia when:1d",
+        "query_language": "it",
+        "selection_reason": "matched notizie italia query from pitchbook.com",
+        "source": "pitchbook.com",
+        "source_type": "report",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia"
+      },
+      {
+        "base_score": 1.0289,
+        "feedback_delta": 0.0,
+        "final_score": 1.0289,
+        "item_id": "f645fdbb5e1e1b68374a5687",
+        "query": "finanza bitcoin notizie Italia when:7d",
+        "query_language": "it",
+        "selection_reason": "matched finanza e bitcoin query from bitget.com",
+        "source": "bitget.com",
+        "source_type": "article",
+        "topic_scope_decision": "global",
+        "track_type": "finanza e bitcoin"
+      },
+      {
+        "base_score": 0.9772,
+        "feedback_delta": 0.0,
+        "final_score": 1.0272,
+        "item_id": "f52b86cf84d706de4d76d7bf",
+        "query": "site:1limburg.nl \"Borgharen\" nieuws Maastricht when:7d",
+        "query_language": "nl",
+        "selection_reason": "preferred borgharen source: 1limburg.nl",
+        "source": "1limburg.nl",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "borgharen"
+      },
+      {
+        "base_score": 0.9634,
+        "feedback_delta": 0.0,
+        "final_score": 1.0134,
+        "item_id": "f74123e0788692074a54cd4f",
+        "query": "site:1limburg.nl \"Borgharen\" nieuws Maastricht when:7d",
+        "query_language": "nl",
+        "selection_reason": "preferred borgharen source: 1limburg.nl",
+        "source": "1limburg.nl",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "borgharen"
+      }
+    ],
+    "topics": {
+      "borgharen": {
+        "intent": "Capire gli sviluppi recenti e rilevanti su borgharen.",
+        "locales": [
+          "Maastricht"
+        ],
+        "queries": [
+          "\"Borgharen\" nieuws Maastricht when:7d",
+          "\"Borgharen\" gemeenteraad when:7d",
+          "\"Borgharen\" lokale evenementen when:7d",
+          "site:1limburg.nl \"Borgharen\" nieuws Maastricht when:7d"
+        ],
+        "query_languages": [
+          "nl"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "borgharen",
+          "policy",
+          "economy"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "news"
+      },
+      "eventi e tempo libero": {
+        "intent": "Capire gli sviluppi recenti e rilevanti su eventi e tempo libero.",
+        "locales": [
+          "Maastricht"
+        ],
+        "queries": [
+          "eventi tempo libero Maastricht prossimi 30 giorni when:14d",
+          "cosa fare Maastricht weekend eventi when:14d",
+          "concerti mostre festival Maastricht oggi domani when:14d",
+          "site:maastrichtbereikbaar.nl eventi tempo libero Maastricht prossimi 30 giorni when:14d"
+        ],
+        "query_languages": [
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "food-festival",
+          "mostre-per-bambini",
+          "attivit\u00e0-all'aperto"
+        ],
+        "time_window_days": 14,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "events"
+      },
+      "finanza e bitcoin": {
+        "intent": "Sviluppi recenti e notizie rilevanti su Bitcoin",
+        "locales": [],
+        "queries": [
+          "finanza bitcoin notizie Italia when:7d",
+          "andamento bitcoin ultime notizie when:7d",
+          "criptovalute regolamentazione Italia when:7d"
+        ],
+        "query_languages": [
+          "it"
+        ],
+        "requested_geo_scope": "global",
+        "subtopics_selected": [
+          "Bitcoin onchain analysis",
+          "Dutch crypto regulation",
+          "Geopolitic news"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "global",
+        "topic_scope_source": "override",
+        "track_family": "bitcoin"
+      },
+      "maastricht today": {
+        "intent": "Capire gli sviluppi recenti e rilevanti su maastricht today.",
+        "locales": [
+          "Maastricht"
+        ],
+        "queries": [
+          "\"Maastricht vandaag\" nieuws when:7d",
+          "\"wat gebeurt er vandaag in Maastricht\" when:7d",
+          "\"actueel nieuws Maastricht\" when:7d",
+          "site:1limburg.nl \"Maastricht vandaag\" nieuws when:7d"
+        ],
+        "query_languages": [
+          "nl"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "maastricht-today-activities",
+          "Maastricht today activities"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "news"
+      },
+      "notizie italia": {
+        "intent": "Ultime notizie di politica e cronaca in Italia",
+        "locales": [
+          "Italia"
+        ],
+        "queries": [
+          "ultime notizie Italia when:1d",
+          "notizie Italia oggi when:1d",
+          "aggiornamenti Italia when:1d",
+          "site:1limburg.nl ultime notizie Italia when:1d"
+        ],
+        "query_languages": [
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "Palermo",
+          "Sicilia",
+          "palermo"
+        ],
+        "time_window_days": 1,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "news"
+      },
+      "politica locale": {
+        "intent": "Notizie limburg, Maastricht politiche e comunali",
+        "locales": [
+          "Maastricht"
+        ],
+        "queries": [
+          "lokale politiek Maastricht when:7d",
+          "gemeenteraad Maastricht verkiezingen when:7d",
+          "bestuur Maastricht nieuws when:7d",
+          "site:1limburg.nl lokale politiek Maastricht when:7d"
+        ],
+        "query_languages": [
+          "nl"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "borgharen",
+          "limburg",
+          "notizie-limburg"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "news"
+      }
+    }
+  },
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 4,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.5102,
+          "feedback_delta": 0.1,
+          "final_score": 1.6102,
+          "item_id": "884474a781c2784c026da8b0",
+          "source": "1limburg.nl",
+          "track_type": "politica locale"
+        },
+        {
+          "base_score": 1.0289,
+          "feedback_delta": 0.0,
+          "final_score": 1.0289,
+          "item_id": "f645fdbb5e1e1b68374a5687",
+          "source": "bitget.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.9772,
+          "feedback_delta": 0.0,
+          "final_score": 0.9772,
+          "item_id": "f52b86cf84d706de4d76d7bf",
+          "source": "1limburg.nl",
+          "track_type": "borgharen"
+        },
+        {
+          "base_score": 0.9725,
+          "feedback_delta": 0.0,
+          "final_score": 0.9725,
+          "item_id": "e344183ee76a97c87468d740",
+          "source": "1limburg.nl",
+          "track_type": "maastricht today"
+        },
+        {
+          "base_score": 0.9634,
+          "feedback_delta": 0.0,
+          "final_score": 0.9634,
+          "item_id": "f74123e0788692074a54cd4f",
+          "source": "1limburg.nl",
+          "track_type": "borgharen"
+        },
+        {
+          "base_score": 0.9341,
+          "feedback_delta": 0.0,
+          "final_score": 0.9341,
+          "item_id": "f352b50d2cbc186560c36af6",
+          "source": "forbes.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.9273,
+          "feedback_delta": 0.1,
+          "final_score": 1.0273,
+          "item_id": "12f1343cf269bfc682d2f9da",
+          "source": "pitchbook.com",
+          "track_type": "notizie italia"
+        },
+        {
+          "base_score": 0.9109,
+          "feedback_delta": 0.0,
+          "final_score": 0.9109,
+          "item_id": "20d34dc42a4d5fab7de42cf6",
+          "source": "bitget.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.6772,
+          "feedback_delta": 0.0,
+          "final_score": 0.6772,
+          "item_id": "b8eb282f3462ccc29e394866",
+          "source": "decrypt.co",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.662,
+          "feedback_delta": 0.0,
+          "final_score": 0.662,
+          "item_id": "550aec38b0338a68b080d58f",
+          "source": "cbsnews.com",
+          "track_type": "eventi e tempo libero"
+        }
+      ],
+      "applied_items": 10,
+      "feedback_profile_sample_size": 14,
+      "feedback_totals": {
+        "dislike": 6,
+        "like": 7,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 1,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 10,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 15,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 439
+  },
+  "created_at": "2026-04-25T10:28:43+00:00",
+  "mode": "live",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 72,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "borgharen": [
+        "borgharen",
+        "policy",
+        "economy"
+      ],
+      "eventi e tempo libero": [
+        "food-festival",
+        "mostre-per-bambini",
+        "attivit\u00e0-all'aperto"
+      ],
+      "finanza e bitcoin": [
+        "Bitcoin onchain analysis",
+        "Dutch crypto regulation",
+        "Geopolitic news"
+      ],
+      "maastricht today": [
+        "maastricht-today-activities",
+        "Maastricht today activities"
+      ],
+      "notizie italia": [
+        "Palermo",
+        "Sicilia",
+        "palermo"
+      ],
+      "politica locale": [
+        "borgharen",
+        "limburg",
+        "notizie-limburg"
+      ]
+    },
+    "topic_settings": {
+      "borgharen": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "provided",
+        "objective": "Capire gli sviluppi recenti e rilevanti su borgharen.",
+        "optimized_search_queries": [
+          "\"Borgharen\" nieuws Maastricht",
+          "\"Borgharen\" gemeenteraad",
+          "\"Borgharen\" lokale evenementen"
+        ],
+        "priority": 1.0,
+        "search_query_language": "nl",
+        "subtopics": [
+          "borgharen",
+          "policy",
+          "economy",
+          "public-safety"
+        ],
+        "time_window_days": 7,
+        "topic_name": "borgharen",
+        "translated_topic_phrase": "Borgharen"
+      },
+      "event family maastricht 25 26 aprile": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "derived_context_invalid_input",
+        "objective": "Find family-friendly events happening in Maastricht on April 25th and 26th.",
+        "priority": 0.8,
+        "subtopics": [
+          "family-events",
+          "children-activities",
+          "weekend-events",
+          "cultural-events"
+        ],
+        "time_window_days": 2,
+        "topic_name": "event family maastricht 25 26 aprile"
+      },
+      "eventi a maastricht": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "locales_validation": "provided",
+        "objective": "Scoprire concerti, festival ed eventi pubblici",
+        "priority": 1.0,
+        "subtopics": [
+          "concerts",
+          "festivals",
+          "exhibitions",
+          "local-calendar"
+        ],
+        "time_window_days": 14,
+        "topic_name": "eventi a maastricht"
+      },
+      "eventi e tempo libero": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "provided",
+        "objective": "Capire gli sviluppi recenti e rilevanti su eventi e tempo libero.",
+        "optimized_search_queries": [
+          "eventi tempo libero Maastricht prossimi 30 giorni",
+          "cosa fare Maastricht weekend eventi",
+          "concerti mostre festival Maastricht oggi domani"
+        ],
+        "priority": 1.0,
+        "search_query_language": "it",
+        "subtopics": [
+          "food-festival",
+          "mostre-per-bambini",
+          "attivit\u00e0-all'aperto",
+          "festival-per-famiglie"
+        ],
+        "time_window_days": 14,
+        "topic_name": "eventi e tempo libero",
+        "translated_topic_phrase": "eventi e tempo libero"
+      },
+      "finanza e bitcoin": {
+        "confirmed": true,
+        "geo_scope": "global",
+        "locales": [],
+        "locales_validation": "missing",
+        "objective": "Sviluppi recenti e notizie rilevanti su Bitcoin",
+        "optimized_search_queries": [
+          "finanza bitcoin notizie Italia",
+          "andamento bitcoin ultime notizie",
+          "criptovalute regolamentazione Italia"
+        ],
+        "priority": 0.8,
+        "search_query_language": "it",
+        "subtopics": [
+          "bitcoin-onchain-analysis",
+          "dutch-crypto-regulation",
+          "geopolitic-news",
+          "bitcoin-onchain-analysis",
+          "dutch-crypto-regulation",
+          "financial-markets"
+        ],
+        "time_window_days": 7,
+        "topic_name": "finanza e bitcoin",
+        "translated_topic_phrase": "finanza e bitcoin"
+      },
+      "maastricht events this week": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "derived_context_invalid_input",
+        "objective": "list",
+        "priority": 0.8,
+        "subtopics": [
+          "concerts",
+          "festivals",
+          "exhibitions",
+          "markets"
+        ],
+        "time_window_days": 7,
+        "topic_name": "maastricht events this week"
+      },
+      "maastricht today": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "provided",
+        "objective": "Capire gli sviluppi recenti e rilevanti su maastricht today.",
+        "optimized_search_queries": [
+          "\"Maastricht vandaag\" nieuws",
+          "\"wat gebeurt er vandaag in Maastricht\"",
+          "\"actueel nieuws Maastricht\""
+        ],
+        "priority": 1.0,
+        "search_query_language": "nl",
+        "subtopics": [
+          "maastricht-today-activities"
+        ],
+        "time_window_days": 7,
+        "topic_name": "maastricht today",
+        "translated_topic_phrase": "Maastricht vandaag"
+      },
+      "notizie italia": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Italia"
+        ],
+        "locales_validation": "provided",
+        "objective": "Ultime notizie di politica e cronaca in Italia",
+        "optimized_search_queries": [
+          "ultime notizie Italia",
+          "notizie Italia oggi",
+          "aggiornamenti Italia"
+        ],
+        "priority": 0.8,
+        "search_query_language": "it",
+        "subtopics": [
+          "palermo",
+          "sicilia",
+          "palermo",
+          "sicilia",
+          "politica",
+          "society"
+        ],
+        "time_window_days": 1,
+        "topic_name": "notizie italia",
+        "translated_topic_phrase": "notizie Italia"
+      },
+      "politica globale": {
+        "confirmed": false,
+        "geo_scope": "global",
+        "locales": [],
+        "locales_validation": "invalid_input",
+        "objective": "Capire gli sviluppi recenti e rilevanti su politica globale.",
+        "priority": 0.8,
+        "subtopics": [
+          "geopolitics",
+          "international-relations",
+          "global-economy",
+          "foreign-policy"
+        ],
+        "time_window_days": 1,
+        "topic_name": "politica globale"
+      },
+      "politica locale": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "provided",
+        "objective": "Notizie limburg, Maastricht politiche e comunali",
+        "optimized_search_queries": [
+          "lokale politiek Maastricht",
+          "gemeenteraad Maastricht verkiezingen",
+          "bestuur Maastricht nieuws"
+        ],
+        "priority": 0.8,
+        "search_query_language": "nl",
+        "subtopics": [
+          "borgharen",
+          "limburg",
+          "notizie-limburg",
+          "politiche-comunali",
+          "amministrazione-pubblica",
+          "elezioni-locali"
+        ],
+        "time_window_days": 7,
+        "topic_name": "politica locale",
+        "translated_topic_phrase": "lokale politiek"
+      },
+      "prossimi eventi a maastricht o nell'arco di 30 km. food events or what can be nice to do outside": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "derived_context_invalid_input",
+        "objective": "Find upcoming events in or around Maastricht, focusing on food or outdoor activities suitable for families.",
+        "priority": 0.7,
+        "subtopics": [
+          "food-festivals",
+          "outdoor-activities",
+          "cultural-events",
+          "family-entertainment"
+        ],
+        "time_window_days": 30,
+        "topic_name": "prossimi eventi a maastricht o nell'arco di 30 km. food events or what can be nice to do outside"
+      }
+    }
+  },
+  "quality_flags": [
+    "missing_maastricht today",
+    "missing_eventi e tempo libero",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 21,
+    "fallback_chain": [
+      "auto->live"
+    ],
+    "live_errors": [],
+    "max_results_per_query": 2,
+    "mode_requested": "auto",
+    "mode_used": "live",
+    "providers_used": [
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily"
+    ],
+    "query_count": 23,
+    "query_languages": [
+      "it",
+      "nl"
+    ],
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 46,
+    "retrieval_provider": "tavily",
+    "retriever": "tavily",
+    "topic_scope_decisions": {
+      "borgharen": "local",
+      "eventi e tempo libero": "local",
+      "finanza e bitcoin": "global",
+      "maastricht today": "local",
+      "notizie italia": "local",
+      "politica locale": "local"
+    },
+    "web_errors": []
+  },
+  "run_id": "v4-103",
+  "selected_counts": {
+    "borgharen": 2,
+    "eventi e tempo libero": 0,
+    "finanza e bitcoin": 1,
+    "maastricht today": 0,
+    "notizie italia": 1,
+    "politica locale": 1
+  }
+}

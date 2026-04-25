@@ -15,15 +15,20 @@ class ResearchGraphState(TypedDict, total=False):
     profile: dict[str, Any]
     temporary_contexts: list[dict[str, Any]]
     topic_plan: dict[str, list[str]]
+    topic_settings: dict[str, Any]
     # ── Intake gate (evaluated in check_intake_gate) ──────────────────────────
     intake_required: bool                   # True if hard gate is active
     intake_gate_detail: dict[str, Any]      # {missing_profile_fields, insufficient_topics}
-    # ── Pipeline output (populated in run_pipeline) ───────────────────────────
+    # ── Pipeline output (Legacy wrapper) ──────────────────────────────────────
     result: dict[str, Any]
     report: str
     newsletter: str
     debug_dir: str
     quality_status: str
+    # ── Execution Metadata ────────────────────────────────────────────────────
+    run_id: int
+    cost_trace: dict[str, Any]
+    selected_counts: dict[str, int]
     # ── Explicit Multi-Agent States ───────────────────────────────────────────
     semantic_audit_results: dict[str, Any]  # Governance check
     analyst_pre_report: dict[str, Any]      # Planning phase report
@@ -37,6 +42,11 @@ class ResearchGraphState(TypedDict, total=False):
     # ── Retrieval diagnostics (populated in quality_guard) ────────────────────
     retrieval_stats: dict[str, Any]         # {coverage_pct, topics_empty, topics_ok}
     quality_guard_passed: bool              # True when quality_status == "ok"
+    # ── Final Outputs ─────────────────────────────────────────────────────────
+    report_path: str
+    newsletter_path: str
+    telegram_compact: str
+    enriched_items: list[dict[str, Any]]
     # ── Plumbing ──────────────────────────────────────────────────────────────
     workflow_logs: list[dict[str, Any]]
     errors: list[str]

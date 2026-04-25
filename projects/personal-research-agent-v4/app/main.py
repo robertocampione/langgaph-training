@@ -14,6 +14,8 @@ from app import db  # noqa: E402
 from app import db_users  # noqa: E402
 from app import config as app_config  # noqa: E402
 from app import pipeline  # noqa: E402
+from app.graphs import research_graph # noqa: E402
+from app.state.research_state import ResearchGraphState # noqa: E402
 
 
 def load_config() -> app_config.AppConfig:
@@ -45,7 +47,7 @@ def readiness_stub(chat_id: int | None = None) -> str:
     )
 
 
-def run_for_chat(
+async def run_for_chat(
     chat_id: int | None = None,
     mode: str = "auto",
     max_results_per_query: int = pipeline.DEFAULT_MAX_RESULTS_PER_QUERY,
@@ -54,19 +56,19 @@ def run_for_chat(
     """Run the v4 digest pipeline for a chat user."""
     effective_chat_id = chat_id if chat_id is not None else 0
     try:
-        result = pipeline.run_research_digest(
-            chat_id=effective_chat_id,
-            mode=mode,
-            max_results_per_query=max_results_per_query,
-        )
-        return pipeline.format_console_summary(result)
+        initial_state = ResearchGraphState(chat_id=effective_chat_id, mode=mode, max_results_per_query=max_results_per_query)
+        final_state = await research_graph.graph.ainvoke(initial_state)
+        # Format simple summary natively
+        run_id = final_state.get("run_id", "unknown")
+        quality = final_state.get("quality_status", "unknown")
+        return f"Run {run_id} completed via Graph. Quality: {quality} Mode: {mode}"
     except Exception as exc:
         if not fallback_to_stub:
             raise
         return readiness_stub(effective_chat_id) + f" Fallback reason: {exc}"
 
 
-def run_for_chat_detailed(
+async def run_for_chat_detailed(
     chat_id: int | None = None,
     mode: str = "auto",
     max_results_per_query: int = pipeline.DEFAULT_MAX_RESULTS_PER_QUERY,
@@ -76,28 +78,25 @@ def run_for_chat_detailed(
     """Run the v4 digest pipeline and return newsletter and report content."""
     effective_chat_id = chat_id if chat_id is not None else 0
     try:
-        result = pipeline.run_research_digest(
-            chat_id=effective_chat_id,
-            mode=mode,
-            max_results_per_query=max_results_per_query,
-            override_topics=override_topics,
-        )
+        initial_state = ResearchGraphState(chat_id=effective_chat_id, mode=mode, max_results_per_query=max_results_per_query)
+        final_state = await research_graph.graph.ainvoke(initial_state)
+        
         return {
-            "newsletter": result.newsletter,
-            "report": result.report,
-            "summary": pipeline.format_console_summary(result),
-            "run_id": result.run_id,
-            "mode": result.mode,
-            "language": result.language,
-            "quality_status": result.quality_status,
-            "quality_flags": result.quality_flags,
-            "debug_dir": result.debug_dir,
-            "newsletter_path": result.newsletter_path,
-            "report_path": result.report_path,
-            "selected_counts": result.selected_counts,
-            "enriched_items": result.enriched_items,
-            "telegram_compact": result.telegram_compact,
-            "cost_trace": result.cost_trace,
+            "newsletter": final_state.get("newsletter"),
+            "report": final_state.get("report"),
+            "summary": f"Run {final_state.get('run_id')} completed via Graph. Quality: {final_state.get('quality_status')}",
+            "run_id": final_state.get("run_id"),
+            "mode": mode,
+            "language": (final_state.get("user") or {}).get("language", "en"),
+            "quality_status": final_state.get("quality_status"),
+            "quality_flags": [],
+            "debug_dir": final_state.get("debug_dir"),
+            "newsletter_path": final_state.get("newsletter_path", ""),
+            "report_path": final_state.get("report_path", ""),
+            "selected_counts": final_state.get("selected_counts", {}),
+            "enriched_items": final_state.get("enriched_items", []),
+            "telegram_compact": final_state.get("telegram_compact", ""),
+            "cost_trace": final_state.get("cost_trace", {}),
         }
     except Exception as exc:
         if not fallback_to_stub:
@@ -112,6 +111,7 @@ def run_for_chat_detailed(
 
 
 def main() -> None:
+    import asyncio
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=None, help="External chat identifier for the run.")
     parser.add_argument("--init-db", action="store_true", help="Initialize the DB and seed configured users before running.")
@@ -129,14 +129,14 @@ def main() -> None:
     if args.init_db:
         db.initialize_database(db_path=config.runtime_db_path)
         db_users.seed_users_from_config(db_path=config.runtime_db_path)
-    print(
-        run_for_chat(
-            args.chat_id,
-            mode=args.mode,
-            max_results_per_query=args.max_results_per_query,
-            fallback_to_stub=not args.no_fallback,
-        )
-    )
+    
+    res = asyncio.run(run_for_chat(
+        args.chat_id,
+        mode=args.mode,
+        max_results_per_query=args.max_results_per_query,
+        fallback_to_stub=not args.no_fallback,
+    ))
+    print(res)
 
 
 if __name__ == "__main__":

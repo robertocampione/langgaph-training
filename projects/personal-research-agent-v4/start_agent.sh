@@ -30,6 +30,7 @@ if grep -q "^WEB_APP_URL=" .env; then
 else
     echo "WEB_APP_URL=$PUBLIC_URL" >> .env
 fi
+export WEB_APP_URL=$PUBLIC_URL
 
 echo "[3/4] Starting FastAPI Web App (uvicorn)..."
 # Force global system python so it doesn't break if you have another project's venv active in the terminal

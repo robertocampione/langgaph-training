@@ -1164,8 +1164,7 @@ async def _execute_digest_run(
         return None
     await send_text(update, announce)
     try:
-        result = await asyncio.to_thread(
-            agent_main.run_for_chat_detailed,
+        result = await agent_main.run_for_chat_detailed(
             int(chat_id),
             mode,
             max_results_per_query,

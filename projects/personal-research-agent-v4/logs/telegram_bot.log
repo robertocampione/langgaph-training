@@ -33,3 +33,104 @@
 2026-04-25 23:04:05,333 INFO app.pipeline: Retrieval started mode=auto topics=['maastricht today', 'maastricht today', 'maastricht today', 'maastricht today', 'borgharen', 'borgharen', 'borgharen', 'borgharen', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
 2026-04-25 23:32:25,097 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
 2026-04-25 23:32:25,164 INFO app.pipeline: Retrieval started mode=auto topics=['maastricht today', 'maastricht today', 'maastricht today', 'maastricht today', 'borgharen', 'borgharen', 'borgharen', 'borgharen', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-26 01:04:15,411 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-26 01:04:15,475 INFO telegram.ext.Application: Application started
+2026-04-26 01:05:33,160 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-26 01:05:33,332 INFO telegram.ext.Application: Application started
+2026-04-26 01:06:13,841 INFO app.nodes.analysts: Pre-retrieval Analyst running for run_id 0
+2026-04-26 01:06:13,843 INFO app.nodes.retrieval: Starting fan_out_topic_branches across 6 topics
+2026-04-26 01:06:13,843 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:15,676 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:16,920 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:18,830 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:21,188 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:22,977 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:27,057 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:30,068 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:31,149 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:33,048 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:34,590 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:36,863 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:40,832 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:42,927 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:44,808 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:46,139 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:48,347 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:53,133 INFO app.pipeline: Retrieval started mode=auto topics=['general']
+2026-04-26 01:06:57,774 INFO app.nodes.retrieval: Executing fan_in_merge_and_dedupe
+2026-04-26 01:06:57,776 INFO app.nodes.analysts: Post-retrieval Analyst running for run_id 0
+2026-04-26 01:06:57,776 INFO app.nodes.generation: Entering generation_node for chat_id=1290647256 run_id=None
+2026-04-26 01:06:57,910 ERROR __main__: Unable to send file .
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/tools/telegram_bot.py", line 1022, in send_markdown_file
+    with file_path.open("rb") as handle:
+         ~~~~~~~~~~~~~~^^^^^^
+  File "/home/roberto/.local/share/uv/python/cpython-3.14.3-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+2026-04-26 01:06:57,914 ERROR __main__: Unable to send file .
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/tools/telegram_bot.py", line 1022, in send_markdown_file
+    with file_path.open("rb") as handle:
+         ~~~~~~~~~~~~~~^^^^^^
+  File "/home/roberto/.local/share/uv/python/cpython-3.14.3-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+2026-04-26 01:20:04,916 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-26 01:20:04,984 INFO telegram.ext.Application: Application started
+2026-04-26 01:23:12,337 INFO app.nodes.analysts: Pre-retrieval Analyst running for run_id 0
+2026-04-26 01:23:12,338 INFO app.nodes.retrieval: Starting fan_out_topic_branches across 6 topics
+2026-04-26 01:23:12,338 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:13,530 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:14,000 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:15,032 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:16,693 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:17,741 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:18,266 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 01:23:20,529 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 01:23:20,942 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 01:23:22,137 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:25,007 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:27,542 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:30,094 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:32,169 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:33,863 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 01:23:35,525 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 01:23:37,264 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 01:23:39,018 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 01:23:40,315 INFO app.nodes.retrieval: Executing fan_in_merge_and_dedupe
+2026-04-26 01:23:40,317 INFO app.nodes.analysts: Post-retrieval Analyst running for run_id 107
+2026-04-26 01:23:40,318 INFO app.nodes.generation: Entering generation_node for chat_id=1290647256 run_id=107
+2026-04-26 01:28:15,455 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-26 01:28:15,536 INFO telegram.ext.Application: Application started
+2026-04-26 01:28:33,958 INFO app.nodes.analysts: Pre-retrieval Analyst running for run_id 0
+2026-04-26 01:28:33,959 INFO app.nodes.retrieval: Starting async fan_out_topic_branches across 6 topics
+2026-04-26 01:28:33,959 INFO app.pipeline: Retrieval started mode=auto topics=['maastricht today']
+2026-04-26 01:28:33,959 INFO app.pipeline: Retrieval started mode=auto topics=['maastricht today']
+2026-04-26 01:28:33,960 INFO app.pipeline: Retrieval started mode=auto topics=['maastricht today']
+2026-04-26 01:28:33,960 INFO app.pipeline: Retrieval started mode=auto topics=['borgharen']
+2026-04-26 01:28:33,961 INFO app.pipeline: Retrieval started mode=auto topics=['borgharen']
+2026-04-26 01:28:33,961 INFO app.pipeline: Retrieval started mode=auto topics=['borgharen']
+2026-04-26 01:28:33,962 INFO app.pipeline: Retrieval started mode=auto topics=['eventi e tempo libero']
+2026-04-26 01:28:33,962 INFO app.pipeline: Retrieval started mode=auto topics=['eventi e tempo libero']
+2026-04-26 01:28:33,962 INFO app.pipeline: Retrieval started mode=auto topics=['eventi e tempo libero']
+2026-04-26 01:28:33,962 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale']
+2026-04-26 01:28:33,962 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale']
+2026-04-26 01:28:33,963 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale']
+2026-04-26 01:28:33,963 INFO app.pipeline: Retrieval started mode=auto topics=['notizie italia']
+2026-04-26 01:28:33,963 INFO app.pipeline: Retrieval started mode=auto topics=['notizie italia']
+2026-04-26 01:28:33,964 INFO app.pipeline: Retrieval started mode=auto topics=['notizie italia']
+2026-04-26 01:28:33,964 INFO app.pipeline: Retrieval started mode=auto topics=['finanza e bitcoin']
+2026-04-26 01:28:33,964 INFO app.pipeline: Retrieval started mode=auto topics=['finanza e bitcoin']
+2026-04-26 01:28:33,964 INFO app.pipeline: Retrieval started mode=auto topics=['finanza e bitcoin']
+2026-04-26 01:28:38,125 INFO app.nodes.retrieval: Executing fan_in_merge_and_dedupe
+2026-04-26 01:28:38,127 INFO app.nodes.analysts: Post-retrieval Analyst running for run_id 108
+2026-04-26 01:28:38,129 INFO app.nodes.generation: Entering generation_node for chat_id=1290647256 run_id=108
+2026-04-26 01:28:38,130 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 01:28:39,502 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=178
+2026-04-26 01:28:39,508 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 01:28:40,523 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=149
+2026-04-26 01:28:40,529 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 01:28:41,956 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=136

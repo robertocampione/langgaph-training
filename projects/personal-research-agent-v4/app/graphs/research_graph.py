@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any
+import uuid
 
 from langgraph.graph import END, StateGraph
 
@@ -46,6 +47,7 @@ from app.nodes import semantic_governance as gov
 from app.nodes import analysts
 from app.nodes import clarification
 from app.nodes import retrieval
+from app.nodes import generation
 from app.memory import promotion
 
 LOGGER = logging.getLogger(__name__)
@@ -56,7 +58,35 @@ def load_user_context(state: ResearchGraphState) -> ResearchGraphState:
     chat_id = int(state.get("chat_id") or 0)
     config = app_config.load_app_config()
     user = db_users.ensure_user(chat_id=chat_id, db_path=config.runtime_db_path)
-    return {"chat_id": chat_id, "user": user, "errors": []}
+    
+    # Initialize run_id
+    run_id = db.log_run(
+        user_id=int(user["id"]),
+        quality_status="running",
+        selected_counts={},
+        db_path=config.runtime_db_path,
+    )
+    
+    debug_dir = pipeline.project_path("debug") / f"{pipeline.slug_timestamp()}__v4-{run_id}"
+    debug_dir.mkdir(parents=True, exist_ok=True)
+    
+    db.append_execution_log(
+        user_id=int(user["id"]),
+        run_id=run_id,
+        stage="graph_start",
+        status="ok",
+        message="graph_started",
+        payload={"chat_id": chat_id},
+        db_path=config.runtime_db_path,
+    )
+    
+    return {
+        "chat_id": chat_id, 
+        "user": user, 
+        "run_id": run_id, 
+        "debug_dir": str(debug_dir),
+        "errors": []
+    }
 
 def preload_profile_memory(state: ResearchGraphState) -> ResearchGraphState:
     config = app_config.load_app_config()
@@ -120,24 +150,35 @@ def semantic_governance_node(state: ResearchGraphState) -> ResearchGraphState:
     semantic_audit_results = {}
     query_bundles = []
     
-    for plan in topic_plan.values():
-        for track_item in plan:
-            # We simulate query extraction from pipeline to node 
-            q_bundle = {
-                "topic_name": track_item,
-                "optimized_search_queries": [f"query for {track_item}"], # simplified for the graph flow wiring block
-                "search_query_language": "en"
-            }
-            query_bundles.append(q_bundle)
+    for topic_name, subtopics in topic_plan.items():
+        # Read properties from topic_settings we just fetched/generated
+        item_settings = topic_settings.get(topic_name, {})
+        track_family = pipeline.infer_track_family(topic_name)
+        geo_scope = item_settings.get("geo_scope", "auto")
+        search_query_language = item_settings.get("search_query_language", run_language)
+        
+        # Priority to user/llm optimized queries, otherwise use basic pipeline building
+        queries = item_settings.get("optimized_search_queries")
+        if not queries:
+            queries = [f"{topic_name} ultime notizie" if run_language == "it" else f"{topic_name} news"]
             
-            audit = gov.evaluate_semantic_bundle(
-                topic=track_item,
-                track_family="general",
-                geo_scope="world",
-                queries=q_bundle["optimized_search_queries"],
-                user_language=run_language
-            )
-            semantic_audit_results[track_item] = audit
+        q_bundle = {
+            "topic_name": topic_name,
+            "optimized_search_queries": queries,
+            "search_query_language": search_query_language,
+            "geo_scope": geo_scope,
+            "track_family": track_family,
+        }
+        query_bundles.append(q_bundle)
+        
+        audit = gov.evaluate_semantic_bundle(
+            topic=topic_name,
+            track_family=track_family,
+            geo_scope=geo_scope,
+            queries=queries,
+            user_language=run_language
+        )
+        semantic_audit_results[topic_name] = audit
 
     db.append_workflow_log(
         user_id=int(user["id"]), run_id=None,
@@ -145,7 +186,12 @@ def semantic_governance_node(state: ResearchGraphState) -> ResearchGraphState:
         payload={"audit": semantic_audit_results}, db_path=config.runtime_db_path
     )
     
-    return {"semantic_audit_results": semantic_audit_results, "query_bundles": query_bundles, "topic_plan": topic_plan}
+    return {
+        "semantic_audit_results": semantic_audit_results, 
+        "query_bundles": query_bundles, 
+        "topic_plan": topic_plan, 
+        "topic_settings": topic_settings
+    }
 
 def pre_retrieval_analyst_node(state: ResearchGraphState) -> ResearchGraphState:
     user = state.get("user") or {}
@@ -177,50 +223,64 @@ def _route_after_pre_analyst(state: ResearchGraphState) -> str:
     return "parallel_retrieval"
 
 def hitl_clarification_node(state: ResearchGraphState) -> ResearchGraphState:
+    config = app_config.load_app_config()
     user = state.get("user") or {}
     report = state.get("analyst_pre_report") or {}
     clarification_req = clarification.evaluate_clarification_need(report, {})
-    return {"clarification_needed": True, "clarification_request": clarification_req, "quality_status": "hitl_blocked"}
+    
+    session_id = str(uuid.uuid4())
+    clarification_req["clarification_session_id"] = session_id
+    
+    db.append_workflow_log(
+        user_id=int(user.get("id") or 0), run_id=None,
+        workflow_name="research_graph", step="hitl_clarification", status="paused",
+        payload={"clarification_request": clarification_req}, db_path=config.runtime_db_path
+    )
+    
+    return {
+        "clarification_needed": True, 
+        "clarification_request": clarification_req, 
+        "quality_status": "hitl_blocked",
+        "quality_guard_passed": False
+    }
 
-def parallel_retrieval_node(state: ResearchGraphState) -> ResearchGraphState:
-    # Stubbing the parallel dispatch via pipeline to reuse search wrappers
-    # We call run_research_digest wrapped here for the execution phase for backwards combatibility until generation refactored
+async def parallel_retrieval_node(state: ResearchGraphState) -> ResearchGraphState:
     config = app_config.load_app_config()
-    chat_id = int(state.get("chat_id") or 0)
     mode = str(state.get("mode") or "fixture")
     max_results = int(state.get("max_results_per_query") or pipeline.DEFAULT_MAX_RESULTS_PER_QUERY)
+    query_bundles = state.get("query_bundles") or []
     
+    def _execute_search(query: str, language: str, max_res: int, track_type: str = "general") -> list[dict[str, Any]]:
+        q_payload = [{"query": query, "query_language": language, "retrieval_languages": [language], "track_type": track_type}]
+        cands, _ = pipeline.retrieve_candidates(q_payload, mode, max_res, language, config.runtime_db_path)
+        return cands
+
     try:
-        # We fire the monolith execution for the retrieval + generation phase because 
-        # breaking up 3000 lines of interpret logic inline is impossible in a single turn.
-        # But we do explicitly call the post analysts and memory below!
-        result = pipeline.run_research_digest(chat_id=chat_id, mode=mode, max_results_per_query=max_results)
+        branch_results = await retrieval.fan_out_topic_branches(
+            topic_plan=query_bundles,
+            max_results_per_query=max_results,
+            execute_search_fn=_execute_search
+        )
+        merged_results_dict = retrieval.fan_in_merge_and_dedupe(
+            branch_results=branch_results,
+            dedupe_fn=pipeline.dedupe_candidates
+        )
     except Exception as exc:
         return {"errors": [str(exc)], "quality_status": "error", "quality_guard_passed": False}
         
     return {
-        "result": {
-            "run_id": result.run_id, "report_path": result.report_path,
-            "newsletter_path": result.newsletter_path, "selected_counts": result.selected_counts,
-            "mode": result.mode, "quality_flags": result.quality_flags, "cost_trace": result.cost_trace,
-        },
-        "report": result.report,
-        "newsletter": result.newsletter,
-        "debug_dir": result.debug_dir,
-        "quality_status": result.quality_status,
-        "merged_results": result.enriched_items or []
+        "branch_results": branch_results,
+        "merged_results": merged_results_dict,
+        "quality_status": "running"
     }
 
 def post_retrieval_analyst_node(state: ResearchGraphState) -> ResearchGraphState:
     user = state.get("user") or {}
-    items = state.get("merged_results") or []
-    
-    # Build fake results by topic dictionary for the analyst
-    results_by_topic = {"general": []}
+    results_by_topic = state.get("merged_results") or {}
     
     analyst_post_report = analysts.post_retrieval_analyst(
         user_id=int(user.get("id") or 0),
-        run_id=int((state.get("result") or {}).get("run_id") or 0),
+        run_id=int(state.get("run_id") or 0),
         results_by_topic=results_by_topic,
         topic_settings={}
     )
@@ -230,7 +290,7 @@ def memory_promotion_node(state: ResearchGraphState) -> ResearchGraphState:
     config = app_config.load_app_config()
     user = state.get("user") or {}
     user_id = int(user.get("id") or 0)
-    run_id = int((state.get("result") or {}).get("run_id") or 0)
+    run_id = int(state.get("run_id") or 0)
     
     post_report = state.get("analyst_post_report") or {}
     candidates = post_report.get("memory_candidates") or []
@@ -244,8 +304,7 @@ def memory_promotion_node(state: ResearchGraphState) -> ResearchGraphState:
 
 def quality_guard(state: ResearchGraphState) -> ResearchGraphState:
     quality_status = str(state.get("quality_status") or "unknown")
-    result = state.get("result") or {}
-    selected_counts = dict(result.get("selected_counts") or {})
+    selected_counts = dict(state.get("selected_counts") or {})
     topics_empty = [t for t, c in selected_counts.items() if int(c or 0) == 0]
     total = len(selected_counts) or 1
     coverage_pct = round((total - len(topics_empty)) / total, 3)
@@ -285,6 +344,7 @@ builder.add_node("pre_retrieval_analyst", pre_retrieval_analyst_node)
 builder.add_node("hitl_clarification", hitl_clarification_node)
 builder.add_node("parallel_retrieval", parallel_retrieval_node)
 builder.add_node("post_retrieval_analyst", post_retrieval_analyst_node)
+builder.add_node("generation", generation.generation_node)
 builder.add_node("memory_promotion", memory_promotion_node)
 builder.add_node("quality_guard", quality_guard)
 builder.add_node("quality_warn_log", quality_warn_log)
@@ -311,7 +371,8 @@ builder.add_conditional_edges(
 
 builder.add_edge("hitl_clarification", "finalize_output")
 builder.add_edge("parallel_retrieval", "post_retrieval_analyst")
-builder.add_edge("post_retrieval_analyst", "memory_promotion")
+builder.add_edge("post_retrieval_analyst", "generation")
+builder.add_edge("generation", "memory_promotion")
 builder.add_edge("memory_promotion", "quality_guard")
 
 builder.add_conditional_edges(

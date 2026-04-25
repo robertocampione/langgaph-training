@@ -36,11 +36,15 @@ def evaluate_and_promote_candidates(
             db_path=db_path
         )
         
+        # Future-ready: Require multiple confirmations
+        confirmations_needed = 2
+        current_confirmations = candidate.get("confirmations_count", 1)
+        
         # Promotion Policy
-        if candidate.get("confidence", 0) >= 0.6:
+        if candidate.get("confidence", 0) >= 0.8 and current_confirmations >= confirmations_needed:
             # Promote to source preferences
             if candidate.get("candidate_type") == "favorite_source":
-                domain = candidate.get("payload", {}).get("domain")
+                domain = str(candidate.get("payload", {}).get("domain") or "").lower()
                 if domain:
                     db.set_source_preference(
                         user_id=user_id,
@@ -56,6 +60,7 @@ def evaluate_and_promote_candidates(
                         payload={"domain": domain, "preference": "prioritize"},
                         db_path=db_path
                     )
+                    # We can update candidate status to promoted
                     total_promoted += 1
                     
     return total_promoted

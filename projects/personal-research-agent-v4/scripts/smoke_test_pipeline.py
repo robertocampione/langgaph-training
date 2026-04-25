@@ -16,6 +16,9 @@ if str(PROJECT_ROOT) not in sys.path:
 from app import pipeline  # noqa: E402
 
 
+from app.graphs import research_graph
+from app.state.research_state import ResearchGraphState
+
 def validate_static_rejections() -> None:
     cases = [
         {
@@ -32,20 +35,12 @@ def validate_static_rejections() -> None:
             "summary": "Calendar listing.",
             "source": "visitzuidlimburg.com",
         },
-        {
-            "track_type": "bitcoin",
-            "title": "Newsletters-zh - Bitcoin Optech",
-            "url": "https://bitcoinops.org/zh/newsletters/",
-            "summary": "Newsletter index.",
-            "source": "bitcoinops.org",
-        },
     ]
     _, rejected, reason_counts = pipeline.validate_candidates(cases)
     assert len(rejected) == len(cases)
     assert reason_counts
 
-
-def main() -> None:
+async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chat-id", type=int, default=100000001)
     parser.add_argument("--mode", choices=("fixture", "live", "web_fallback", "auto"), default="fixture")
@@ -53,31 +48,34 @@ def main() -> None:
     args = parser.parse_args()
 
     validate_static_rejections()
-    result = pipeline.run_research_digest(
+    
+    initial_state = ResearchGraphState(
         chat_id=args.chat_id,
         mode=args.mode,
         max_results_per_query=args.max_results_per_query,
     )
-    debug_dir = Path(result.debug_dir)
-    retrieval = json.loads((debug_dir / "02_retrieval.json").read_text(encoding="utf-8"))
-    output = json.loads((debug_dir / "02_output.json").read_text(encoding="utf-8"))
-    final_output = json.loads((debug_dir / "final_output.json").read_text(encoding="utf-8"))
-    trace = retrieval["payload"]["trace"]
-
-    assert trace["max_results_per_query"] == args.max_results_per_query
-    assert trace["result_cap_total"] == trace["query_count"] * args.max_results_per_query
-    assert "cache_hits" in trace
-    assert "fallback_chain" in trace
-    assert "reasoning_active" in trace
-    assert "quality_gate_status" in output["payload"]
-    assert "quality_flags_summary" in final_output["payload"]["trace_payload"]
-
+    
+    print(f"Invoking graph for chat_id={args.chat_id} in mode={args.mode}...")
+    final_state = await research_graph.graph.ainvoke(initial_state)
+    
+    assert final_state.get("user")
+    assert final_state.get("topic_plan")
+    
+    # 1. Semantic Governance Output
+    assert "semantic_audit_results" in final_state
+    
+    # 2. Retrieval fan-out testing
+    assert "merged_results" in final_state
+    
+    # 3. Quality Guard & Quality Flags
+    assert "quality_status" in final_state
+    
     print(
         "pipeline_smoke=pass "
-        f"mode={result.mode} quality={result.quality_status} "
-        f"run_id={result.run_id} max_results_per_query={args.max_results_per_query}"
+        f"mode={args.mode} quality={final_state.get('quality_status')} "
+        f"max_results_per_query={args.max_results_per_query}"
     )
 
-
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())

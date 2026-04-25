@@ -38,6 +38,17 @@ def generation_node(state: ResearchGraphState) -> ResearchGraphState:
     selected = pipeline.trim_selected_items(selected, pipeline.MAX_ITEMS_TO_OUTPUT)
     counts = pipeline.selected_counts(selected, list(topics_for_run))
     
+    # Coverage and Quality Status
+    all_covered = True
+    topics_empty = []
+    for topic in topics_for_run:
+        count = int(counts.get(topic) or 0)
+        if count == 0:
+            all_covered = False
+            topics_empty.append(str(topic))
+            
+    quality = "ok" if all_covered else "warn"
+    
     # Enrichment
     interpretation_config = interpretation_node.InterpretationConfig(
         max_items_to_output=pipeline.MAX_ITEMS_TO_OUTPUT,
@@ -60,7 +71,6 @@ def generation_node(state: ResearchGraphState) -> ResearchGraphState:
         db_path=config.runtime_db_path,
     )
     
-    quality = str(state.get("quality_status") or "ok")
     report, newsletter = pipeline.build_outputs(user, enriched_items, counts, quality, list(topics_for_run), run_language)
     telegram_compact = interpretation_node.format_for_telegram(
         enriched_items,
@@ -88,4 +98,5 @@ def generation_node(state: ResearchGraphState) -> ResearchGraphState:
         "enriched_items": enriched_items,
         "selected_counts": counts,
         "cost_trace": interpretation_trace,
+        "quality_status": quality,
     }

@@ -21,6 +21,13 @@ GENERIC_TOPIC_TERMS = {
     "general", "generale", "update", "updates", "local", "world", "mondo",
 }
 
+EVENT_KEYWORDS = {
+    "agenda", "events", "evenementen", "eventi", "manifestazioni", "concerti", "mostre",
+    "programma", "weekend", "festivals", "fair", "fiera", "mercato", "market",
+}
+
+
+
 def normalize_topic_text(value: str | None) -> str:
     """Normalize topic text into a canonical lowercase format without losing intent."""
     return re.sub(r"\s+", " ", str(value or "").strip().lower())
@@ -33,6 +40,18 @@ def is_generic_topic(topic: str) -> bool:
     if len(value.split()) <= 2 and len(value) <= 5: # Small tokens
         return True
     return False
+
+def infer_locale_languages(location: str | None) -> list[str]:
+    """Guess primary languages for a location string."""
+    loc = str(location or "").lower()
+    if not loc: return []
+    if any(k in loc for k in ["netherlands", "olanda", "nederland", "maastricht", "amsterdam", "borgharen"]):
+        return ["nl", "en"]
+    if any(k in loc for k in ["italy", "italia", "milano", "roma", "napoli", "torino"]):
+        return ["it"]
+    if any(k in loc for k in ["uk", "usa", "london", "york", "states"]):
+        return ["en"]
+    return []
 
 def _has_geographic_signal(value: str) -> bool:
     cleaned = re.sub(r"\s+", " ", str(value or "").strip())

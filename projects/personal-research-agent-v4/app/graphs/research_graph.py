@@ -1,6 +1,6 @@
 """LangGraph Studio entrypoint for Personal Research Agent v4.
 
-Graph topology (v4.2 — explicit multi-agent routing):
+Graph topology (v4.3 — stabilized multi-agent routing):
 
   load_user_context
        │
@@ -12,15 +12,15 @@ Graph topology (v4.2 — explicit multi-agent routing):
        │
   pre_retrieval_analyst
        │
-  check_clarification ── [needs_clarification=True] ──► hitl_clarification ──► finalize_output
+  [needs_clarification=True] ───────────► hitl_clarification ──► finalize_output
        │ [needs_clarification=False]
   parallel_retrieval
        │
   post_retrieval_analyst
        │
-  memory_promotion
-       │
   generation
+       │
+  memory_promotion
        │
   quality_guard ──── [quality_status=error] ──► finalize_output
        │             [quality_status=warn]  ──► quality_warn_log ──► finalize_output
@@ -85,6 +85,7 @@ def load_user_context(state: ResearchGraphState) -> ResearchGraphState:
         "user": user, 
         "run_id": run_id, 
         "debug_dir": str(debug_dir),
+        "quality_status": "running",
         "errors": []
     }
 
@@ -155,21 +156,72 @@ def semantic_governance_node(state: ResearchGraphState) -> ResearchGraphState:
         item_settings = topic_settings.get(topic_name, {})
         track_family = pipeline.infer_track_family(topic_name)
         geo_scope = item_settings.get("geo_scope", "auto")
-        search_query_language = item_settings.get("search_query_language", run_language)
         
-        # Priority to user/llm optimized queries, otherwise use basic pipeline building
+        # Determine languages using generalized routing
+        topic_geo_langs = gov.infer_locale_languages(topic_name)
+        location_geo_langs = gov.infer_locale_languages(location)
+        
+        selected_languages = gov.generalized_language_routing(
+            track_family=track_family,
+            geo_scope=geo_scope,
+            context_location=location,
+            topic_locales=[],
+            user_language=run_language,
+            topic_geo_languages=topic_geo_langs,
+            location_geo_languages=location_geo_langs
+        )
+        
+        # Detect local event nature
+        is_local_event = geo_scope == "local" or any(kw in topic_name.lower() for kw in gov.EVENT_KEYWORDS)
+        
+        # Generate queries per language
         queries = item_settings.get("optimized_search_queries")
+        decision_source = "optimized" if queries else ("inferred" if (topic_geo_langs or location_geo_langs) else "fallback")
+        
         if not queries:
-            queries = [f"{topic_name} ultime notizie" if run_language == "it" else f"{topic_name} news"]
-            
+            queries = []
+            for lang in selected_languages:
+                # Basic query
+                if lang == "it":
+                    queries.append(f"{topic_name} ultime notizie")
+                elif lang == "nl" and is_local_event:
+                    queries.append(f"Uitagenda {topic_name} evenementen")
+                    queries.append(f"{topic_name} evenementen agenda weekend")
+                elif lang == "en" and is_local_event:
+                    queries.append(f"events in {topic_name} this weekend")
+                else:
+                    queries.append(f"{topic_name} news")
+        
+        queries = list(dict.fromkeys(queries)) # dedupe
+        
         q_bundle = {
             "topic_name": topic_name,
             "optimized_search_queries": queries,
-            "search_query_language": search_query_language,
+            "search_query_language": selected_languages[0] if selected_languages else run_language,
             "geo_scope": geo_scope,
             "track_family": track_family,
+            "selected_languages": selected_languages,
+            "decision_source": decision_source
         }
         query_bundles.append(q_bundle)
+        
+        # Audit to DB
+        db.append_topic_query_audit(
+            user_id=int(user["id"]),
+            run_id=state.get("run_id"),
+            topic=topic_name,
+            language=run_language,
+            geo_scope=geo_scope,
+            queries=queries,
+            payload={
+                "track_family": track_family,
+                "selected_languages": selected_languages,
+                "decision_source": decision_source,
+                "is_local_event": is_local_event,
+                "location_context": location
+            },
+            db_path=config.runtime_db_path
+        )
         
         audit = gov.evaluate_semantic_bundle(
             topic=topic_name,
@@ -180,11 +232,13 @@ def semantic_governance_node(state: ResearchGraphState) -> ResearchGraphState:
         )
         semantic_audit_results[topic_name] = audit
 
-    db.append_workflow_log(
-        user_id=int(user["id"]), run_id=None,
-        workflow_name="research_graph", step="semantic_governance", status="ok",
+    db.append_execution_log(
+        user_id=int(user["id"]), run_id=state.get("run_id"),
+        stage="semantic_governance", status="ok",
+        message=f"governance_completed topics={len(query_bundles)}",
         payload={"audit": semantic_audit_results}, db_path=config.runtime_db_path
     )
+
     
     return {
         "semantic_audit_results": semantic_audit_results, 
@@ -228,21 +282,30 @@ def hitl_clarification_node(state: ResearchGraphState) -> ResearchGraphState:
     report = state.get("analyst_pre_report") or {}
     clarification_req = clarification.evaluate_clarification_need(report, {})
     
-    session_id = str(uuid.uuid4())
+    # Persist session to DB
+    session_id = db.append_clarification_session(
+        user_id=int(user["id"]),
+        run_id=state.get("run_id"),
+        ambiguity_type=clarification_req.get("ambiguity_type", "general"),
+        question_text=clarification_req.get("question_text", "Could you clarify?")
+    )
+    
     clarification_req["clarification_session_id"] = session_id
     
-    db.append_workflow_log(
-        user_id=int(user.get("id") or 0), run_id=None,
-        workflow_name="research_graph", step="hitl_clarification", status="paused",
+    db.append_execution_log(
+        user_id=int(user.get("id") or 0), run_id=state.get("run_id"),
+        stage="hitl_clarification", status="paused",
+        message="user_input_required",
         payload={"clarification_request": clarification_req}, db_path=config.runtime_db_path
     )
     
     return {
         "clarification_needed": True, 
         "clarification_request": clarification_req, 
-        "quality_status": "hitl_blocked",
-        "quality_guard_passed": False
+        "clarification_session_id": session_id,
+        "quality_status": "intake_required"
     }
+
 
 async def parallel_retrieval_node(state: ResearchGraphState) -> ResearchGraphState:
     config = app_config.load_app_config()
@@ -250,8 +313,8 @@ async def parallel_retrieval_node(state: ResearchGraphState) -> ResearchGraphSta
     max_results = int(state.get("max_results_per_query") or pipeline.DEFAULT_MAX_RESULTS_PER_QUERY)
     query_bundles = state.get("query_bundles") or []
     
-    def _execute_search(query: str, language: str, max_res: int, track_type: str = "general") -> list[dict[str, Any]]:
-        q_payload = [{"query": query, "query_language": language, "retrieval_languages": [language], "track_type": track_type}]
+    def _execute_search(query: str, language: str, max_res: int, track_family: str = "general", topic_name: str = "") -> list[dict[str, Any]]:
+        q_payload = [{"query": query, "query_language": language, "retrieval_languages": [language], "track_type": track_family, "topic_name": topic_name}]
         cands, _ = pipeline.retrieve_candidates(q_payload, mode, max_res, language, config.runtime_db_path)
         return cands
 
@@ -303,21 +366,55 @@ def memory_promotion_node(state: ResearchGraphState) -> ResearchGraphState:
 # ── Old Guard Nodes ───────────────────────────────────────────────────────────
 
 def quality_guard(state: ResearchGraphState) -> ResearchGraphState:
+    config = app_config.load_app_config()
     quality_status = str(state.get("quality_status") or "unknown")
     selected_counts = dict(state.get("selected_counts") or {})
     topics_empty = [t for t, c in selected_counts.items() if int(c or 0) == 0]
+    topics_ok = [t for t, c in selected_counts.items() if int(c or 0) > 0]
     total = len(selected_counts) or 1
     coverage_pct = round((total - len(topics_empty)) / total, 3)
-    guard_passed = quality_status == "ok"
-    retrieval_stats = {"coverage_pct": coverage_pct, "topics_empty": topics_empty, "quality_status": quality_status}
-    return {"retrieval_stats": retrieval_stats, "quality_guard_passed": guard_passed}
+    
+    # Persist to DB
+    run_id = state.get("run_id")
+    if run_id:
+        db.update_run_summary(
+            run_id=run_id,
+            quality_status=quality_status,
+            selected_counts=selected_counts,
+            report_path=state.get("report_path"),
+            newsletter_path=state.get("newsletter_path"),
+            db_path=config.runtime_db_path
+        )
+    
+    retrieval_stats = {
+        "coverage_pct": coverage_pct,
+        "topics_empty": topics_empty,
+        "topics_ok": topics_ok,
+        "quality_status": quality_status,
+        "quality_flags": [] # TBD: event-specific flags can be added here
+    }
+    return {"retrieval_stats": retrieval_stats, "quality_guard_passed": quality_status != "error"}
 
 def quality_warn_log(state: ResearchGraphState) -> ResearchGraphState:
     return {}
 
 def finalize_output(state: ResearchGraphState) -> ResearchGraphState:
+    config = app_config.load_app_config()
     errors = state.get("errors") or []
-    return {"quality_status": "error" if errors else state.get("quality_status", "unknown")}
+    quality_status = str(state.get("quality_status") or "unknown")
+    if errors:
+        quality_status = "error"
+    
+    # Final persistence in case quality_guard was skipped or status changed
+    run_id = state.get("run_id")
+    if run_id:
+        db.update_run_summary(
+            run_id=run_id,
+            quality_status=quality_status,
+            db_path=config.runtime_db_path
+        )
+        
+    return {"quality_status": quality_status}
 
 # ── Routing ───────────────────────────────────────────────────────────────────
 

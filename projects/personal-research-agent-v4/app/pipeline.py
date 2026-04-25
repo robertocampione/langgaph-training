@@ -1846,6 +1846,7 @@ def retrieve_candidates(
                 "item_id": db.article_id_for_url(url),
                 "track_type": track_type,
                 "track_family": track_family,
+                "topic_name": query_item.get("topic_name", track_type),
                 "query": query_item["query"],
                 "title": str(result.get("title", "")).strip() or url,
                 "url": url,
@@ -2360,7 +2361,10 @@ def select_items(
     topic_settings = topic_settings or {}
     for track in topics:
         track_key = normalize_topic_text(track)
-        track_items = [item for item in validated if normalize_topic_text(str(item.get("track_type") or "")) == track_key]
+        track_items = [
+            item for item in validated 
+            if normalize_topic_text(str(item.get("topic_name") or item.get("track_type") or "")) == track_key
+        ]
         subtopics = _to_list_of_strings((topic_settings.get(track_key) or {}).get("subtopics"))
         ranked_items: list[dict[str, Any]] = []
         for item in track_items:

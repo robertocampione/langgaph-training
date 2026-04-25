@@ -28,7 +28,7 @@ async def fan_out_topic_branches(
         LOGGER.debug("Starting retrieval task for topic %s: %s", topic_name, query)
         try:
             # Since execute_search_fn is likely synchronous (urllib), we run it in a thread
-            return await asyncio.to_thread(execute_search_fn, query, language, max_results_per_query, topic_name)
+            return await asyncio.to_thread(execute_search_fn, query, language, max_results_per_query, track_family, topic_name)
         except Exception as exc:
             LOGGER.error("Failed retrieval on topic %s, query %s: %s", topic_name, query, exc)
             return []

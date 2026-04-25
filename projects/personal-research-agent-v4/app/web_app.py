@@ -15,7 +15,8 @@ from dotenv import load_dotenv
 
 from app import db, db_users
 from app import config as app_config
-from app.pipeline import SUPPORTED_LANGUAGES
+from app import pipeline  # noqa: E402
+from app.pipeline import SUPPORTED_LANGUAGES, normalize_topic_text
 
 load_dotenv()
 
@@ -113,16 +114,31 @@ async def get_profile(authorization: str = Header(None)):
     
     topics_map = {}
     for t in base_topics:
+        t_normalized = normalize_topic_text(t)
+        setting = topic_settings.get(t_normalized, {})
+        geo_scope_val = setting.get("geo_scope", "world")
+        locales_val = setting.get("locales", [])
+        
+        if locales_val and isinstance(locales_val, list) and len(locales_val) > 0:
+            display_scope = locales_val[0]
+        else:
+            display_scope = geo_scope_val
+            
         topics_map[t] = {
             "name": t,
-            "geo_scope": topic_settings.get(t, {}).get("geo_scope", "world"),
+            "geo_scope": display_scope,
             "subtopics": []
         }
         
+    normalized_to_ui = {normalize_topic_text(t): t for t in base_topics}
+        
     for row in raw_subtopics:
-        t_name = row["topic"]
-        if t_name in topics_map:
-            topics_map[t_name]["subtopics"].append({
+        db_topic = row["topic"]
+        norm_db_topic = normalize_topic_text(db_topic)
+        ui_name = normalized_to_ui.get(norm_db_topic)
+        
+        if ui_name and ui_name in topics_map:
+            topics_map[ui_name]["subtopics"].append({
                 "name": row["subtopic"],
                 "weight": row["weight"]
             })
@@ -172,17 +188,51 @@ async def update_profile(data: ProfileUpdate, authorization: str = Header(None))
     for t in data.topics:
         t_name = t.name.strip()
         if not t_name: continue
+        t_normalized = normalize_topic_text(t_name)
+        
+        # Geo_scope vs Locales parsing
+        input_scope = str(t.geo_scope).strip().lower()
+        if input_scope in ("local", "world", "global", "auto", ""):
+            geo_scope = input_scope or "world"
+            locales_to_add = None
+        else:
+            # User typed an explicit location, map to local and set the locale
+            geo_scope = "local"
+            locales_to_add = [str(t.geo_scope).strip()]
+
         # Geo_scope settings
-        if t_name not in topic_settings:
-            topic_settings[t_name] = {}
-        topic_settings[t_name]["geo_scope"] = t.geo_scope
+        if t_normalized not in topic_settings:
+            topic_settings[t_normalized] = {}
+        topic_settings[t_normalized]["geo_scope"] = geo_scope
+        if locales_to_add:
+            topic_settings[t_normalized]["locales"] = locales_to_add
+            
+        # VERY IMPORTANT: Update the explicit preferences list of subtopics so the pipeline doesn't respawn deleted ones
+        topic_settings[t_normalized]["subtopics"] = [st.name for st in t.subtopics]
         
         # Subtopics graph
         if hasattr(db, "set_topic_weight"):
             for st in t.subtopics:
-                db.set_topic_weight(user_id=user_id, topic=t_name, subtopic=st.name, weight=st.weight, db_path=db_path)
+                db.set_topic_weight(user_id=user_id, topic=t_normalized, subtopic=st.name, weight=st.weight, db_path=db_path)
             
-            # NOTE: We aren't doing strict deletion of unlisted subtopics to keep history, but we could disable them.
+            # True deletion of subtopics to allow UI removal
+            subtopics_to_keep = [st.name for st in t.subtopics]
+            if len(subtopics_to_keep) > 0:
+                sqlite_placeholders = ",".join(["?"] * len(subtopics_to_keep))
+                pg_placeholders = ",".join(["%s"] * len(subtopics_to_keep))
+                db._execute(
+                    f"DELETE FROM user_topic_graph WHERE user_id = ? AND topic = ? AND subtopic NOT IN ({sqlite_placeholders})",
+                    f"DELETE FROM user_topic_graph WHERE user_id = %s AND topic = %s AND subtopic NOT IN ({pg_placeholders})",
+                    (user_id, t_normalized, *subtopics_to_keep),
+                    db_path=db_path
+                )
+            else:
+                db._execute(
+                    "DELETE FROM user_topic_graph WHERE user_id = ? AND topic = ?",
+                    "DELETE FROM user_topic_graph WHERE user_id = %s AND topic = %s",
+                    (user_id, t_normalized),
+                    db_path=db_path
+                )
             
     explicit["topic_settings"] = topic_settings
     explicit["delivery_email"] = data.delivery_email.strip()

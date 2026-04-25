@@ -1,0 +1,655 @@
+{
+  "analyst_reasoning": {
+    "rejection_path": [
+      {
+        "item_id": "efcb02d2f082450c91f826ae",
+        "reason": "not_article_page",
+        "reason_detail": "low_information_excerpt",
+        "source": "cbssports.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.cbssports.com/fantasy/basketball/news/spurs-luke-kornet-starting-friday-529880/"
+      },
+      {
+        "item_id": "1bc76bbc82494178e8915a07",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "axios.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.axios.com/local/charlotte/2026/04/23/32-things-to-do-in-charlotte-this-weekend-including-an-outdoor-and-wellness-festivals"
+      },
+      {
+        "item_id": "6cab24f0e7fc268b6eca305d",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "axios.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero",
+        "url": "https://www.axios.com/local/richmond/2026/04/23/richmond-events-this-weekend-the-wiz-train-day"
+      },
+      {
+        "item_id": "e38c267756e2fa783c84169c",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "greenwichtime.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale",
+        "url": "https://www.greenwichtime.com/news/world/article/bulgarians-head-to-the-polls-to-elect-a-22214256.php"
+      },
+      {
+        "item_id": "064cace77bbeb4b6b70cfdf5",
+        "reason": "not_recent",
+        "reason_detail": "age_days=7",
+        "source": "reuters.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.reuters.com/sports/soccer/napoli-title-defence-all-over-after-home-loss-lazio-2026-04-18/"
+      },
+      {
+        "item_id": "7ef722788b4d686814171a93",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "nbcnewyork.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.nbcnewyork.com/video/news/local/at-least-one-dead-in-union-city-fire/6491944/"
+      },
+      {
+        "item_id": "1ed92472bf27d502edc24dd9",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "nbcnewyork.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.nbcnewyork.com/video/news/national-international/brussels-train-station-reopens/2163920/?noamp=mobile"
+      },
+      {
+        "item_id": "675807f691487b4bf3845de6",
+        "reason": "not_article_page",
+        "reason_detail": "navigation_text_extract",
+        "source": "modernghana.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.modernghana.com/videonews/bbc/1/637525"
+      },
+      {
+        "item_id": "93403138de0710e3c4e58406",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "newsweek.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.newsweek.com/sicilys-getting-busy-go-to-noto-for-authentic-sicilian-experiences-11849412"
+      },
+      {
+        "item_id": "938449b5929d9a7eb3a0edf5",
+        "reason": "low_relevance_news",
+        "reason_detail": "guide_or_evergreen_page",
+        "source": "apnews.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://apnews.com/article/milan-verona-juventus-serie-a-ba573d5c6c4d4f4a6813061e8a8dd300"
+      },
+      {
+        "item_id": "a149ed933af23a67a66baaf5",
+        "reason": "not_recent",
+        "reason_detail": "age_days=3",
+        "source": "rbj.net",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://rbj.net/2026/04/22/gcedc-honors-liberty-pumps-for-60-years-of-manufacturing-impact-in-genesee-county/"
+      }
+    ],
+    "selected_items": [
+      {
+        "base_score": 0.6686,
+        "feedback_delta": 0.0,
+        "final_score": 0.7686,
+        "item_id": "dbcdef38948c3806a96b910d",
+        "query": "eventi e tempo libero Maastricht tempo libero officieel evenementenprogramma when:14d",
+        "query_language": "nl",
+        "selection_reason": "matched eventi e tempo libero query from variety.com",
+        "source": "variety.com",
+        "source_type": "report",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero"
+      },
+      {
+        "base_score": 0.4713,
+        "feedback_delta": 0.0,
+        "final_score": 0.6213,
+        "item_id": "859180c8b66464aabd349fe1",
+        "query": "eventi e tempo libero Maastricht tempo libero weekend agenda when:14d",
+        "query_language": "nl",
+        "selection_reason": "matched eventi e tempo libero query from vogue.com",
+        "source": "vogue.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "eventi e tempo libero"
+      },
+      {
+        "base_score": 1.1898,
+        "feedback_delta": 0.0,
+        "final_score": 1.2898,
+        "item_id": "f645fdbb5e1e1b68374a5687",
+        "query": "finanza e bitcoin bitcoin news crypto assets key developments this week when:7d",
+        "query_language": "en",
+        "selection_reason": "matched finanza e bitcoin query from bitget.com",
+        "source": "bitget.com",
+        "source_type": "article",
+        "topic_scope_decision": "global",
+        "track_type": "finanza e bitcoin"
+      },
+      {
+        "base_score": 0.7715,
+        "feedback_delta": 0.0,
+        "final_score": 0.8715,
+        "item_id": "d263d57c2a7d427048540ffd",
+        "query": "finanza e bitcoin bitcoin news crypto assets latest news today when:7d",
+        "query_language": "en",
+        "selection_reason": "matched finanza e bitcoin query from bitget.com",
+        "source": "bitget.com",
+        "source_type": "report",
+        "topic_scope_decision": "global",
+        "track_type": "finanza e bitcoin"
+      }
+    ],
+    "topics": {
+      "eventi e tempo libero": {
+        "intent": "Capire gli sviluppi recenti e rilevanti su eventi e tempo libero.",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "queries": [
+          "eventi e tempo libero Maastricht tempo libero komende evenementen data locatie when:14d",
+          "eventi e tempo libero Maastricht tempo libero weekend agenda when:14d",
+          "eventi e tempo libero Maastricht tempo libero officieel evenementenprogramma when:14d",
+          "eventi e tempo libero tempo when:14d",
+          "eventi e tempo libero libero when:14d"
+        ],
+        "query_languages": [
+          "nl",
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "tempo",
+          "libero",
+          "agenda"
+        ],
+        "time_window_days": 14,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "events"
+      },
+      "finanza e bitcoin": {
+        "intent": "Sviluppi recenti e notizie rilevanti su Bitcoin",
+        "locales": [],
+        "queries": [
+          "finanza e bitcoin bitcoin news crypto assets latest news today when:7d",
+          "finanza e bitcoin bitcoin news crypto assets updates in the last 24 hours when:7d",
+          "finanza e bitcoin bitcoin news crypto assets key developments this week when:7d",
+          "finanza e bitcoin bitcoin news when:7d",
+          "finanza e bitcoin crypto assets when:7d"
+        ],
+        "query_languages": [
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "global",
+        "subtopics_selected": [
+          "bitcoin-news",
+          "crypto-assets",
+          "digital-currency"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "global",
+        "topic_scope_source": "override",
+        "track_family": "bitcoin"
+      },
+      "notizie italia": {
+        "intent": "Ultime notizie di politica e cronaca in Italia",
+        "locales": [
+          "Italia"
+        ],
+        "queries": [
+          "notizie italia Palermo Sicilia ultime notizie oggi when:1d",
+          "notizie italia Palermo Sicilia aggiornamenti ultime 24 ore when:1d",
+          "notizie italia Palermo Sicilia sviluppi principali settimana corrente when:1d",
+          "notizie italia Palermo when:1d",
+          "notizie italia Sicilia when:1d"
+        ],
+        "query_languages": [
+          "it",
+          "en"
+        ],
+        "requested_geo_scope": "auto",
+        "subtopics_selected": [
+          "Palermo",
+          "Sicilia",
+          "politica"
+        ],
+        "time_window_days": 1,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "auto",
+        "track_family": "news"
+      },
+      "politica locale": {
+        "intent": "Notizie limburg, Maastricht politiche e comunali",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "queries": [
+          "politica locale Maastricht Borgharen governo locale laatste nieuws vandaag when:7d",
+          "politica locale Maastricht Borgharen governo locale updates laatste 24 uur when:7d",
+          "politica locale Maastricht Borgharen governo locale belangrijkste ontwikkelingen deze week when:7d",
+          "politica locale Borgharen when:7d",
+          "politica locale governo locale when:7d"
+        ],
+        "query_languages": [
+          "nl",
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "Borgharen",
+          "governo-locale",
+          "notizie-limburg"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "news"
+      }
+    }
+  },
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 3,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.1898,
+          "feedback_delta": 0.0,
+          "final_score": 1.1898,
+          "item_id": "f645fdbb5e1e1b68374a5687",
+          "source": "bitget.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.7715,
+          "feedback_delta": 0.0,
+          "final_score": 0.7715,
+          "item_id": "d263d57c2a7d427048540ffd",
+          "source": "bitget.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.7426,
+          "feedback_delta": 0.0,
+          "final_score": 0.7426,
+          "item_id": "f352b50d2cbc186560c36af6",
+          "source": "forbes.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.6686,
+          "feedback_delta": 0.0,
+          "final_score": 0.6686,
+          "item_id": "dbcdef38948c3806a96b910d",
+          "source": "variety.com",
+          "track_type": "eventi e tempo libero"
+        },
+        {
+          "base_score": 0.6455,
+          "feedback_delta": 0.0,
+          "final_score": 0.6455,
+          "item_id": "7d226bbb4cbcaaa8091a43ca",
+          "source": "bitget.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.4784,
+          "feedback_delta": 0.0,
+          "final_score": 0.4784,
+          "item_id": "d736c84f117b0cc94395a619",
+          "source": "njarts.net",
+          "track_type": "eventi e tempo libero"
+        },
+        {
+          "base_score": 0.4713,
+          "feedback_delta": 0.0,
+          "final_score": 0.4713,
+          "item_id": "859180c8b66464aabd349fe1",
+          "source": "vogue.com",
+          "track_type": "eventi e tempo libero"
+        },
+        {
+          "base_score": 0.4712,
+          "feedback_delta": 0.0,
+          "final_score": 0.4712,
+          "item_id": "2e84954bf7085921086730c2",
+          "source": "fintechfutures.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.4684,
+          "feedback_delta": 0.0,
+          "final_score": 0.4684,
+          "item_id": "4cd891c7b7dce793856fee91",
+          "source": "chicagotribune.com",
+          "track_type": "eventi e tempo libero"
+        },
+        {
+          "base_score": 0.465,
+          "feedback_delta": 0.0,
+          "final_score": 0.465,
+          "item_id": "2a5fc5b3d7c650f7024c9123",
+          "source": "axios.com",
+          "track_type": "eventi e tempo libero"
+        }
+      ],
+      "applied_items": 10,
+      "feedback_profile_sample_size": 13,
+      "feedback_totals": {
+        "dislike": 5,
+        "like": 7,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 1,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 10,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 14,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 459
+  },
+  "created_at": "2026-04-25T01:52:49+00:00",
+  "mode": "live",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 45,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "eventi e tempo libero": [
+        "tempo",
+        "libero",
+        "agenda"
+      ],
+      "finanza e bitcoin": [
+        "bitcoin-news",
+        "crypto-assets",
+        "digital-currency"
+      ],
+      "notizie italia": [
+        "Palermo",
+        "Sicilia",
+        "politica"
+      ],
+      "politica locale": [
+        "Borgharen",
+        "governo-locale",
+        "notizie-limburg"
+      ]
+    },
+    "topic_settings": {
+      "event family maastricht 25 26 aprile": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "derived_context_invalid_input",
+        "objective": "Find family-friendly events happening in Maastricht on April 25th and 26th.",
+        "priority": 0.8,
+        "subtopics": [
+          "family-events",
+          "children-activities",
+          "weekend-events",
+          "cultural-events"
+        ],
+        "time_window_days": 2,
+        "topic_name": "event family maastricht 25 26 aprile"
+      },
+      "eventi a maastricht": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "locales_validation": "provided",
+        "objective": "Scoprire concerti, festival ed eventi pubblici",
+        "priority": 1.0,
+        "subtopics": [
+          "concerts",
+          "festivals",
+          "exhibitions",
+          "local-calendar"
+        ],
+        "time_window_days": 14,
+        "topic_name": "eventi a maastricht"
+      },
+      "eventi e tempo libero": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "locales_validation": "provided",
+        "objective": "Capire gli sviluppi recenti e rilevanti su eventi e tempo libero.",
+        "priority": 1.0,
+        "subtopics": [
+          "tempo",
+          "libero",
+          "agenda",
+          "venues"
+        ],
+        "time_window_days": 14,
+        "topic_name": "eventi e tempo libero"
+      },
+      "finanza e bitcoin": {
+        "confirmed": true,
+        "geo_scope": "global",
+        "locales": [],
+        "locales_validation": "missing",
+        "objective": "Sviluppi recenti e notizie rilevanti su Bitcoin",
+        "priority": 0.8,
+        "subtopics": [
+          "bitcoin-news",
+          "price-action"
+        ],
+        "time_window_days": 7,
+        "topic_name": "finanza e bitcoin"
+      },
+      "maastricht events this week": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "derived_context_invalid_input",
+        "objective": "list",
+        "priority": 0.8,
+        "subtopics": [
+          "concerts",
+          "festivals",
+          "exhibitions",
+          "markets"
+        ],
+        "time_window_days": 7,
+        "topic_name": "maastricht events this week"
+      },
+      "notizie italia": {
+        "confirmed": true,
+        "geo_scope": "auto",
+        "locales": [
+          "Italia"
+        ],
+        "locales_validation": "provided",
+        "objective": "Ultime notizie di politica e cronaca in Italia",
+        "priority": 0.8,
+        "subtopics": [
+          "politica",
+          "economia",
+          "cronaca"
+        ],
+        "time_window_days": 1,
+        "topic_name": "notizie italia"
+      },
+      "politica globale": {
+        "confirmed": false,
+        "geo_scope": "global",
+        "locales": [],
+        "locales_validation": "invalid_input",
+        "objective": "Capire gli sviluppi recenti e rilevanti su politica globale.",
+        "priority": 0.8,
+        "subtopics": [
+          "geopolitics",
+          "international-relations",
+          "global-economy",
+          "foreign-policy"
+        ],
+        "time_window_days": 1,
+        "topic_name": "politica globale"
+      },
+      "politica locale": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "locales_validation": "provided",
+        "objective": "Notizie limburg, Maastricht politiche e comunali",
+        "priority": 0.8,
+        "subtopics": [
+          "notizie-limburg",
+          "maastricht",
+          "limburg"
+        ],
+        "time_window_days": 7,
+        "topic_name": "politica locale"
+      },
+      "prossimi eventi a maastricht o nell'arco di 30 km. food events or what can be nice to do outside": {
+        "confirmed": false,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht"
+        ],
+        "locales_validation": "derived_context_invalid_input",
+        "objective": "Find upcoming events in or around Maastricht, focusing on food or outdoor activities suitable for families.",
+        "priority": 0.7,
+        "subtopics": [
+          "food-festivals",
+          "outdoor-activities",
+          "cultural-events",
+          "family-entertainment"
+        ],
+        "time_window_days": 30,
+        "topic_name": "prossimi eventi a maastricht o nell'arco di 30 km. food events or what can be nice to do outside"
+      }
+    }
+  },
+  "quality_flags": [
+    "missing_politica locale",
+    "missing_notizie italia",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 39,
+    "fallback_chain": [
+      "auto->live"
+    ],
+    "live_errors": [],
+    "max_results_per_query": 2,
+    "mode_requested": "auto",
+    "mode_used": "live",
+    "providers_used": [
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily"
+    ],
+    "query_count": 20,
+    "query_languages": [
+      "en",
+      "it",
+      "nl"
+    ],
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 40,
+    "retrieval_provider": "tavily",
+    "retriever": "tavily",
+    "topic_scope_decisions": {
+      "eventi e tempo libero": "local",
+      "finanza e bitcoin": "global",
+      "notizie italia": "local",
+      "politica locale": "local"
+    },
+    "web_errors": []
+  },
+  "run_id": "v4-96",
+  "selected_counts": {
+    "eventi e tempo libero": 2,
+    "finanza e bitcoin": 2,
+    "notizie italia": 0,
+    "politica locale": 0
+  }
+}

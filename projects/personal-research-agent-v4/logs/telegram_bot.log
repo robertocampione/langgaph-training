@@ -1,0 +1,11 @@
+2026-04-25 04:54:04,755 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 04:54:04,809 INFO telegram.ext.Application: Application started
+2026-04-25 04:58:45,111 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
+2026-04-25 04:58:45,179 INFO app.pipeline: Retrieval started mode=auto topics=['borgharen', 'borgharen', 'borgharen', 'borgharen', 'borgharen', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 04:59:28,199 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 04:59:29,614 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=161
+2026-04-25 04:59:29,624 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 04:59:30,838 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=153
+2026-04-25 05:19:06,549 WARNING __main__: Transient Telegram network error: NetworkError
+2026-04-25 05:38:21,760 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
+2026-04-25 05:38:21,816 INFO app.pipeline: Retrieval started mode=auto topics=['borgharen', 'borgharen', 'borgharen', 'borgharen', 'borgharen', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']

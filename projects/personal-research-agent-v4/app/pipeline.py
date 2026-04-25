@@ -595,14 +595,17 @@ def llm_topic_setting(
         system_prompt=(
             "You extract actionable topic settings for a news research assistant. "
             "Return strict JSON with keys: subtopics (array of short slugs), objective, "
-            "geo_scope (auto|local|global), locales (array), time_window_days (int), priority (float)."
+            "geo_scope (auto|local|global), locales (array), time_window_days (int), priority (float), "
+            "search_query_language (2-letter ISO code of the Primary Native Language of the target 'locales', e.g., 'nl' for Maastricht, 'en' for London), "
+            "translated_topic_phrase (the 'topic' explicitly translated to 'search_query_language'), "
+            "optimized_search_queries (array of 3 highly optimized literal search engine queries in 'search_query_language' to find relevant articles. Combine the translated topic, locales, and critical keywords natively without arbitrary concat-noise)."
         ),
         user_prompt=(
             f"topic={topic}\n"
             f"track_family={track_family}\n"
             f"user_language={user_language}\n"
             f"context_location={context_location}\n"
-            "Keep subtopics generic and reusable. Max 4 subtopics."
+            "Keep subtopics generic and reusable. Max 4 subtopics. Ensure optimized_search_queries are clean, highly targeted, and strictly in the target native language of the locale to maximize SEO match."
         ),
         temperature=0.1,
         timeout_seconds=12,
@@ -620,6 +623,9 @@ def normalize_topic_setting(
     user_language: str,
 ) -> dict[str, Any]:
     setting = dict(raw_setting or {})
+    setting["search_query_language"] = str(setting.get("search_query_language") or "").strip().lower()
+    setting["translated_topic_phrase"] = str(setting.get("translated_topic_phrase") or "").strip()
+    setting["optimized_search_queries"] = _to_list_of_strings(setting.get("optimized_search_queries"))
     subtopics = [token.replace(" ", "-").lower() for token in _to_list_of_strings(setting.get("subtopics"))]
     subtopics = [token for token in subtopics if token]
     if not subtopics:
@@ -674,6 +680,9 @@ def normalize_topic_setting(
 
     return {
         "topic_name": normalize_topic_text(topic),
+        "search_query_language": setting.get("search_query_language", ""),
+        "translated_topic_phrase": setting.get("translated_topic_phrase", ""),
+        "optimized_search_queries": setting.get("optimized_search_queries", []),
         "subtopics": subtopics[:6],
         "geo_scope": requested_scope,
         "locales": locales[:3],
@@ -733,14 +742,33 @@ def ensure_topic_settings(
         normalized_topic = normalize_topic_text(topic)
         family = infer_track_family(normalized_topic)
         existing = existing_settings.get(normalized_topic)
+        needs_generation = False
         if not existing:
+            needs_generation = True
+        elif not existing.get("search_query_language") or not existing.get("translated_topic_phrase") or not existing.get("optimized_search_queries"):
+            needs_generation = True
+            
+        if needs_generation:
             llm_setting = llm_topic_setting(
                 topic=normalized_topic,
                 track_family=family,
                 user_language=user_language,
                 context_location=context_location,
             )
-            existing = llm_setting or {}
+            if not existing:
+                existing = llm_setting or {}
+            else:
+                # Merge new LLM insights (translation properties) without destroying manual edits
+                if llm_setting:
+                    existing["search_query_language"] = llm_setting.get("search_query_language", "")
+                    existing["translated_topic_phrase"] = llm_setting.get("translated_topic_phrase", "")
+                    if "optimized_search_queries" in llm_setting:
+                        existing["optimized_search_queries"] = llm_setting.get("optimized_search_queries", [])
+                    # Optionally merge subtopics if they were completely missing
+                    if not existing.get("subtopics"):
+                        existing["subtopics"] = llm_setting.get("subtopics", [])
+                    if not existing.get("locales"):
+                        existing["locales"] = llm_setting.get("locales", [])
             generated += 1
         setting = normalize_topic_setting(
             topic=normalized_topic,
@@ -1022,7 +1050,7 @@ def build_queries(
                 return "bitcoin prijs etf regelgeving markten"
             return "bitcoin price etf regulation markets"
 
-        parts: list[str] = [_topic_label(topic)]
+        parts: list[str] = [str(topic_setting.get("translated_topic_phrase") or _topic_label(topic))]
         if location and _is_location_sensitive(topic, topic_setting):
             normalized_base = " ".join(parts).lower()
             normalized_location = location.strip().lower()
@@ -1036,7 +1064,10 @@ def build_queries(
 
     def _templates_for_topic(topic: str, query_language: str) -> list[str]:
         family = infer_track_family(topic)
-        language_pack = generic_templates[normalize_language(query_language)]
+        lang = normalize_language(query_language)
+        if lang not in generic_templates:
+            lang = "en"
+        language_pack = generic_templates[lang]
         if family == "events":
             return language_pack["events"]
         return language_pack["default"]
@@ -1084,14 +1115,17 @@ def build_queries(
         if topic_scope_decision == "local" and not topic_locales:
             topic_locales = [context_location]
         location_target = topic_locales[0] if topic_locales else context_location
-        retrieval_languages = infer_retrieval_languages(
-            topic=topic,
-            track_family=family,
-            context_location=context_location,
-            user_language=language,
-            geo_scope=topic_scope_decision,
-            topic_locales=topic_locales,
-        )
+        if normalized_setting.get("search_query_language"):
+            retrieval_languages = [normalize_language(normalized_setting["search_query_language"])]
+        else:
+            retrieval_languages = infer_retrieval_languages(
+                topic=topic,
+                track_family=family,
+                context_location=context_location,
+                user_language=language,
+                geo_scope=topic_scope_decision,
+                topic_locales=topic_locales,
+            )
         query_language = retrieval_languages[0]
         phrase = _topic_phrase(
             topic=topic,
@@ -1101,38 +1135,48 @@ def build_queries(
             topic_setting=normalized_setting,
         )
         recency_hint = _recency_hint_for_topic(topic, normalized_setting)
-        template_queries = [
-            f"{template.format(topic_phrase=phrase)} {recency_hint}".strip()
-            for template in _templates_for_topic(topic, query_language=query_language)
-        ]
-        for subtopic in selected_subtopics[:2]:
-            subtopic_text = str(subtopic).replace("-", " ").strip()
-            if subtopic_text:
-                template_queries.append(f"{_topic_label(topic)} {subtopic_text} {recency_hint}".strip())
-        if is_custom_topic:
-            if family == "events":
-                template_queries.extend(
-                    [
-                        f"{phrase} komende evenementen data locatie {recency_hint}".strip()
-                        if query_language == "nl"
-                        else f"{phrase} upcoming events dates location {recency_hint}".strip(),
-                        f"{phrase} upcoming events dates location".strip(),
-                    ]
-                )
-            else:
-                template_queries.extend(
-                    [
-                        f"{phrase} latest developments {recency_hint}".strip(),
-                        f"{phrase} latest developments".strip(),
-                    ]
-                )
-        if family == "events":
+        optimized_search_queries = _to_list_of_strings(normalized_setting.get("optimized_search_queries"))
+        
+        if optimized_search_queries:
+            template_queries = [f"{q} {recency_hint}".strip() for q in optimized_search_queries]
+        else:
+            template_queries = [
+                f"{template.format(topic_phrase=phrase)} {recency_hint}".strip()
+                for template in _templates_for_topic(topic, query_language=query_language)
+            ]
+        if not optimized_search_queries:
+            for subtopic in selected_subtopics[:2]:
+                subtopic_text = str(subtopic).replace("-", " ").strip()
+                if subtopic_text:
+                    template_queries.append(f"{_topic_label(topic)} {subtopic_text} {recency_hint}".strip())
+            if is_custom_topic:
+                if family == "events":
+                    template_queries.extend(
+                        [
+                            f"{phrase} komende evenementen data locatie {recency_hint}".strip()
+                            if query_language == "nl"
+                            else f"{phrase} upcoming events dates location {recency_hint}".strip(),
+                            f"{phrase} upcoming events dates location".strip(),
+                        ]
+                    )
+                else:
+                    template_queries.extend(
+                        [
+                            f"{phrase} latest developments {recency_hint}".strip(),
+                            f"{phrase} latest developments".strip(),
+                        ]
+                    )
+        if family == "events" and not optimized_search_queries:
             template_queries.append(
                 f"{phrase} {current_year} {current_year + 1} dates tickets official schedule {recency_hint}".strip()
             )
         preferred_domains = sorted(preferred_domains_for_track(topic))
         site_query_limit = 1 if family in {"news", "events"} else 0
-        site_queries = [f"site:{domain} {phrase} {recency_hint}".strip() for domain in preferred_domains[:site_query_limit]]
+        site_queries = []
+        if optimized_search_queries and len(optimized_search_queries) > 0:
+            site_queries = [f"site:{domain} {optimized_search_queries[0]} {recency_hint}".strip() for domain in preferred_domains[:site_query_limit]]
+        else:
+            site_queries = [f"site:{domain} {phrase} {recency_hint}".strip() for domain in preferred_domains[:site_query_limit]]
         topic_queries = _dedupe_keep_order(template_queries + site_queries)[:5]
         analyst_reasoning_topics[topic] = {
             "intent": normalized_setting.get("objective"),

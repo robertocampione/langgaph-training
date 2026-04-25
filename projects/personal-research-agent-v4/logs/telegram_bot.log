@@ -57,3 +57,1069 @@ NameError: name '_estimate_tokens' is not defined
 2026-04-25 00:26:23,962 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=210
 2026-04-25 00:26:23,971 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
 2026-04-25 00:26:25,006 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=133
+2026-04-25 00:33:48,628 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:33:48,664 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 00:33:49,550 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=60
+2026-04-25 00:33:49,633 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 00:34:20,251 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:34:21,245 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=159
+2026-04-25 00:34:21,255 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:34:22,380 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=128
+2026-04-25 00:34:22,389 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:34:23,711 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=169
+2026-04-25 00:34:30,577 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:34:30,664 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 00:34:55,436 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:34:56,377 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=149
+2026-04-25 00:34:56,394 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:34:57,402 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=86
+2026-04-25 00:34:57,412 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:34:58,557 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=165
+2026-04-25 00:41:27,550 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:41:27,589 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 00:42:20,481 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:42:21,531 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=158
+2026-04-25 00:42:21,540 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:42:22,860 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=164
+2026-04-25 00:55:54,273 INFO telegram.ext.Application: Application is stopping. This might take a moment.
+2026-04-25 00:55:54,273 INFO telegram.ext.Application: Application.stop() complete
+2026-04-25 01:21:35,828 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 01:21:35,889 INFO telegram.ext.Application: Application started
+2026-04-25 01:38:28,240 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 01:38:28,297 INFO telegram.ext.Application: Application started
+2026-04-25 01:41:44,525 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
+2026-04-25 01:41:44,557 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 01:43:08,574 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 01:43:09,766 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=148
+2026-04-25 01:43:09,777 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 01:43:10,907 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=171
+2026-04-25 01:43:10,917 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 01:43:11,828 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=103
+2026-04-25 01:47:45,329 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=True
+2026-04-25 01:47:45,336 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 01:47:46,160 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=52
+2026-04-25 01:47:46,219 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 01:48:31,397 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 01:48:32,242 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=110
+2026-04-25 01:51:22,313 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=True
+2026-04-25 01:51:22,318 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 01:51:23,763 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=77
+2026-04-25 01:51:23,794 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 01:53:24,076 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=True
+2026-04-25 01:53:24,081 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.1
+2026-04-25 01:53:24,903 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=86
+2026-04-25 01:53:24,934 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 02:20:14,970 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:20:15,033 INFO telegram.ext.Application: Application started
+2026-04-25 02:24:46,049 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:24:46,113 INFO telegram.ext.Application: Application started
+2026-04-25 02:25:52,174 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:25:52,236 INFO telegram.ext.Application: Application started
+2026-04-25 02:25:52,278 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:25:56,360 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:25:57,380 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:01,993 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:03,514 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:08,781 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:11,048 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:14,445 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:17,845 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:22,972 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:28,076 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:35,717 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:43,363 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:54,806 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:26:58,929 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:27:16,073 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:27:20,125 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:27:45,798 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:27:49,823 ERROR __main__: Unhandled Telegram update error (Conflict)
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 4865, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 704, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/ext/_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/_bot.py", line 733, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/roberto/workspace/workspace-root-langgraph/.venv/lib/python3.14/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.Conflict: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-25 02:28:01,164 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:28:01,232 INFO telegram.ext.Application: Application started
+2026-04-25 02:28:19,896 INFO telegram.ext.Application: Application is stopping. This might take a moment.
+2026-04-25 02:28:19,896 INFO telegram.ext.Application: Application.stop() complete
+2026-04-25 02:31:51,219 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:31:51,279 INFO telegram.ext.Application: Application started
+2026-04-25 02:34:04,236 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:34:04,309 INFO telegram.ext.Application: Application started
+2026-04-25 02:35:00,788 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:35:00,870 INFO telegram.ext.Application: Application started
+2026-04-25 02:39:28,609 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 02:39:28,669 INFO telegram.ext.Application: Application started
+2026-04-25 02:45:39,627 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto override_topics=False
+2026-04-25 02:45:39,660 INFO app.pipeline: Retrieval started mode=auto topics=['eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'eventi e tempo libero', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht', 'eventi a maastricht']
+2026-04-25 02:47:11,153 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 02:47:12,280 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=172
+2026-04-25 02:47:12,291 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 02:47:13,412 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=169
+2026-04-25 02:47:13,425 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 02:47:14,538 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=133

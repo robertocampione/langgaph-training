@@ -1,0 +1,552 @@
+{
+  "analyst_reasoning": {
+    "rejection_path": [
+      {
+        "item_id": "39c069d1ce28dd2ec4c2e9d7",
+        "reason": "not_article_page",
+        "reason_detail": "low_information_excerpt",
+        "source": "bjernv.dds.nl",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale",
+        "url": "http://www.bjernv.dds.nl/2020-2029.pdf"
+      },
+      {
+        "item_id": "49262c40584590047d76d23b",
+        "reason": "not_recent",
+        "reason_detail": "age_days=7149",
+        "source": "europarl.europa.eu",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.europarl.europa.eu/doceo/document/CRE-6-2006-09-27_SK.html"
+      },
+      {
+        "item_id": "09486a07642836dd1f7cfd4c",
+        "reason": "generic_listing",
+        "reason_detail": "listing_or_archive_url",
+        "source": "politico.eu",
+        "source_type": "listing",
+        "topic_scope_decision": "local",
+        "track_type": "notizie italia",
+        "url": "https://www.politico.eu/tag/italian-politics/"
+      },
+      {
+        "item_id": "981c26b5f64ef8f8336c79ec",
+        "reason": "not_article_page",
+        "reason_detail": "root_homepage_url",
+        "source": "news.bitcoin.com",
+        "source_type": "article",
+        "topic_scope_decision": "global",
+        "track_type": "finanza e bitcoin",
+        "url": "https://news.bitcoin.com/"
+      },
+      {
+        "item_id": "47e37e5adf7456b523d5a53b",
+        "reason": "generic_listing",
+        "reason_detail": "listing_or_archive_url",
+        "source": "jambase.com",
+        "source_type": "listing",
+        "topic_scope_decision": "local",
+        "track_type": "eventi a maastricht",
+        "url": "https://www.jambase.com/concerts/nl/~/concerts-in-maastricht?radius=200&band-filter=mybands&date-preset=this-weekend"
+      },
+      {
+        "item_id": "a37f158c5117196b8a230984",
+        "reason": "generic_listing",
+        "reason_detail": "listing_or_archive_url",
+        "source": "visitmaastricht.com",
+        "source_type": "listing",
+        "topic_scope_decision": "local",
+        "track_type": "eventi a maastricht",
+        "url": "https://www.visitmaastricht.com/en/agenda?page=5"
+      },
+      {
+        "item_id": "619138e83c146280c0bb592b",
+        "reason": "generic_listing",
+        "reason_detail": "event_listing_page",
+        "source": "visitmaastricht.com",
+        "source_type": "guide",
+        "topic_scope_decision": "local",
+        "track_type": "eventi a maastricht",
+        "url": "https://www.visitmaastricht.com/en/agenda"
+      }
+    ],
+    "selected_items": [
+      {
+        "base_score": 1.5669,
+        "feedback_delta": 0.0,
+        "final_score": 1.6335,
+        "item_id": "21fa1be53709d17bc8e37cb7",
+        "query": "politica locale maastricht when:7d",
+        "query_language": "nl",
+        "selection_reason": "matched politica locale query from reddit.com",
+        "source": "reddit.com",
+        "source_type": "report",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale"
+      },
+      {
+        "base_score": 1.45,
+        "feedback_delta": 0.0,
+        "final_score": 1.55,
+        "item_id": "8ccc8375b5ddd580f2b2a4fa",
+        "query": "eventi a maastricht concerts festivals komende evenementen data locatie when:14d",
+        "query_language": "nl",
+        "selection_reason": "matched eventi a maastricht query from bandsintown.com",
+        "source": "bandsintown.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "eventi a maastricht"
+      },
+      {
+        "base_score": 1.4499,
+        "feedback_delta": 0.0,
+        "final_score": 1.5499,
+        "item_id": "ed681b261eaee87633934602",
+        "query": "eventi a maastricht concerts festivals komende evenementen data locatie when:14d",
+        "query_language": "nl",
+        "selection_reason": "matched eventi a maastricht query from eventbrite.com",
+        "source": "eventbrite.com",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "eventi a maastricht"
+      },
+      {
+        "base_score": 1.3853,
+        "feedback_delta": 0.0,
+        "final_score": 1.4519,
+        "item_id": "97ff1edd90477ed9785f60f5",
+        "query": "politica locale maastricht when:7d",
+        "query_language": "nl",
+        "selection_reason": "matched politica locale query from maastrichtdiplomat.org",
+        "source": "maastrichtdiplomat.org",
+        "source_type": "article",
+        "topic_scope_decision": "local",
+        "track_type": "politica locale"
+      },
+      {
+        "base_score": 1.1988,
+        "feedback_delta": 0.0,
+        "final_score": 1.3988,
+        "item_id": "5f47e755a3c7d74525aac6b9",
+        "query": "finanza e bitcoin bitcoin news price action latest news today when:7d",
+        "query_language": "en",
+        "selection_reason": "matched finanza e bitcoin query from binance.com",
+        "source": "binance.com",
+        "source_type": "article",
+        "topic_scope_decision": "global",
+        "track_type": "finanza e bitcoin"
+      }
+    ],
+    "topics": {
+      "eventi a maastricht": {
+        "intent": "Scoprire concerti, festival ed eventi pubblici",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "queries": [
+          "eventi a maastricht concerts festivals komende evenementen data locatie when:14d",
+          "eventi a maastricht concerts festivals weekend agenda when:14d",
+          "eventi a maastricht concerts festivals officieel evenementenprogramma when:14d",
+          "eventi a maastricht concerts when:14d",
+          "eventi a maastricht festivals when:14d"
+        ],
+        "query_languages": [
+          "nl",
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "concerts",
+          "festivals",
+          "exhibitions"
+        ],
+        "time_window_days": 14,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "events"
+      },
+      "finanza e bitcoin": {
+        "intent": "Sviluppi recenti e notizie rilevanti su Bitcoin",
+        "locales": [],
+        "queries": [
+          "finanza e bitcoin bitcoin news price action latest news today when:7d",
+          "finanza e bitcoin bitcoin news price action updates in the last 24 hours when:7d",
+          "finanza e bitcoin bitcoin news price action key developments this week when:7d",
+          "finanza e bitcoin bitcoin news when:7d",
+          "finanza e bitcoin price action when:7d"
+        ],
+        "query_languages": [
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "global",
+        "subtopics_selected": [
+          "bitcoin-news",
+          "price-action"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "global",
+        "topic_scope_source": "override",
+        "track_family": "bitcoin"
+      },
+      "notizie italia": {
+        "intent": "Ultime notizie di politica e cronaca in Italia",
+        "locales": [
+          "Italia"
+        ],
+        "queries": [
+          "notizie italia politica economia ultime notizie oggi when:1d",
+          "notizie italia politica economia aggiornamenti ultime 24 ore when:1d",
+          "notizie italia politica economia sviluppi principali settimana corrente when:1d",
+          "notizie italia politica when:1d",
+          "notizie italia economia when:1d"
+        ],
+        "query_languages": [
+          "it",
+          "en"
+        ],
+        "requested_geo_scope": "auto",
+        "subtopics_selected": [
+          "politica",
+          "economia",
+          "cronaca"
+        ],
+        "time_window_days": 1,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "auto",
+        "track_family": "news"
+      },
+      "politica locale": {
+        "intent": "Notizie limburg, Maastricht politiche e comunali",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "queries": [
+          "politica locale Maastricht notizie limburg maastricht laatste nieuws vandaag when:7d",
+          "politica locale Maastricht notizie limburg maastricht updates laatste 24 uur when:7d",
+          "politica locale Maastricht notizie limburg maastricht belangrijkste ontwikkelingen deze week when:7d",
+          "politica locale notizie limburg when:7d",
+          "politica locale maastricht when:7d"
+        ],
+        "query_languages": [
+          "nl",
+          "en",
+          "it"
+        ],
+        "requested_geo_scope": "local",
+        "subtopics_selected": [
+          "notizie-limburg",
+          "maastricht",
+          "limburg"
+        ],
+        "time_window_days": 7,
+        "topic_scope_decision": "local",
+        "topic_scope_source": "override",
+        "track_family": "news"
+      }
+    }
+  },
+  "cost_trace": {
+    "budget_exceeded": false,
+    "cached_hits": 3,
+    "feedback_adjustment": {
+      "adjustments_preview": [
+        {
+          "base_score": 1.5669,
+          "feedback_delta": 0.0,
+          "final_score": 1.5669,
+          "item_id": "21fa1be53709d17bc8e37cb7",
+          "source": "reddit.com",
+          "track_type": "politica locale"
+        },
+        {
+          "base_score": 1.45,
+          "feedback_delta": 0.0,
+          "final_score": 1.45,
+          "item_id": "8ccc8375b5ddd580f2b2a4fa",
+          "source": "bandsintown.com",
+          "track_type": "eventi a maastricht"
+        },
+        {
+          "base_score": 1.4499,
+          "feedback_delta": 0.0,
+          "final_score": 1.4499,
+          "item_id": "ed681b261eaee87633934602",
+          "source": "eventbrite.com",
+          "track_type": "eventi a maastricht"
+        },
+        {
+          "base_score": 1.4495,
+          "feedback_delta": 0.0,
+          "final_score": 1.4495,
+          "item_id": "3f9c5be72fa675d15c66c4a7",
+          "source": "maastrichtmagazine.com",
+          "track_type": "eventi a maastricht"
+        },
+        {
+          "base_score": 1.4463,
+          "feedback_delta": 0.0,
+          "final_score": 1.4463,
+          "item_id": "615fdeb9f3bea90f4bfb020f",
+          "source": "eventbrite.com",
+          "track_type": "eventi a maastricht"
+        },
+        {
+          "base_score": 1.3853,
+          "feedback_delta": 0.0,
+          "final_score": 1.3853,
+          "item_id": "97ff1edd90477ed9785f60f5",
+          "source": "maastrichtdiplomat.org",
+          "track_type": "politica locale"
+        },
+        {
+          "base_score": 1.3746,
+          "feedback_delta": 0.0,
+          "final_score": 1.3746,
+          "item_id": "7d4e512bbe0d574a08ef46d9",
+          "source": "gemeentemaastricht.nl",
+          "track_type": "politica locale"
+        },
+        {
+          "base_score": 1.1988,
+          "feedback_delta": 0.0,
+          "final_score": 1.1988,
+          "item_id": "5f47e755a3c7d74525aac6b9",
+          "source": "binance.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 1.198,
+          "feedback_delta": 0.0,
+          "final_score": 1.198,
+          "item_id": "6b6d3682ac9c98b7997376b3",
+          "source": "finance.yahoo.com",
+          "track_type": "finanza e bitcoin"
+        },
+        {
+          "base_score": 0.9869,
+          "feedback_delta": 0.0,
+          "final_score": 0.9869,
+          "item_id": "d4d4b6130f21047426dd4eb2",
+          "source": "songkick.com",
+          "track_type": "eventi a maastricht"
+        }
+      ],
+      "applied_items": 10,
+      "feedback_profile_sample_size": 7,
+      "feedback_totals": {
+        "dislike": 3,
+        "like": 3,
+        "neutral": 0
+      }
+    },
+    "llm_calls": 2,
+    "llm_enabled": true,
+    "llm_models_used": [
+      "gemini-2.5-flash-lite"
+    ],
+    "llm_providers_configured": [
+      "google",
+      "openrouter",
+      "openai"
+    ],
+    "llm_providers_used": [
+      "google"
+    ],
+    "max_items_to_output": 5,
+    "max_items_to_process": 10,
+    "max_llm_items_per_run": 3,
+    "max_tokens_per_run": 20000,
+    "processed_items": 10,
+    "skipped_items": 0,
+    "skipped_items_processing_limit": 30,
+    "source_preference_adjustment": {
+      "adjustments_preview": [],
+      "applied_items": 0,
+      "source_preferences": 0
+    },
+    "tokens_used_estimate": 923
+  },
+  "created_at": "2026-04-24T22:42:22+00:00",
+  "mode": "live",
+  "personalization": {
+    "location": "Maastricht",
+    "profile_version": 32,
+    "source_preferences": [],
+    "temporary_contexts": [],
+    "topic_plan": {
+      "eventi a maastricht": [
+        "concerts",
+        "festivals",
+        "exhibitions"
+      ],
+      "finanza e bitcoin": [
+        "bitcoin-news",
+        "price-action"
+      ],
+      "notizie italia": [
+        "politica",
+        "economia",
+        "cronaca"
+      ],
+      "politica locale": [
+        "notizie-limburg",
+        "maastricht",
+        "limburg"
+      ]
+    },
+    "topic_settings": {
+      "eventi a maastricht": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "locales_validation": "provided",
+        "objective": "Scoprire concerti, festival ed eventi pubblici",
+        "priority": 1.0,
+        "subtopics": [
+          "concerts",
+          "festivals",
+          "exhibitions",
+          "local-calendar"
+        ],
+        "time_window_days": 14,
+        "topic_name": "eventi a maastricht"
+      },
+      "finanza e bitcoin": {
+        "confirmed": true,
+        "geo_scope": "global",
+        "locales": [],
+        "locales_validation": "missing",
+        "objective": "Sviluppi recenti e notizie rilevanti su Bitcoin",
+        "priority": 0.8,
+        "subtopics": [
+          "bitcoin-news",
+          "price-action"
+        ],
+        "time_window_days": 7,
+        "topic_name": "finanza e bitcoin"
+      },
+      "notizie italia": {
+        "confirmed": true,
+        "geo_scope": "auto",
+        "locales": [
+          "Italia"
+        ],
+        "locales_validation": "provided",
+        "objective": "Ultime notizie di politica e cronaca in Italia",
+        "priority": 0.8,
+        "subtopics": [
+          "politica",
+          "economia",
+          "cronaca"
+        ],
+        "time_window_days": 1,
+        "topic_name": "notizie italia"
+      },
+      "politica globale": {
+        "confirmed": false,
+        "geo_scope": "global",
+        "locales": [],
+        "locales_validation": "invalid_input",
+        "objective": "Capire gli sviluppi recenti e rilevanti su politica globale.",
+        "priority": 0.8,
+        "subtopics": [
+          "geopolitics",
+          "international-relations",
+          "global-economy",
+          "foreign-policy"
+        ],
+        "time_window_days": 1,
+        "topic_name": "politica globale"
+      },
+      "politica locale": {
+        "confirmed": true,
+        "geo_scope": "local",
+        "locales": [
+          "Maastricht",
+          "Limburg"
+        ],
+        "locales_validation": "provided",
+        "objective": "Notizie limburg, Maastricht politiche e comunali",
+        "priority": 0.8,
+        "subtopics": [
+          "notizie-limburg",
+          "maastricht",
+          "limburg"
+        ],
+        "time_window_days": 7,
+        "topic_name": "politica locale"
+      }
+    }
+  },
+  "quality_flags": [
+    "missing_notizie italia",
+    "stale_items_rejected"
+  ],
+  "quality_status": "warn",
+  "retrieval_trace": {
+    "cache_hits": 38,
+    "fallback_chain": [
+      "auto->live"
+    ],
+    "live_errors": [],
+    "max_results_per_query": 3,
+    "mode_requested": "auto",
+    "mode_used": "live",
+    "providers_used": [
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily",
+      "tavily"
+    ],
+    "query_count": 20,
+    "query_languages": [
+      "en",
+      "it",
+      "nl"
+    ],
+    "reasoning_active": false,
+    "reasoning_model_used": null,
+    "result_cap_total": 60,
+    "retrieval_provider": "tavily",
+    "retriever": "tavily",
+    "topic_scope_decisions": {
+      "eventi a maastricht": "local",
+      "finanza e bitcoin": "global",
+      "notizie italia": "local",
+      "politica locale": "local"
+    },
+    "web_errors": []
+  },
+  "run_id": "v4-86",
+  "selected_counts": {
+    "eventi a maastricht": 2,
+    "finanza e bitcoin": 1,
+    "notizie italia": 0,
+    "politica locale": 2
+  }
+}

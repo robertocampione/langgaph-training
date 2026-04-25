@@ -71,6 +71,7 @@ def run_for_chat_detailed(
     mode: str = "auto",
     max_results_per_query: int = pipeline.DEFAULT_MAX_RESULTS_PER_QUERY,
     fallback_to_stub: bool = True,
+    override_topics: list[str] | None = None,
 ) -> dict:
     """Run the v4 digest pipeline and return newsletter and report content."""
     effective_chat_id = chat_id if chat_id is not None else 0
@@ -79,6 +80,7 @@ def run_for_chat_detailed(
             chat_id=effective_chat_id,
             mode=mode,
             max_results_per_query=max_results_per_query,
+            override_topics=override_topics,
         )
         return {
             "newsletter": result.newsletter,

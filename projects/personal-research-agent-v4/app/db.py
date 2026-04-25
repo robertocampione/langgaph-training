@@ -1201,6 +1201,36 @@ def upsert_profile_fact(
     )
 
 
+def list_profile_facts(
+    user_id: int,
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> list[dict[str, Any]]:
+    return _execute(
+        "SELECT id, fact_key, fact_value, confidence, source, is_explicit, updated_at FROM profile_facts WHERE user_id = ? ORDER BY id ASC",
+        "SELECT id, fact_key, fact_value, confidence, source, is_explicit, updated_at FROM profile_facts WHERE user_id = %s ORDER BY id ASC",
+        (user_id,),
+        db_path=db_path,
+        database_url=database_url,
+        fetchall=True,
+    )
+
+
+def delete_profile_fact(
+    user_id: int,
+    fact_id: int,
+    db_path: str | None = None,
+    database_url: str | None = None,
+) -> None:
+    _execute(
+        "DELETE FROM profile_facts WHERE user_id = ? AND id = ?",
+        "DELETE FROM profile_facts WHERE user_id = %s AND id = %s",
+        (user_id, fact_id),
+        db_path=db_path,
+        database_url=database_url,
+    )
+
+
 def list_profile_versions(user_id: int, limit: int = 50, db_path: str | None = None, database_url: str | None = None) -> list[dict[str, Any]]:
     return _execute(
         """

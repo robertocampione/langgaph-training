@@ -4,9 +4,17 @@ from __future__ import annotations
 
 import json
 import os
+import logging
 import urllib.error
 import urllib.request
 from typing import Any
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+def _estimate_tokens(text: str) -> int:
+    return max(1, len(text) // 4)
 
 
 OPENAI_CHAT_COMPLETIONS_ENDPOINT = "https://api.openai.com/v1/chat/completions"
@@ -208,6 +216,7 @@ def call_llm(
         return {"ok": False, "error": f"missing_api_key:{provider}"}
 
     model = _model_for_provider(provider, role=role)
+    LOGGER.info("Calling LLM role=%s provider=%s model=%s temp=%.1f", role, provider, model, temperature)
     try:
         if provider == "google":
             body = _google_generate_content_request(
@@ -244,16 +253,20 @@ def call_llm(
             )
         content = _extract_content(provider, body)
         if not content:
+            LOGGER.error("LLM empty response provider=%s model=%s", provider, model)
             return {"ok": False, "error": f"empty_response:{provider}", "provider": provider, "model": model}
+        LOGGER.info("LLM success provider=%s model=%s tokens_est=%d", provider, model, _estimate_tokens(content))
         return {"ok": True, "provider": provider, "model": model, "content": content}
     except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")[:240]
+        body_err = exc.read().decode("utf-8", errors="replace")[:240]
+        LOGGER.error("LLM HTTP error provider=%s model=%s code=%d body=%s", provider, model, exc.code, body_err)
         return {
             "ok": False,
             "error": f"http_error:{provider}:{exc.code}",
             "provider": provider,
             "model": model,
-            "body": body,
+            "body": body_err,
         }
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        LOGGER.exception("LLM request error provider=%s model=%s", provider, model)
         return {"ok": False, "error": f"request_error:{provider}:{exc.__class__.__name__}", "provider": provider, "model": model}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import logging
 import re
 import base64
 import urllib.error
@@ -22,6 +23,9 @@ from app import db
 from app import db_users
 from app import llm
 from app.nodes import interpretation as interpretation_node
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 TRACKS = ("news", "events", "bitcoin")
@@ -88,6 +92,33 @@ MAX_BITCOIN_AGE_DAYS = 7
 MAX_FINANCE_AGE_DAYS = 7
 MAX_EVENT_PAST_DAYS = 7
 MAX_EVENT_FUTURE_DAYS = 120
+
+
+def _age_cap_days_for_track(
+    track_family: str,
+    topic_settings: dict[str, dict[str, Any]] | None = None,
+    track_type: str = "",
+) -> int:
+    """Return freshness cap in days, honouring time_window_days from topic_settings when available.
+
+    Priority: topic_settings[track_type].time_window_days
+              > topic_settings[track_family].time_window_days
+              > global constant fallback
+    """
+    if topic_settings:
+        for key in (track_type, track_family):
+            if not key:
+                continue
+            setting = topic_settings.get(key) or {}
+            window = int(setting.get("time_window_days") or 0)
+            if window > 0:
+                return window
+    _caps: dict[str, int] = {
+        "news": MAX_NEWS_AGE_DAYS,
+        "finance": MAX_FINANCE_AGE_DAYS,
+        "bitcoin": MAX_BITCOIN_AGE_DAYS,
+    }
+    return _caps.get(track_family, MAX_NEWS_AGE_DAYS)
 GENERIC_TOPIC_TERMS = {
     "news",
     "notizie",
@@ -148,6 +179,31 @@ NON_GEOGRAPHIC_LOCALE_TOKENS = {
     "eventi",
     "evenementen",
 }
+GEO_HINTS = {
+    "maastricht": {"locale": "Maastricht", "languages": ["nl", "en"]},
+    "limburg": {"locale": "Limburg", "languages": ["nl", "en"]},
+    "netherlands": {"locale": "Netherlands", "languages": ["nl", "en"]},
+    "nederland": {"locale": "Netherlands", "languages": ["nl", "en"]},
+    "holland": {"locale": "Netherlands", "languages": ["nl", "en"]},
+    "amsterdam": {"locale": "Amsterdam", "languages": ["nl", "en"]},
+    "rotterdam": {"locale": "Rotterdam", "languages": ["nl", "en"]},
+    "utrecht": {"locale": "Utrecht", "languages": ["nl", "en"]},
+    "italia": {"locale": "Italy", "languages": ["it", "en"]},
+    "italy": {"locale": "Italy", "languages": ["it", "en"]},
+    "roma": {"locale": "Rome", "languages": ["it", "en"]},
+    "rome": {"locale": "Rome", "languages": ["it", "en"]},
+    "milano": {"locale": "Milan", "languages": ["it", "en"]},
+    "milan": {"locale": "Milan", "languages": ["it", "en"]},
+    "spain": {"locale": "Spain", "languages": ["en"]},
+    "spagna": {"locale": "Spain", "languages": ["en"]},
+    "espana": {"locale": "Spain", "languages": ["en"]},
+    "madrid": {"locale": "Madrid", "languages": ["en"]},
+    "barcelona": {"locale": "Barcelona", "languages": ["en"]},
+    "germany": {"locale": "Germany", "languages": ["en"]},
+    "germania": {"locale": "Germany", "languages": ["en"]},
+    "deutschland": {"locale": "Germany", "languages": ["en"]},
+    "berlin": {"locale": "Berlin", "languages": ["en"]},
+}
 
 
 def normalize_language(language: str | None) -> str:
@@ -157,14 +213,41 @@ def normalize_language(language: str | None) -> str:
     return "en"
 
 
-def _locale_languages_hint(locales: list[str]) -> list[str]:
-    joined = " ".join(str(value or "").strip().lower() for value in locales if str(value or "").strip())
+def _dedupe_strings(values: list[str]) -> list[str]:
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        token = str(value or "").strip()
+        key = token.lower()
+        if not token or key in seen:
+            continue
+        seen.add(key)
+        deduped.append(token)
+    return deduped
+
+
+def detect_geo_hints(values: list[str]) -> dict[str, list[str]]:
+    joined = " ".join(str(value or "").strip().lower() for value in values if str(value or "").strip())
     if not joined:
-        return []
-    if any(token in joined for token in DUTCH_LOCAL_SIGNALS):
-        return ["nl", "en"]
-    if any(token in joined for token in {"italy", "italia", "rome", "milan", "milano", "napoli", "torino"}):
-        return ["it", "en"]
+        return {"locales": [], "languages": []}
+    locales: list[str] = []
+    languages: list[str] = []
+    for token, payload in GEO_HINTS.items():
+        if token not in joined:
+            continue
+        locales.append(str(payload.get("locale") or token))
+        for language in list(payload.get("languages") or []):
+            normalized = normalize_language(str(language))
+            if normalized not in languages:
+                languages.append(normalized)
+    return {"locales": _dedupe_strings(locales), "languages": _dedupe_strings(languages)}
+
+
+def _locale_languages_hint(locales: list[str]) -> list[str]:
+    hints = detect_geo_hints(locales)
+    languages = list(hints.get("languages") or [])
+    if languages:
+        return [normalize_language(language) for language in languages]
     return ["en"]
 
 
@@ -181,6 +264,8 @@ def infer_retrieval_languages(
     locale_values = [str(value).strip() for value in (topic_locales or []) if str(value).strip()]
     combined = " ".join([topic_value, location_value, *[value.lower() for value in locale_values]]).strip()
     has_dutch_local_signal = any(signal in combined for signal in DUTCH_LOCAL_SIGNALS)
+    topic_geo_hints = detect_geo_hints([topic_value, *locale_values])
+    location_geo_hints = detect_geo_hints([location_value])
     normalized_scope = str(geo_scope or "auto").strip().lower()
     if normalized_scope not in TOPIC_SCOPE_VALUES:
         normalized_scope = "auto"
@@ -188,11 +273,15 @@ def infer_retrieval_languages(
     ordered: list[str] = []
 
     if track_family in {"bitcoin", "finance"} and normalized_scope != "local":
+        ordered.extend(topic_geo_hints.get("languages") or [])
         ordered.extend(["en"])
     elif normalized_scope == "global":
+        ordered.extend(topic_geo_hints.get("languages") or [])
         ordered.extend(["en", normalize_language(user_language)])
     elif normalized_scope == "local":
         local_hint = _locale_languages_hint(locale_values or [context_location])
+        if not local_hint:
+            local_hint = list(location_geo_hints.get("languages") or [])
         ordered.extend(local_hint or ["en"])
     elif track_family in {"events", "news"} and has_dutch_local_signal:
         ordered.extend(["nl", "en"])
@@ -337,9 +426,16 @@ def write_debug_brief(
     (debug_dir / "debug_brief.md").write_text("\n".join(lines), encoding="utf-8")
 
 
-def normalize_topics_for_run(topics: list[str] | tuple[str, ...] | None) -> list[str]:
+def normalize_topics_for_run(topics: list[str] | tuple[str, ...] | str | None) -> list[str]:
     if not topics:
         return list(app_config.DEFAULT_TOPICS)
+    # Auto-parse if topics arrived as a JSON-encoded string (e.g. from SQLite row)
+    if isinstance(topics, str):
+        try:
+            parsed = json.loads(topics)
+            topics = parsed if isinstance(parsed, list) else [topics]
+        except (json.JSONDecodeError, ValueError):
+            topics = [topics]
     normalized: list[str] = []
     seen: set[str] = set()
     for topic in topics:
@@ -349,6 +445,7 @@ def normalize_topics_for_run(topics: list[str] | tuple[str, ...] | None) -> list
         seen.add(value)
         normalized.append(value)
     return normalized or list(app_config.DEFAULT_TOPICS)
+
 
 
 def normalize_topic_text(value: str) -> str:
@@ -561,14 +658,17 @@ def normalize_topic_setting(
     priority = _safe_float(setting.get("priority"), 1.0)
     priority = max(0.25, min(2.0, round(priority, 2)))
 
-    objective = re.sub(r"\s+", " ", str(setting.get("objective") or "").strip())
-    if not objective:
+    raw_objective = re.sub(r"\s+", " ", str(setting.get("objective") or "").strip())
+    # Clean objective from intake artifacts (e.g. "my goal |area: city |horizon: 7d")
+    clean_objective = raw_objective.split("|")[0].strip()
+    
+    if not clean_objective or clean_objective.lower() == "research":
         if user_language == "it":
-            objective = f"Capire gli sviluppi recenti e rilevanti su {topic}."
+            clean_objective = f"Capire gli sviluppi recenti e rilevanti su {topic}."
         elif user_language == "nl":
-            objective = f"Recente en relevante ontwikkelingen rond {topic} volgen."
+            clean_objective = f"Recente en relevante ontwikkelingen rond {topic} volgen."
         else:
-            objective = f"Track recent and relevant developments on {topic}."
+            clean_objective = f"Track recent and relevant developments on {topic}."
 
     confirmed = bool(setting.get("confirmed", False))
 
@@ -580,7 +680,7 @@ def normalize_topic_setting(
         "locales_validation": locale_validation,
         "time_window_days": time_window_days,
         "priority": priority,
-        "objective": objective,
+        "objective": clean_objective,
         "confirmed": confirmed,
     }
 
@@ -1035,7 +1135,7 @@ def build_queries(
         site_queries = [f"site:{domain} {phrase} {recency_hint}".strip() for domain in preferred_domains[:site_query_limit]]
         topic_queries = _dedupe_keep_order(template_queries + site_queries)[:5]
         analyst_reasoning_topics[topic] = {
-            "intent": str(normalized_setting.get("objective") or ""),
+            "intent": normalized_setting.get("objective"),
             "track_family": family,
             "subtopics_selected": selected_subtopics[:3],
             "topic_scope_decision": topic_scope_decision,
@@ -1144,7 +1244,9 @@ def tavily_search(query: str, max_results: int) -> list[dict[str, Any]]:
         {
             "api_key": token,
             "query": query,
-            "search_depth": "basic",
+            "topic": "news",
+            "days": 7,
+            "search_depth": "advanced",
             "max_results": max_results,
             "include_answer": False,
             "include_raw_content": False,
@@ -1184,8 +1286,9 @@ def extract_first_href(value: str) -> str:
 
 
 def google_news_rss_search_with_locale(query: str, max_results: int, locale: dict[str, str]) -> list[dict[str, Any]]:
+    temporal_query = f"{query} when:7d" if "when:" not in query else query
     url = (
-        f"{GOOGLE_NEWS_RSS_ENDPOINT}?q={quote_plus(query)}"
+        f"{GOOGLE_NEWS_RSS_ENDPOINT}?q={quote_plus(temporal_query)}"
         f"&hl={quote_plus(locale['hl'])}"
         f"&gl={quote_plus(locale['gl'])}"
         f"&ceid={quote_plus(locale['ceid'])}"
@@ -1562,6 +1665,7 @@ def retrieve_candidates(
     language: str,
     db_path: str | None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    LOGGER.info("Retrieval started mode=%s topics=%s", mode, [q["track_type"] for q in queries])
     candidates: list[dict[str, Any]] = []
     cache_hits = 0
     live_errors: list[str] = []
@@ -1575,6 +1679,7 @@ def retrieve_candidates(
 
     for query_item in queries:
         track_type = query_item["track_type"]
+        LOGGER.debug("Processing query for track_type=%s", track_type)
         track_family = infer_track_family(track_type)
         query_text = str(query_item.get("query") or "")
         is_site_query = query_text.strip().lower().startswith("site:")
@@ -1920,20 +2025,32 @@ def looks_like_navigation_text(text: str) -> bool:
     if len(sample) < 80:
         return False
     markers = [
-        "notizie video prezzi ricerca consensus",
+        "notizie video prezzi ricerca",
         "informazioni chi siamo",
         "privacy condizioni d'uso",
-        "migliori criptovalute",
-        "calendario economico",
-        "mercati indici",
-        "accedi iscriviti gratis",
-        "fondi mondiali",
+        "accedi iscriviti",
+        "accetta i cookie",
+        "accept cookies",
+        "all rights reserved",
+        "tutti i diritti riservati",
+        "skip to content",
+        "skip to main",
+        "subscribe to our newsletter",
     ]
     if any(marker in sample for marker in markers):
         return True
-    token_count = len(sample.split())
-    if token_count > 70 and sample.count("|") >= 4:
+    
+    # Generic homepage menu/index detection: high density of specific navigational words
+    nav_words = {"home", "about", "contact", "login", "register", "search", "menu", "privacy", "terms", "subscribe", "newsletter"}
+    words = sample.split()
+    nav_word_count = sum(1 for w in words if w in nav_words)
+    if len(words) > 0 and nav_word_count / len(words) > 0.15:
         return True
+
+    # Breadcrumbs or pipe separators common in footers/headers
+    if sample.count(" | ") >= 3 or sample.count(" > ") >= 2 or sample.count(" - ") >= 4:
+        return True
+    
     return False
 
 
@@ -2005,7 +2122,11 @@ def enrich_article_from_url(url: str, track_family: str = "news", timeout_second
     }
 
 
-def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None, str]:
+def reject_reason(
+    candidate: dict[str, Any],
+    now: datetime,
+    topic_settings: dict[str, dict[str, Any]] | None = None,
+) -> tuple[str | None, str]:
     url = candidate["url"].lower()
     path = url_path(candidate["url"])
     query = url_query(candidate["url"])
@@ -2103,11 +2224,11 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
     date = parse_iso_datetime(str(candidate.get("published_at") or "")) or extract_date(url + " " + title + " " + summary)
     if date is not None:
         age_days = (now - date).days
-        if track_family == "news" and age_days > MAX_NEWS_AGE_DAYS:
+        if track_family == "news" and age_days > _age_cap_days_for_track("news", topic_settings, track_type):
             return "not_recent", f"age_days={age_days}"
-        if track_family == "finance" and age_days > MAX_FINANCE_AGE_DAYS:
+        if track_family == "finance" and age_days > _age_cap_days_for_track("finance", topic_settings, track_type):
             return "not_recent", f"finance_age_days={age_days}"
-        if track_family == "bitcoin" and age_days > MAX_BITCOIN_AGE_DAYS:
+        if track_family == "bitcoin" and age_days > _age_cap_days_for_track("bitcoin", topic_settings, track_type):
             return "not_recent", f"bitcoin_age_days={age_days}"
         if track_family == "events" and age_days > MAX_EVENT_PAST_DAYS:
             if not (_has_event_signal(event_text) and _has_future_event_hint(event_text)):
@@ -2117,7 +2238,23 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
         if track_family not in TRACKS and age_days > MAX_NEWS_AGE_DAYS:
             return "not_recent", f"custom_topic_age_days={age_days}"
     elif track_family in {"news", "finance", "bitcoin"}:
-        return "missing_publish_date", "missing_publish_date_signal"
+        # Softer rejection for Tavily results: try to infer date from URL/title before hard-rejecting.
+        # Tavily search_depth=basic often omits published_date even for fresh articles.
+        inferred_date = extract_date(url + " " + title + " " + summary)
+        provider = str(candidate.get("retrieval_provider") or "")
+        if inferred_date is not None:
+            # We found a date in the URL/title — re-evaluate freshness with it
+            age_days = (now - inferred_date).days
+            cap = _age_cap_days_for_track(track_family, topic_settings, track_type)
+            if age_days > cap:
+                return "not_recent", f"inferred_age_days={age_days}"
+            # Date found and fresh enough — allow through
+        elif "tavily" in provider and candidate.get("article_text_excerpt"):
+            # Tavily result with a good excerpt but no date: treat as potentially fresh.
+            # The article passed all content quality checks — don't kill it for missing date.
+            pass  # allow through, quality_guard will catch stale patterns in LLM step
+        else:
+            return "missing_publish_date", "missing_publish_date_signal"
     elif track_family == "events":
         event_signal = any(
             word in url + " " + title + " " + summary
@@ -2128,13 +2265,16 @@ def reject_reason(candidate: dict[str, Any], now: datetime) -> tuple[str | None,
     return None, ""
 
 
-def validate_candidates(candidates: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, int]]:
+def validate_candidates(
+    candidates: list[dict[str, Any]],
+    topic_settings: dict[str, dict[str, Any]] | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, int]]:
     now = datetime.now(timezone.utc)
     valid: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
     reason_counts: dict[str, int] = {}
     for candidate in candidates:
-        reason, detail = reject_reason(candidate, now)
+        reason, detail = reject_reason(candidate, now, topic_settings=topic_settings)
         if reason:
             rejected_item = {**candidate, "reason": reason, "reason_detail": detail, "stage": "validator"}
             rejected.append(rejected_item)
@@ -2569,16 +2709,134 @@ def build_outputs(
     return "\n".join(report_lines), "\n".join(newsletter_lines)
 
 
+def retrieve_candidates_tavily_fallback(
+    topics_missing: list[str],
+    topic_plan: dict[str, list[str]],
+    topic_settings: dict[str, dict[str, Any]],
+    language: str,
+    max_results: int,
+    db_path: str | None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Targeted Tavily retrieval for topics that produced zero validated candidates.
+
+    Called only if PRA_FLAG_TAVILY_PERTOPIC_FALLBACK is enabled and TAVILY_API_KEY is set.
+    Returns a list of candidate dicts (pre-enrichment) and a trace dict.
+    """
+    if not os.getenv("TAVILY_API_KEY", "").strip():
+        return [], {"skipped": "no_tavily_key"}
+    candidates: list[dict[str, Any]] = []
+    traces: list[dict[str, Any]] = []
+    for track_type in topics_missing:
+        track_family = infer_track_family(track_type)
+        setting = topic_settings.get(normalize_topic_text(track_type)) or {}
+        subtopics = _to_list_of_strings(setting.get("subtopics"))
+        locales = _to_list_of_strings(setting.get("locales"))
+        objective = str(setting.get("objective") or "").split("|")[0].strip()
+        # Build a focused query from objective + subtopics + locales
+        query_parts: list[str] = []
+        if objective and len(objective) >= 5 and objective.lower() != "research":
+            query_parts.append(objective[:80])
+        elif subtopics:
+            query_parts.append(" ".join(subtopics[:3]))
+        else:
+            query_parts.append(str(track_type))
+        if locales:
+            query_parts.append(locales[0])
+        query_parts.append("latest news")
+        query = " ".join(query_parts)[:200]
+        try:
+            results = tavily_search(query, max_results)
+            trace_entry = {"topic": track_type, "query": query, "results": len(results)}
+        except RuntimeError as exc:
+            traces.append({"topic": track_type, "query": query, "error": str(exc)})
+            continue
+        traces.append(trace_entry)
+        for result in results:
+            raw_url = str(result.get("url", "")).strip()
+            if not raw_url:
+                continue
+            url = resolve_search_result_url(raw_url, "")
+            cached = db.get_article_by_url(url, db_path=db_path)
+            article_enrichment = enrich_article_from_url(url, track_family=track_family)
+            summary_text = clean_summary(str(result.get("content") or "").strip())
+            if "<script" in summary_text.lower() or "nocollect" in summary_text.lower():
+                summary_text = ""
+            source = domain_from_url(url)
+            trust_tier = source_trust_tier_for_track(track_type, source)
+            published_at = str(result.get("published_date") or (cached or {}).get("published_at") or "").strip()
+            published_at_confidence = float(0.75 if published_at else 0.0)
+            candidate = {
+                "item_id": db.article_id_for_url(url),
+                "track_type": track_type,
+                "track_family": track_family,
+                "query": query,
+                "title": str(result.get("title", "")).strip() or url,
+                "url": url,
+                "raw_url": raw_url,
+                "summary": summary_text,
+                "score": float(result.get("score") or 0.65),
+                "source": source,
+                "source_label": source,
+                "source_url": url,
+                "retrieval_provider": "tavily_pertopic_fallback",
+                "query_language": normalize_language(language),
+                "retrieval_languages": [normalize_language(language)],
+                "topic_scope_decision": str(setting.get("geo_scope") or "auto"),
+                "topic_scope_source": "tavily_fallback",
+                "topic_locales": locales,
+                "article_text_excerpt": str(article_enrichment.get("article_text_excerpt") or ""),
+                "article_body_markdown": str(article_enrichment.get("article_body_markdown") or ""),
+                "published_at": published_at,
+                "published_at_confidence": published_at_confidence,
+                "source_trust_tier": trust_tier,
+            }
+            if not candidate["article_text_excerpt"]:
+                candidate["article_text_excerpt"] = clean_summary(candidate["summary"], max_length=240)
+            if candidate["article_text_excerpt"] and candidate["summary"] and len(candidate["summary"]) < 100:
+                candidate["summary"] = candidate["article_text_excerpt"]
+            candidate["source_type"] = classify_source_type(
+                url=candidate["url"],
+                title=candidate["title"],
+                summary=candidate["summary"],
+            )
+            candidate["quality_score"] = score_candidate(candidate)
+            candidate["selection_reason"] = selection_reason(candidate)
+            db.cache_article(
+                {
+                    "id": candidate["item_id"],
+                    "title": candidate["title"],
+                    "url": candidate["url"],
+                    "category": track_type,
+                    "domain": candidate["source"],
+                    "published_at": candidate.get("published_at"),
+                    "summary": candidate["summary"],
+                    "article_text_excerpt": candidate["article_text_excerpt"],
+                    "article_body_markdown": candidate["article_body_markdown"],
+                    "published_at_confidence": candidate["published_at_confidence"],
+                    "source_trust_tier": candidate["source_trust_tier"],
+                },
+                db_path=db_path,
+            )
+            candidates.append(candidate)
+    trace = {"tavily_pertopic_fallback": traces, "candidate_count": len(candidates)}
+    return dedupe_candidates(candidates), trace
+
+
 def run_research_digest(
     chat_id: int,
     mode: str = "auto",
     max_results_per_query: int = DEFAULT_MAX_RESULTS_PER_QUERY,
+    override_topics: list[str] | None = None,
 ) -> PipelineResult:
+    LOGGER.info("run_research_digest entry chat_id=%s mode=%s override_topics=%s", chat_id, mode, bool(override_topics))
     config = app_config.load_app_config()
     runtime_db_path = config.runtime_db_path
     user = db_users.ensure_user(chat_id=chat_id, db_path=runtime_db_path)
     run_language = normalize_language(str(user.get("language") or config.default_language))
-    topics_for_run = [normalize_topic_text(topic) for topic in normalize_topics_for_run(user.get("topics"))]
+    if override_topics is not None:
+        topics_for_run = [normalize_topic_text(topic) for topic in override_topics]
+    else:
+        topics_for_run = [normalize_topic_text(topic) for topic in normalize_topics_for_run(user.get("topics"))]
     profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path)
     temporary_contexts = (
         db.list_active_temporary_contexts(user_id=int(user["id"]), db_path=runtime_db_path)
@@ -2700,7 +2958,7 @@ def run_research_digest(
                         query_count_initial=len(queries),
                         query_count_relaxed=len(relaxed_queries),
                     )
-        validated, rejected, reason_counts = validate_candidates(candidates)
+        validated, rejected, reason_counts = validate_candidates(candidates, topic_settings=topic_settings)
         if not validated and candidates and mode in {"auto", "live", "web_fallback"}:
             already_relaxed = "query_relaxation" in list(retrieval_trace.get("fallback_chain", []))
             if relaxed_queries and not already_relaxed:
@@ -2720,7 +2978,28 @@ def run_research_digest(
                         query_count_initial=len(queries),
                         query_count_relaxed=len(relaxed_queries),
                     )
-                    validated, rejected, reason_counts = validate_candidates(candidates)
+                    validated, rejected, reason_counts = validate_candidates(candidates, topic_settings=topic_settings)
+        # Fix B: Tavily per-topic fallback for topics still empty after RSS retrieval
+        if env_flag("PRA_FLAG_TAVILY_PERTOPIC_FALLBACK", default=True) and mode in {"auto", "live", "web_fallback"}:
+            counts_after_rss = selected_counts(
+                [c for c in validated if c not in rejected],
+                topics_for_run,
+            )
+            topics_with_zero = [t for t in topics_for_run if counts_after_rss.get(t, 0) == 0]
+            if topics_with_zero and os.getenv("TAVILY_API_KEY", "").strip():
+                tavily_extra, tavily_trace = retrieve_candidates_tavily_fallback(
+                    topics_missing=topics_with_zero,
+                    topic_plan=topic_plan,
+                    topic_settings=topic_settings,
+                    language=run_language,
+                    max_results=max(2, max_results_per_query),
+                    db_path=runtime_db_path,
+                )
+                if tavily_extra:
+                    candidates = dedupe_candidates(candidates + tavily_extra)
+                    retrieval_trace.setdefault("fallback_chain", []).append("tavily_pertopic_fallback")
+                    retrieval_trace["tavily_pertopic_fallback"] = tavily_trace
+                    validated, rejected, reason_counts = validate_candidates(candidates, topic_settings=topic_settings)
         write_json(
             debug_dir / "02_retrieval.json",
             "retrieval",

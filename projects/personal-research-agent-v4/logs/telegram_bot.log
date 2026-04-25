@@ -1,0 +1,59 @@
+2026-04-25 00:23:07,477 ERROR root: Test run failed
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/verify_logging.py", line 36, in <module>
+    result = pipeline.run_research_digest(chat_id=CHAT_ID, mode="auto", max_results_per_query=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/pipeline.py", line 2812, in run_research_digest
+    LOGGER.info("run_research_digest entry chat_id=%s mode=%s", chat_id, mode)
+    ^^^^^^
+NameError: name 'LOGGER' is not defined
+2026-04-25 00:23:16,656 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:23:16,702 ERROR root: Test run failed
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/verify_logging.py", line 36, in <module>
+    result = pipeline.run_research_digest(chat_id=CHAT_ID, mode="auto", max_results_per_query=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/pipeline.py", line 2915, in run_research_digest
+    candidates, retrieval_trace = retrieve_candidates(queries, mode, max_results_per_query, run_language, runtime_db_path)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/pipeline.py", line 1665, in retrieve_candidates
+    LOGGER.info("Retrieval started chat_id=%s mode=%s topics=%s", chat_id, mode, [q["track_type"] for q in queries])
+                                                                  ^^^^^^^
+NameError: name 'chat_id' is not defined
+2026-04-25 00:23:24,288 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:23:24,330 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 00:24:00,704 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:24:01,807 ERROR root: Test run failed
+Traceback (most recent call last):
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/verify_logging.py", line 36, in <module>
+    result = pipeline.run_research_digest(chat_id=CHAT_ID, mode="auto", max_results_per_query=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/pipeline.py", line 3059, in run_research_digest
+    enriched_items, interpretation_trace = interpretation_node.enrich_items(
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/nodes/interpretation.py", line 390, in enrich_items
+    llm_response = call_llm_interpretation(normalized_item, language)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/nodes/interpretation.py", line 287, in call_llm_interpretation
+    response = llm.call_llm(
+               ^^^^^^^^^^^^^
+  File "/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/app/llm.py", line 254, in call_llm
+    LOGGER.info("LLM success provider=%s model=%s tokens_est=%d", provider, model, _estimate_tokens(content))
+                                                                                   ^^^^^^^^^^^^^^^^
+NameError: name '_estimate_tokens' is not defined
+2026-04-25 00:24:09,496 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:24:09,559 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 00:24:24,060 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:24:25,079 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=156
+2026-04-25 00:24:25,091 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:24:25,727 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=139
+2026-04-25 00:24:25,735 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:24:26,610 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=110
+2026-04-25 00:25:11,544 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=3 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-25 00:25:11,627 INFO telegram.ext.Application: Application started
+2026-04-25 00:25:29,299 INFO app.pipeline: run_research_digest entry chat_id=1290647256 mode=auto
+2026-04-25 00:25:29,336 INFO app.pipeline: Retrieval started mode=auto topics=['politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica locale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'politica globale', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'notizie italia', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin', 'finanza e bitcoin']
+2026-04-25 00:26:22,490 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:26:23,962 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=210
+2026-04-25 00:26:23,971 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-25 00:26:25,006 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=133

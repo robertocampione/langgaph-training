@@ -1244,7 +1244,9 @@ def tavily_search(query: str, max_results: int) -> list[dict[str, Any]]:
         {
             "api_key": token,
             "query": query,
-            "search_depth": "basic",
+            "topic": "news",
+            "days": 7,
+            "search_depth": "advanced",
             "max_results": max_results,
             "include_answer": False,
             "include_raw_content": False,
@@ -1284,8 +1286,9 @@ def extract_first_href(value: str) -> str:
 
 
 def google_news_rss_search_with_locale(query: str, max_results: int, locale: dict[str, str]) -> list[dict[str, Any]]:
+    temporal_query = f"{query} when:7d" if "when:" not in query else query
     url = (
-        f"{GOOGLE_NEWS_RSS_ENDPOINT}?q={quote_plus(query)}"
+        f"{GOOGLE_NEWS_RSS_ENDPOINT}?q={quote_plus(temporal_query)}"
         f"&hl={quote_plus(locale['hl'])}"
         f"&gl={quote_plus(locale['gl'])}"
         f"&ceid={quote_plus(locale['ceid'])}"
@@ -2022,20 +2025,32 @@ def looks_like_navigation_text(text: str) -> bool:
     if len(sample) < 80:
         return False
     markers = [
-        "notizie video prezzi ricerca consensus",
+        "notizie video prezzi ricerca",
         "informazioni chi siamo",
         "privacy condizioni d'uso",
-        "migliori criptovalute",
-        "calendario economico",
-        "mercati indici",
-        "accedi iscriviti gratis",
-        "fondi mondiali",
+        "accedi iscriviti",
+        "accetta i cookie",
+        "accept cookies",
+        "all rights reserved",
+        "tutti i diritti riservati",
+        "skip to content",
+        "skip to main",
+        "subscribe to our newsletter",
     ]
     if any(marker in sample for marker in markers):
         return True
-    token_count = len(sample.split())
-    if token_count > 70 and sample.count("|") >= 4:
+    
+    # Generic homepage menu/index detection: high density of specific navigational words
+    nav_words = {"home", "about", "contact", "login", "register", "search", "menu", "privacy", "terms", "subscribe", "newsletter"}
+    words = sample.split()
+    nav_word_count = sum(1 for w in words if w in nav_words)
+    if len(words) > 0 and nav_word_count / len(words) > 0.15:
         return True
+
+    # Breadcrumbs or pipe separators common in footers/headers
+    if sample.count(" | ") >= 3 or sample.count(" > ") >= 2 or sample.count(" - ") >= 4:
+        return True
+    
     return False
 
 
@@ -2811,13 +2826,17 @@ def run_research_digest(
     chat_id: int,
     mode: str = "auto",
     max_results_per_query: int = DEFAULT_MAX_RESULTS_PER_QUERY,
+    override_topics: list[str] | None = None,
 ) -> PipelineResult:
-    LOGGER.info("run_research_digest entry chat_id=%s mode=%s", chat_id, mode)
+    LOGGER.info("run_research_digest entry chat_id=%s mode=%s override_topics=%s", chat_id, mode, bool(override_topics))
     config = app_config.load_app_config()
     runtime_db_path = config.runtime_db_path
     user = db_users.ensure_user(chat_id=chat_id, db_path=runtime_db_path)
     run_language = normalize_language(str(user.get("language") or config.default_language))
-    topics_for_run = [normalize_topic_text(topic) for topic in normalize_topics_for_run(user.get("topics"))]
+    if override_topics is not None:
+        topics_for_run = [normalize_topic_text(topic) for topic in override_topics]
+    else:
+        topics_for_run = [normalize_topic_text(topic) for topic in normalize_topics_for_run(user.get("topics"))]
     profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path)
     temporary_contexts = (
         db.list_active_temporary_contexts(user_id=int(user["id"]), db_path=runtime_db_path)

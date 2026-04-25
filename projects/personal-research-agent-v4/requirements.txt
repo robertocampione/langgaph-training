@@ -17,3 +17,6 @@ notebook
 jupyterlab
 ipykernel
 psycopg[binary]>=3.2
+\nfastapi\nuvicorn
+fastapi
+uvicorn

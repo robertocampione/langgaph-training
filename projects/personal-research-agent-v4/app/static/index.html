@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard | Personal Research Agent</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-theme-bg-color: #17181c;
+            --tg-theme-text-color: #f5f5f5;
+            --tg-theme-hint-color: #98989d;
+            --tg-theme-link-color: #3390ec;
+            --tg-theme-button-color: #3390ec;
+            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-secondary-bg-color: #232428;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --danger-color: #ff3b30;
+        }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body {
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            margin: 0; padding: 15px;
+            font-size: 16px;
+            min-height: 100vh;
+        }
+        h1 { font-size: 24px; margin: 0 0 15px 0; font-weight: 700; }
+        
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--tg-theme-text-color);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border-color: var(--tg-theme-button-color);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--tg-theme-hint-color); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        input[type="text"], input[type="email"], select, textarea {
+            width: 100%; padding: 14px; border-radius: 12px;
+            border: 1px solid var(--glass-border); background: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color); font-size: 15px; margin-bottom: 16px; outline: none;
+            transition: all 0.2s; appearance: none;
+        }
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2398989d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--tg-theme-button-color); }
+        
+        .action-row { display: flex; gap: 10px; }
+        .action-row input { margin-bottom: 0; flex-grow: 1; }
+        .btn {
+            background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color);
+            border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; height: 46px; white-space: nowrap;
+        }
+        .btn-outline { background: transparent; border: 1px solid var(--tg-theme-button-color); color: var(--tg-theme-link-color); }
+        
+        .item-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+        .item-row {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 14px; position: relative;
+        }
+        .item-row-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 15px;}
+        .delete-icon {
+            color: var(--danger-color); opacity: 0.8; cursor: pointer; padding: 5px; font-size: 18px; line-height: 1;
+        }
+        
+        /* Topic specific */
+        .subtopics-area { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--glass-border); }
+        .subtopic-pill {
+            display: inline-flex; align-items: center; font-size: 12px;
+            background: rgba(51, 144, 236, 0.1); border: 1px solid rgba(51, 144, 236, 0.2);
+            color: var(--tg-theme-link-color); padding: 4px 10px; border-radius: 12px; margin: 0 6px 6px 0;
+        }
+        .subtopic-pill span { margin-left: 6px; cursor: pointer; opacity: 0.6; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .loader { text-align: center; color: var(--tg-theme-hint-color); padding: 50px 0; font-size: 15px; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loader">Loading Dashboard...</div>
+    
+    <div id="app" style="display: none;">
+        <h1>Settings</h1>
+        
+        <div class="tabs">
+            <div class="tab-btn active" onclick="switchTab('topics')">🎯 Topics</div>
+            <div class="tab-btn" onclick="switchTab('memory')">🧠 Memory</div>
+            <div class="tab-btn" onclick="switchTab('delivery')">⚙️ Delivery</div>
+        </div>
+
+        <!-- TOPICS TAB -->
+        <div id="tab-topics" class="tab-content active">
+            <div class="card">
+                <label>Add New Topic</label>
+                <div class="action-row">
+                    <input type="text" id="new-topic" placeholder="e.g. Artificial Intelligence">
+                    <button class="btn" onclick="addTopic()">Add</button>
+                </div>
+            </div>
+            <label style="margin-top: 20px;">Active Topics Directory</label>
+            <div id="topics-list" class="item-list"></div>
+        </div>
+
+        <!-- MEMORY TAB -->
+        <div id="tab-memory" class="tab-content">
+            <div class="card">
+                <p style="font-size: 13px; color: var(--tg-theme-hint-color); margin-top: 0;">Facts the agent must remember when compiling your research (e.g., job role, company, strong biases).</p>
+                <div class="action-row">
+                    <input type="text" id="new-fact" placeholder="e.g. I work as a Python Dev">
+                    <button class="btn" onclick="addFact()">Add Fact</button>
+                </div>
+            </div>
+            <label>Known Facts</label>
+            <div id="facts-list" class="item-list"></div>
+        </div>
+
+        <!-- DELIVERY TAB -->
+        <div id="tab-delivery" class="tab-content">
+            <div class="card">
+                <label>Newsletter Delivery</label>
+                <input type="email" id="email" placeholder="nome@example.com" title="Email where reports will be forwarded">
+                
+                <label>Language</label>
+                <select id="language">
+                    <option value="en">English 🇬🇧</option>
+                    <option value="it">Italian 🇮🇹</option>
+                    <option value="nl">Dutch 🇳🇱</option>
+                </select>
+                
+                <label>Analysis Depth</label>
+                <select id="depth">
+                    <option value="brief">Flash (Fast Daily Summary)</option>
+                    <option value="standard">Standard (Balanced)</option>
+                    <option value="deep">Deep (Comprehensive Tech Report)</option>
+                </select>
+                
+                <label>Home Location</label>
+                <input type="text" id="location" placeholder="e.g. Milan, Italy">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        
+        let state = {
+            topics: [],
+            facts: [],
+            deleted_fact_ids: [],
+            language: 'en',
+            desired_depth: 'standard',
+            home_location: '',
+            delivery_email: ''
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function renderTopics() {
+            const container = document.getElementById('topics-list');
+            container.innerHTML = '';
+            
+            if (state.topics.length === 0) {
+                container.innerHTML = '<div style="color:var(--tg-theme-hint-color); font-size:14px; text-align:center;">No topics yet. Add one above!</div>';
+            }
+
+            state.topics.forEach((t, index) => {
+                const el = document.createElement('div');
+                el.className = 'item-row';
+                
+                let subHTML = '';
+                if(t.subtopics && t.subtopics.length > 0) {
+                    subHTML = `<div class="subtopics-area">
+                        <label style="font-size:11px;">Subtopics</label>
+                        ${t.subtopics.map((st, sIdx) => `<div class="subtopic-pill">${st.name} <span onclick="removeSubtopic(${index}, ${sIdx})">×</span></div>`).join('')}
+                    </div>`;
+                }
+
+                el.innerHTML = `
+                    <div class="item-row-header">
+                        <span>${t.name}</span>
+                        <div class="delete-icon" onclick="removeTopic(${index})">✕</div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <input type="text" placeholder="Global Geo Scope..." style="font-size: 13px; padding: 8px; margin-bottom: 8px;" value="${t.geo_scope || ''}" onchange="updateGeoScope(${index}, this.value)">
+                        <div class="action-row">
+                            <input type="text" id="st-input-${index}" placeholder="+ Add subtopic filter..." style="font-size: 13px; padding: 8px; margin-bottom: 0;">
+                            <button class="btn btn-outline" style="height: 35px; padding: 0 10px; font-size: 13px;" onclick="addSubtopic(${index})">+</button>
+                        </div>
+                    </div>
+                    ${subHTML}
+                `;
+                container.appendChild(el);
+            });
+            tg.MainButton.show();
+        }
+
+        function addTopic() {
+            const el = document.getElementById('new-topic');
+            const val = el.value.trim();
+            if (val && !state.topics.find(t => t.name.toLowerCase() === val.toLowerCase())) {
+                state.topics.unshift({ name: val, geo_scope: 'world', subtopics: [] });
+                el.value = '';
+                renderTopics();
+            }
+        }
+        function removeTopic(i) { state.topics.splice(i, 1); renderTopics(); }
+        function updateGeoScope(i, val) { state.topics[i].geo_scope = val; }
+        
+        function addSubtopic(topicIdx) {
+            const el = document.getElementById(`st-input-${topicIdx}`);
+            const val = el.value.trim();
+            if(val && !state.topics[topicIdx].subtopics.find(s => s.name.toLowerCase() === val.toLowerCase())) {
+                state.topics[topicIdx].subtopics.push({name: val, weight: 0.8});
+                el.value = '';
+                renderTopics();
+            }
+        }
+        function removeSubtopic(topicIdx, subIdx) {
+            state.topics[topicIdx].subtopics.splice(subIdx, 1);
+            renderTopics();
+        }
+
+        // Facts
+        function renderFacts() {
+            const container = document.getElementById('facts-list');
+            container.innerHTML = '';
+            if (state.facts.length === 0) {
+                container.innerHTML = '<div style="color:var(--tg-theme-hint-color); font-size:14px; text-align:center;">I have a blank slate.</div>';
+            }
+            state.facts.forEach((f, i) => {
+                const el = document.createElement('div');
+                el.className = 'item-row';
+                el.innerHTML = `
+                    <div class="item-row-header">
+                        <span style="font-weight: 400; font-size: 14px;">${f.value}</span>
+                        <div class="delete-icon" onclick="removeFact(${i})">✕</div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+            tg.MainButton.show();
+        }
+
+        function addFact() {
+            const el = document.getElementById('new-fact');
+            const val = el.value.trim();
+            if (val) {
+                state.facts.push({ key: `fact_${Date.now()}`, value: val });
+                el.value = '';
+                renderFacts();
+            }
+        }
+
+        function removeFact(i) {
+            const f = state.facts[i];
+            if (f.id) state.deleted_fact_ids.push(f.id);
+            state.facts.splice(i, 1);
+            renderFacts();
+        }
+
+        async function loadProfile() {
+            try {
+                const initData = tg.initData || "mockInitData"; 
+                const res = await fetch('/api/profile', { headers: { 'Authorization': `tma ${initData}` } });
+                if (!res.ok) throw new Error('API Reject');
+                
+                const data = await res.json();
+                state = { ...state, ...data, deleted_fact_ids: [] };
+                
+                document.getElementById('email').value = state.delivery_email || '';
+                document.getElementById('language').value = state.language || 'en';
+                document.getElementById('depth').value = state.desired_depth || 'standard';
+                document.getElementById('location').value = state.home_location || '';
+                
+                renderTopics();
+                renderFacts();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                
+                tg.MainButton.text = "SAVE CONFIGURATION";
+                tg.MainButton.color = tg.themeParams.button_color || "#3390ec";
+                tg.MainButton.show();
+            } catch(e) {
+                document.getElementById('loading').innerText = "Security Check Failed. Please open via Telegram Bot.";
+            }
+        }
+
+        tg.onEvent('mainButtonClicked', async () => {
+            tg.MainButton.text = "SAVING...";
+            tg.MainButton.showProgress(true);
+            
+            const payload = {
+                topics: state.topics,
+                facts: state.facts,
+                deleted_fact_ids: state.deleted_fact_ids,
+                language: document.getElementById('language').value,
+                desired_depth: document.getElementById('depth').value,
+                home_location: document.getElementById('location').value,
+                delivery_email: document.getElementById('email').value
+            };
+            
+            try {
+                const initData = tg.initData || "mockInitData"; 
+                const res = await fetch('/api/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `tma ${initData}` },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (res.ok) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    setTimeout(() => tg.close(), 200);
+                } else tg.showAlert("Permission denied saving profile.");
+            } catch(e) { tg.showAlert("Network Error."); } 
+            finally { tg.MainButton.text = "SAVE"; tg.MainButton.hideProgress(); }
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>

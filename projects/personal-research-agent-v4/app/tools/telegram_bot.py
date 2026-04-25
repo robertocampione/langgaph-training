@@ -154,68 +154,40 @@ def greeting_for(user: dict[str, Any]) -> str:
         f"Hi {user['name']}. Personal Research Agent v4 is ready.\n"
         f"Language: {user['language']}\n"
         f"Topics: {topics}\n\n"
-        "Commands: /run, /help, /detail, /profile, /intake_status, /topic_scope, /location, /travel, /sources, /subtopics, /memory, /topics, /language, /onboard, /reset_intake, /feedback"
+        "Commands: /run, /ask <query>, /config, /detail, /profile, /intake_status, /feedback"
     )
-
 
 def _help_text(language: str) -> str:
     if language == "it":
         return (
             "Comandi principali:\n"
-            "- /run (oppure /run continue per bypass esplicito intake)\n"
-            "- /help\n"
-            "- /intake_status\n"
+            "- /run (Avvia la generazione del digest periodico)\n"
+            "- /ask <ricerca> (Cerca subito un argomento on-the-fly)\n"
+            "- /config (Apri la Dashboard Web per configurare TUTTO)\n"
             "- /detail <numero>\n"
             "- /profile\n"
-            "- /topics <t1, t2>\n"
-            "- /topic_scope <topic> auto|local|global\n"
-            "- /location <luogo>\n"
-            "- /travel <destinazione> [giorni]\n"
-            "- /sources add|deny|remove <dominio>\n"
-            "- /subtopics promote|demote|enable|disable <topic> <subtopic>\n"
-            "- /memory, /memory_clear [tipo]\n"
-            "- /language en|it|nl\n"
-            "- /onboard [full]\n"
-            "- /reset_intake\n"
+            "- /intake_status\n"
             "- /feedback <1-5> <note>"
         )
     if language == "nl":
         return (
             "Belangrijkste commando's:\n"
-            "- /run (of /run continue voor expliciete intake-bypass)\n"
-            "- /help\n"
-            "- /intake_status\n"
+            "- /run (Start de periodieke digest-generatie)\n"
+            "- /ask <query> (Zoek direct een onderwerp on-the-fly)\n"
+            "- /config (Open het Web Dashboard om ALLES te configureren)\n"
             "- /detail <nummer>\n"
             "- /profile\n"
-            "- /topics <t1, t2>\n"
-            "- /topic_scope <topic> auto|local|global\n"
-            "- /location <plaats>\n"
-            "- /travel <bestemming> [dagen]\n"
-            "- /sources add|deny|remove <domein>\n"
-            "- /subtopics promote|demote|enable|disable <topic> <subtopic>\n"
-            "- /memory, /memory_clear [type]\n"
-            "- /language en|it|nl\n"
-            "- /onboard [full]\n"
-            "- /reset_intake\n"
+            "- /intake_status\n"
             "- /feedback <1-5> <notities>"
         )
     return (
         "Main commands:\n"
-        "- /run (or /run continue for explicit intake bypass)\n"
-        "- /help\n"
-        "- /intake_status\n"
+        "- /run (Start periodic digest generation)\n"
+        "- /ask <query> (Instantly search a topic on-the-fly)\n"
+        "- /config (Open the Web Dashboard to configure EVERYTHING)\n"
         "- /detail <number>\n"
         "- /profile\n"
-        "- /topics <t1, t2>\n"
-        "- /topic_scope <topic> auto|local|global\n"
-        "- /location <place>\n"
-        "- /travel <destination> [days]\n"
-        "- /sources add|deny|remove <domain>\n"
-        "- /subtopics promote|demote|enable|disable <topic> <subtopic>\n"
-        "- /memory, /memory_clear [type]\n"
-        "- /language en|it|nl\n"
-        "- /onboard [full]\n"
-        "- /reset_intake\n"
+        "- /intake_status\n"
         "- /feedback <1-5> <notes>"
     )
 
@@ -1185,6 +1157,7 @@ async def _execute_digest_run(
     max_results_per_query: int,
     fallback_to_stub: bool,
     announce: str = "Running your research digest now.",
+    override_topics: list[str] | None = None,
 ) -> dict[str, Any] | None:
     chat = update.effective_chat
     if chat is None:
@@ -1197,6 +1170,7 @@ async def _execute_digest_run(
             mode,
             max_results_per_query,
             fallback_to_stub,
+            override_topics,
         )
     except Exception:
         LOGGER.exception("Pipeline run failed for chat_id=%s", chat_id)
@@ -1214,6 +1188,7 @@ async def _execute_digest_run(
                     "mode": mode,
                     "max_results_per_query": max_results_per_query,
                     "fallback_to_stub": fallback_to_stub,
+                    "override_topics": override_topics,
                 },
                 db_path=runtime_db_path(config),
             )
@@ -1261,29 +1236,30 @@ async def _execute_digest_run(
 
     quality_status = str(result.get("quality_status") or "").strip().lower()
     selected_counts = result.get("selected_counts") or {}
-    if quality_status == "warn" and isinstance(selected_counts, dict):
-        missing = [str(topic) for topic, count in selected_counts.items() if int(count or 0) == 0]
+    mode = str(result.get("mode") or "").strip().lower()
+    if isinstance(selected_counts, dict) and mode != "stub":
+        topics_run = override_topics if override_topics is not None else []
+        if not topics_run:
+            config = app_config.load_app_config()
+            user = db_users.ensure_user(chat_id=int(chat_id), db_path=runtime_db_path(config))
+            topics_run = research_pipeline.normalize_topics_for_run(user.get("topics"))
+        topics_run = [research_pipeline.normalize_topic_text(t) for t in topics_run]
+        missing = [t for t in topics_run if int(selected_counts.get(t) or 0) == 0]
         if missing:
             if language == "it":
                 await send_text(
                     update,
-                    "Nota qualità: mancano risultati solidi per "
-                    + ", ".join(missing)
-                    + ". Se vuoi, aggiorna i topic con /topics e poi rilancia /run.",
+                    "Nota Analista: 0 risultati per [ " + ", ".join(missing) + " ]. \nQuery forse troppo ampie. Vuoi aggiustare il tiro? Rispondi in chat specificando i dettagli e avvierò una ricerca ad-hoc istantanea."
                 )
             elif language == "nl":
                 await send_text(
                     update,
-                    "Kwaliteitsnotitie: er ontbreken sterke resultaten voor "
-                    + ", ".join(missing)
-                    + ". Werk eventueel topics bij met /topics en start daarna opnieuw met /run.",
+                    "Analist Notitie: 0 resultaten voor [ " + ", ".join(missing) + " ]. \nMisschien is de zoekopdracht te breed. Antwoord met meer details voor een ad-hoc zoekopdracht."
                 )
             else:
                 await send_text(
                     update,
-                    "Quality note: strong results are missing for "
-                    + ", ".join(missing)
-                    + ". You can refine topics with /topics and run /run again.",
+                    "Analyst Note: 0 solid results for [ " + ", ".join(missing) + " ]. \nQuery might be too broad. Reply with specific details to run an instant ad-hoc search."
                 )
     try:
         config = app_config.load_app_config()
@@ -1399,100 +1375,18 @@ async def detail_handler(update: Any, context: Any) -> None:
 
 
 async def topics_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    topics = parse_topics_args(context.args)
-    if not topics:
-        user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-        await send_text(update, "Current topics: " + ", ".join(user["topics"]))
-        return
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    updated = db_users.update_user_topics(chat_id=int(chat.id), topics=topics, db_path=runtime_db_path(config))
-    profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path(config)) or {}
-    explicit = dict(profile.get("explicit_preferences") or {})
-    explicit["topics"] = topics
-    db.upsert_profile(user_id=int(user["id"]), explicit_preferences=explicit, db_path=runtime_db_path(config))
-    _profile, _topic_settings, _gate = _ensure_topic_settings_and_gate(user, config)
-    await send_text(update, f"Updated topics for {user['name']}: " + ", ".join(updated["topics"]))
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def topic_scope_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path(config)) or {}
-    context_location = _context_location_for_user(int(user["id"]), profile, runtime_db_path(config))
-    topic_settings = _profile_topic_settings(profile)
-    topics = [research_pipeline.normalize_topic_text(topic) for topic in research_pipeline.normalize_topics_for_run(user.get("topics"))]
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
 
-    if len(context.args) < 2:
-        lines = ["Topic scopes:"]
-        for topic in topics:
-            setting = research_pipeline.normalize_topic_setting(
-                topic=topic,
-                raw_setting=topic_settings.get(topic) or {},
-                track_family=research_pipeline.infer_track_family(topic),
-                context_location=context_location,
-                user_language=str(user.get("language") or config.default_language),
-            )
-            lines.append(
-                f"- {topic}: scope={setting.get('geo_scope')} locales={','.join(setting.get('locales') or []) or '-'} "
-                f"time_window={setting.get('time_window_days')}d"
-            )
-        lines.append("Use: /topic_scope <topic> auto|local|global")
-        await send_text(update, "\n".join(lines))
-        return
-
-    requested_scope = str(context.args[-1]).strip().lower()
-    if requested_scope not in research_pipeline.TOPIC_SCOPE_VALUES:
-        await send_text(update, "Scope must be one of: auto, local, global")
-        return
-    topic = research_pipeline.normalize_topic_text(" ".join(context.args[:-1]))
-    if not topic:
-        await send_text(update, "Use: /topic_scope <topic> auto|local|global")
-        return
-    if topic not in topics:
-        await send_text(update, f"Topic `{topic}` is not active. Add it first with /topics.")
-        return
-
-    current = topic_settings.get(topic) or {}
-    updated_setting = research_pipeline.normalize_topic_setting(
-        topic=topic,
-        raw_setting={**current, "geo_scope": requested_scope},
-        track_family=research_pipeline.infer_track_family(topic),
-        context_location=context_location,
-        user_language=str(user.get("language") or config.default_language),
-    )
-    topic_settings[topic] = updated_setting
-    _save_topic_settings_in_profile(int(user["id"]), profile, topic_settings, runtime_db_path(config))
-    _profile, _settings, _gate = _ensure_topic_settings_and_gate(user, config)
-    await send_text(
-        update,
-        f"Updated scope: {topic} -> {requested_scope} (locales={','.join(updated_setting.get('locales') or []) or '-'})",
-    )
 
 
 async def language_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    if not context.args:
-        language = db_users.get_user_language(chat_id=int(chat.id), db_path=runtime_db_path(config)) or config.default_language
-        await send_text(update, f"Current language: {language}")
-        return
-    requested = context.args[0].strip().lower()
-    if requested not in SUPPORTED_LANGUAGES:
-        await send_text(update, "Supported languages: en, it, nl")
-        return
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    updated = db_users.update_user_language(chat_id=int(chat.id), language=requested, db_path=runtime_db_path(config))
-    db.upsert_profile(user_id=int(user["id"]), language=requested, db_path=runtime_db_path(config))
-    await send_text(update, f"Updated language: {updated['language']}")
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def profile_handler(update: Any, context: Any) -> None:
@@ -1534,280 +1428,43 @@ async def profile_handler(update: Any, context: Any) -> None:
 
 
 async def location_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    if not context.args:
-        profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path(config)) or {}
-        await send_text(update, f"Current location: {profile.get('home_location') or '(not set)'}")
-        return
-    location = " ".join(context.args).strip()
-    if not location:
-        await send_text(update, "Use /location <city or country>.")
-        return
-    profile = db.upsert_profile(
-        user_id=int(user["id"]),
-        language=str(user.get("language") or config.default_language),
-        home_location=location,
-        db_path=runtime_db_path(config),
-    )
-    db.upsert_profile_fact(
-        user_id=int(user["id"]),
-        fact_key="home_location",
-        fact_value={"value": location},
-        source="user",
-        is_explicit=True,
-        db_path=runtime_db_path(config),
-    )
-    db.append_profile_event(
-        user_id=int(user["id"]),
-        event_type="profile_location_updated",
-        payload={"location": location, "profile_version": profile.get("profile_version")},
-        db_path=runtime_db_path(config),
-    )
-    await send_text(update, f"Location updated: {location}")
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def travel_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    location, days = _parse_travel_args(context.args)
-    if not location:
-        active = db.list_active_temporary_contexts(user_id=int(user["id"]), db_path=runtime_db_path(config))
-        travel = [item for item in active if str(item.get("context_type") or "").lower() == "travel"]
-        if not travel:
-            await send_text(update, "Use /travel <destination> [days]. Example: /travel Madrid 7")
-            return
-        lines = ["Active travel overrides:"]
-        for item in travel:
-            payload = item.get("payload") or {}
-            if isinstance(payload, str):
-                try:
-                    payload = json.loads(payload)
-                except json.JSONDecodeError:
-                    payload = {}
-            lines.append(f"- {payload.get('location', '(unknown)')} until {item.get('expires_at')}")
-        await send_text(update, "\n".join(lines))
-        return
-    now = datetime.now(timezone.utc)
-    starts_at = now.replace(microsecond=0).isoformat()
-    expires_at = (now + timedelta(days=days)).replace(microsecond=0).isoformat()
-    context_id = db.create_temporary_context(
-        user_id=int(user["id"]),
-        context_type="travel",
-        payload={"location": location, "days": days},
-        starts_at=starts_at,
-        expires_at=expires_at,
-        db_path=runtime_db_path(config),
-    )
-    db.append_profile_event(
-        user_id=int(user["id"]),
-        event_type="temporary_travel_context_created",
-        payload={"context_id": context_id, "location": location, "days": days},
-        db_path=runtime_db_path(config),
-    )
-    await send_text(update, f"Travel override set: {location} for {days} days.")
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def sources_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    if not context.args:
-        prefs = db.list_source_preferences(user_id=int(user["id"]), db_path=runtime_db_path(config))
-        if not prefs:
-            await send_text(update, "No source preferences yet. Use /sources add <domain> or /sources deny <domain>.")
-            return
-        lines = ["Source preferences:"]
-        for row in prefs:
-            lines.append(f"- {row.get('domain')}: {row.get('preference')} (tier={row.get('trust_tier')})")
-        await send_text(update, "\n".join(lines))
-        return
-    action = str(context.args[0]).strip().lower()
-    if action == "list":
-        context.args = []
-        await sources_handler(update, context)
-        return
-    if len(context.args) < 2:
-        await send_text(update, "Use /sources add|deny|remove <domain>")
-        return
-    domain = str(context.args[1]).strip().lower().removeprefix("https://").removeprefix("http://").strip("/")
-    if not domain:
-        await send_text(update, "Invalid domain.")
-        return
-    preference = "neutral"
-    tier = 0
-    if action == "add":
-        preference = "allow"
-        tier = 2
-    elif action == "deny":
-        preference = "deny"
-        tier = -1
-    elif action in {"remove", "clear"}:
-        preference = "neutral"
-        tier = 0
-    else:
-        await send_text(update, "Use /sources add|deny|remove <domain>")
-        return
-    db.set_source_preference(
-        user_id=int(user["id"]),
-        domain=domain,
-        preference=preference,
-        trust_tier=tier,
-        db_path=runtime_db_path(config),
-    )
-    await send_text(update, f"Source preference updated: {domain} -> {preference}")
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def subtopics_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    if not context.args:
-        rows = db.list_topic_weights(user_id=int(user["id"]), db_path=runtime_db_path(config))
-        if not rows:
-            await send_text(update, "No subtopics yet. Run /run once to seed defaults.")
-            return
-        grouped: dict[str, list[str]] = {}
-        for row in rows:
-            topic = str(row.get("topic") or "topic")
-            grouped.setdefault(topic, []).append(
-                f"{row.get('subtopic')} (w={row.get('weight')}, enabled={bool(row.get('enabled', True))})"
-            )
-        lines = ["Subtopics:"]
-        for topic, entries in grouped.items():
-            lines.append(f"- {topic}:")
-            lines.extend(f"  - {entry}" for entry in entries[:8])
-        await send_text(update, "\n".join(lines))
-        return
-    if len(context.args) < 3:
-        await send_text(update, "Use /subtopics promote|demote|enable|disable <topic> <subtopic>")
-        return
-    action = str(context.args[0]).strip().lower()
-    topic = str(context.args[1]).strip().lower()
-    subtopic = " ".join(context.args[2:]).strip().lower().replace(" ", "-")
-    rows = db.list_topic_weights(user_id=int(user["id"]), topic=topic, db_path=runtime_db_path(config))
-    existing = next((row for row in rows if str(row.get("subtopic") or "") == subtopic), None)
-    weight = float(existing.get("weight", 0.6)) if existing else 0.6
-    enabled = bool(existing.get("enabled", True)) if existing else True
-    if action == "promote":
-        weight = min(1.5, weight + 0.15)
-    elif action == "demote":
-        weight = max(0.0, weight - 0.15)
-    elif action == "enable":
-        enabled = True
-    elif action == "disable":
-        enabled = False
-    else:
-        await send_text(update, "Use /subtopics promote|demote|enable|disable <topic> <subtopic>")
-        return
-    db.set_topic_weight(
-        user_id=int(user["id"]),
-        topic=topic,
-        subtopic=subtopic,
-        weight=weight,
-        enabled=enabled,
-        source="manual",
-        db_path=runtime_db_path(config),
-    )
-    await send_text(update, f"Subtopic updated: {topic}/{subtopic} weight={weight:.2f} enabled={enabled}")
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def memory_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    active = db.list_active_temporary_contexts(user_id=int(user["id"]), db_path=runtime_db_path(config))
-    logs = db.list_execution_logs(user_id=int(user["id"]), limit=5, db_path=runtime_db_path(config))
-    if not active:
-        lines = ["No active temporary memory."]
-    else:
-        lines = ["Active temporary memory:"]
-        for row in active:
-            payload = row.get("payload") or {}
-            if isinstance(payload, str):
-                try:
-                    payload = json.loads(payload)
-                except json.JSONDecodeError:
-                    payload = {}
-            lines.append(f"- {row.get('context_type')}: {payload} until {row.get('expires_at')}")
-    if logs:
-        lines.append("")
-        lines.append("Recent execution logs:")
-        for row in logs[:5]:
-            lines.append(f"- [{row.get('stage')}] {row.get('status')} {row.get('message') or ''}".strip())
-    await send_text(update, "\n".join(lines))
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def memory_clear_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    context_type = str(context.args[0]).strip().lower() if context.args else None
-    cleared = db.clear_temporary_contexts(
-        user_id=int(user["id"]),
-        context_type=context_type,
-        db_path=runtime_db_path(config),
-    )
-    await send_text(update, f"Cleared temporary contexts: {cleared}")
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def onboard_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is None:
-        return
-    if str(os.getenv("PRA_FLAG_ONBOARDING", "true")).strip().lower() not in {"1", "true", "yes", "on"}:
-        await send_text(update, "Onboarding flow is disabled by feature flag.")
-        return
-    config = app_config.load_app_config()
-    user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-    profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path(config)) or {}
-    requested = str(context.args[0]).strip().lower() if context.args else ""
-    force_full = requested in {"full", "reset", "restart", "from_scratch", "scratch"}
-    start_step = "language" if force_full or not profile.get("language") else "location"
-    if force_full:
-        db.clear_onboarding_session(user_id=int(user["id"]), db_path=runtime_db_path(config))
-        db.append_profile_event(
-            user_id=int(user["id"]),
-            event_type="onboarding_restart_requested",
-            payload={"source": "telegram_command"},
-            db_path=runtime_db_path(config),
-        )
-    db.upsert_onboarding_session(
-        user_id=int(user["id"]),
-        step=start_step,
-        answers={},
-        pending_question=_next_onboarding_question(start_step, str(user.get("language") or "en")),
-        db_path=runtime_db_path(config),
-    )
-    await send_text(update, _next_onboarding_question(start_step, str(user.get("language") or "en")))
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def reset_intake_handler(update: Any, context: Any) -> None:
-    chat = update.effective_chat
-    if chat is not None:
-        config = app_config.load_app_config()
-        user = db_users.ensure_user(chat_id=int(chat.id), db_path=runtime_db_path(config))
-        profile = db.get_profile(user_id=int(user["id"]), db_path=runtime_db_path(config)) or {}
-        explicit = dict(profile.get("explicit_preferences") or {})
-        explicit["topic_settings"] = {}
-        db.upsert_profile(user_id=int(user["id"]), explicit_preferences=explicit, db_path=runtime_db_path(config))
-        db.clear_onboarding_session(user_id=int(user["id"]), db_path=runtime_db_path(config))
-    context.args = ["full"]
-    await onboard_handler(update, context)
+    await send_text(update, "⚠️ Questo comando testuale è stato disattivato e rimpiazzato dalla nuova Interfaccia Grafica Definitiva.\nUsa il comando /config per impostare questo e molto altro!")
+
 
 
 async def feedback_handler(update: Any, context: Any) -> None:
@@ -2316,9 +1973,54 @@ async def fallback_handler(update: Any, context: Any) -> None:
                 await send_text(update, _format_detail_response(selected, language))
                 return
 
-    await send_text(
-        update,
-        "Send /run to generate a digest. Controls: /help /detail /profile /intake_status /topic_scope /location /travel /sources /subtopics /memory /memory_clear /onboard /reset_intake /feedback.",
+    await _execute_digest_run(
+        update=update,
+        context=context,
+        chat_id=int(chat.id),
+        mode="auto",
+        max_results_per_query=context.application.bot_data.get("max_results_per_query", 2),
+        fallback_to_stub=True,
+        announce=f"Avvio ricerca ad-hoc per: {text}...",
+        override_topics=[text],
+    )
+
+
+async def ask_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    query = " ".join(context.args).strip()
+    if not query:
+        await send_text(update, "Use /ask <query> to run an instant ad-hoc search.")
+        return
+    await _execute_digest_run(
+        update=update,
+        context=context,
+        chat_id=int(chat.id),
+        mode="auto",
+        max_results_per_query=context.application.bot_data.get("max_results_per_query", 2),
+        fallback_to_stub=True,
+        announce=f"Avvio ricerca ad-hoc per: {query}...",
+        override_topics=[query],
+    )
+
+async def config_handler(update: Any, context: Any) -> None:
+    chat = update.effective_chat
+    if chat is None:
+        return
+    web_app_url = os.getenv("WEB_APP_URL")
+    if not web_app_url:
+        await send_text(update, "WEB_APP_URL is not configured in .env. Imposta lì l'url del tunnel https e riavvia.")
+        return
+    
+    from telegram import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+    keyboard = [
+        [InlineKeyboardButton("⚙️ Apri Dashboard", web_app=WebAppInfo(url=web_app_url))]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(
+        "Clicca il bottone qui sotto per aprire l'interfaccia interattiva di configurazione del tuo profilo.", 
+        reply_markup=reply_markup
     )
 
 
@@ -2339,6 +2041,8 @@ def build_application(token: str) -> Any:
     application.add_handler(CommandHandler("ping", _audit_handler(ping_handler, "cmd_ping")))
     application.add_handler(CommandHandler("help", _audit_handler(help_handler, "cmd_help")))
     application.add_handler(CommandHandler("run", _audit_handler(run_handler, "cmd_run")))
+    application.add_handler(CommandHandler("ask", _audit_handler(ask_handler, "cmd_ask")))
+    application.add_handler(CommandHandler("config", _audit_handler(config_handler, "cmd_config")))
     application.add_handler(CommandHandler("detail", _audit_handler(detail_handler, "cmd_detail")))
     application.add_handler(CommandHandler(["topics", "settopics"], _audit_handler(topics_handler, "cmd_topics")))
     application.add_handler(CommandHandler("topic_scope", _audit_handler(topic_scope_handler, "cmd_topic_scope")))

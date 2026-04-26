@@ -165,3 +165,54 @@ IsADirectoryError: [Errno 21] Is a directory: '.'
 2026-04-26 02:05:54,938 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=148
 2026-04-26 02:05:54,943 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
 2026-04-26 02:05:56,127 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=136
+2026-04-26 02:15:58,664 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-26 02:15:58,736 INFO telegram.ext.Application: Application started
+2026-04-26 02:16:23,243 INFO app.nodes.analysts: Pre-retrieval Analyst running for run_id 0
+2026-04-26 02:16:23,244 INFO app.nodes.retrieval: Starting async fan_out_topic_branches across 6 topics
+2026-04-26 02:16:23,244 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,244 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,245 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,246 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,247 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,247 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,247 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,247 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,247 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,248 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,248 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,248 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,249 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,249 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:23,249 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:23,249 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:23,249 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:23,250 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:23,250 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:23,250 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:24,033 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:16:24,044 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,053 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,087 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,098 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,099 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,100 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,109 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,119 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,162 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,189 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,259 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,270 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:16:24,273 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:16:24,307 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:16:25,812 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:16:25,819 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:16:25,879 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:16:31,520 INFO app.nodes.retrieval: Executing fan_in_merge_and_dedupe
+2026-04-26 02:16:31,527 INFO app.nodes.analysts: Post-retrieval Analyst running for run_id 114
+2026-04-26 02:16:31,528 INFO app.nodes.generation: Entering generation_node for chat_id=1290647256 run_id=114
+2026-04-26 02:16:31,531 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 02:16:32,304 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=138
+2026-04-26 02:16:32,309 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 02:16:33,367 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=172
+2026-04-26 02:16:33,373 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 02:16:34,644 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=152

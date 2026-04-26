@@ -37,6 +37,7 @@ class ResearchGraphState(TypedDict, total=False):
     query_bundles: list[dict[str, Any]]     # Generated parallel query bundles
     branch_results: dict[str, list[dict[str, Any]]] # Fan-out results
     merged_results: dict[str, list[dict[str, Any]]] # Fan-in deduped results
+    validation_report: dict[str, Any]       # Trace of validate_candidates
     analyst_post_report: dict[str, Any]     # Quality Check post-retrieval
     promoted_memories: int                  # Result of memory promotion
     # ── Retrieval diagnostics (populated in quality_guard) ────────────────────

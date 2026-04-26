@@ -175,24 +175,46 @@ def semantic_governance_node(state: ResearchGraphState) -> ResearchGraphState:
         is_local_event = geo_scope == "local" or any(kw in topic_name.lower() for kw in gov.EVENT_KEYWORDS)
         
         # Generate queries per language
-        queries = item_settings.get("optimized_search_queries")
-        decision_source = "optimized" if queries else ("inferred" if (topic_geo_langs or location_geo_langs) else "fallback")
+        optimized_queries = item_settings.get("optimized_search_queries") or []
+        decision_source = "hybrid" if optimized_queries else ("inferred" if (topic_geo_langs or location_geo_langs) else "fallback")
         
-        if not queries:
-            queries = []
-            for lang in selected_languages:
-                # Basic query
-                if lang == "it":
-                    queries.append(f"{topic_name} ultime notizie")
-                elif lang == "nl" and is_local_event:
-                    queries.append(f"Uitagenda {topic_name} evenementen")
-                    queries.append(f"{topic_name} evenementen agenda weekend")
-                elif lang == "en" and is_local_event:
-                    queries.append(f"events in {topic_name} this weekend")
-                else:
-                    queries.append(f"{topic_name} news")
+        # Use translated phrase if available and matching language, otherwise fallback to topic_name
+        translated_phrase = item_settings.get("translated_topic_phrase") or topic_name
         
-        queries = list(dict.fromkeys(queries)) # dedupe
+        generated_queries = []
+        for lang in selected_languages:
+            # Force English for global domains
+            if track_family in {"bitcoin", "finance"} and lang != "en":
+                 continue
+                 
+            # Determine phrase for this lang
+            # If translated_phrase is in a different language than 'lang', we might have a problem.
+            # But usually it's in the 'search_query_language' of settings.
+            current_phrase = translated_phrase if item_settings.get("search_query_language") == lang else topic_name
+            
+            # Special case for local Dutch events: ensure we use Dutch names if possible
+            if lang == "nl" and "maastricht" in topic_name.lower():
+                current_phrase = "Maastricht"
+            elif lang == "nl" and "borgharen" in topic_name.lower():
+                current_phrase = "Borgharen"
+
+            if lang == "it":
+                generated_queries.append(f"{current_phrase} ultime notizie")
+            elif lang == "nl" and is_local_event:
+                generated_queries.append(f"Uitagenda {current_phrase} evenementen")
+                generated_queries.append(f"{current_phrase} evenementen agenda weekend")
+            elif lang == "en" and is_local_event:
+                generated_queries.append(f"events in {current_phrase} this weekend")
+            elif lang == "en" and track_family in {"bitcoin", "finance"}:
+                # Force English terms for global topics
+                global_term = "Bitcoin" if "bitcoin" in topic_name.lower() else ("Finance" if "finanza" in topic_name.lower() else current_phrase)
+                generated_queries.append(f"latest {global_term} news and analysis")
+                generated_queries.append(f"{global_term} market trends today")
+            else:
+                generated_queries.append(f"{current_phrase} news")
+        
+        # Combine optimized with generated
+        queries = list(dict.fromkeys(optimized_queries + generated_queries)) # dedupe
         
         q_bundle = {
             "topic_name": topic_name,
@@ -337,15 +359,50 @@ async def parallel_retrieval_node(state: ResearchGraphState) -> ResearchGraphSta
         "quality_status": "running"
     }
 
+def validation_node(state: ResearchGraphState) -> ResearchGraphState:
+    config = app_config.load_app_config()
+    merged_results = state.get("merged_results") or {}
+    topic_settings = state.get("topic_settings") or {}
+    
+    validated_by_topic = {}
+    all_rejected = []
+    total_reasons = {}
+    
+    for topic, items in merged_results.items():
+        v, r, counts = pipeline.validate_candidates(items, topic_settings=topic_settings)
+        validated_by_topic[topic] = v
+        all_rejected.extend(r)
+        for reason, count in counts.items():
+            total_reasons[reason] = total_reasons.get(reason, 0) + count
+            
+    db.append_execution_log(
+        user_id=int(state.get("user", {}).get("id") or 0),
+        run_id=state.get("run_id"),
+        stage="validation",
+        status="ok",
+        message=f"validation_completed valid={sum(len(v) for v in validated_by_topic.values())} rejected={len(all_rejected)}",
+        payload={"reason_counts": total_reasons},
+        db_path=config.runtime_db_path
+    )
+    
+    return {
+        "merged_results": validated_by_topic,
+        "validation_report": {
+            "rejected_count": len(all_rejected),
+            "reason_counts": total_reasons
+        }
+    }
+
 def post_retrieval_analyst_node(state: ResearchGraphState) -> ResearchGraphState:
     user = state.get("user") or {}
     results_by_topic = state.get("merged_results") or {}
+    topic_settings = state.get("topic_settings") or {}
     
     analyst_post_report = analysts.post_retrieval_analyst(
         user_id=int(user.get("id") or 0),
         run_id=int(state.get("run_id") or 0),
         results_by_topic=results_by_topic,
-        topic_settings={}
+        topic_settings=topic_settings
     )
     return {"analyst_post_report": analyst_post_report}
 
@@ -440,6 +497,7 @@ builder.add_node("semantic_governance", semantic_governance_node)
 builder.add_node("pre_retrieval_analyst", pre_retrieval_analyst_node)
 builder.add_node("hitl_clarification", hitl_clarification_node)
 builder.add_node("parallel_retrieval", parallel_retrieval_node)
+builder.add_node("validation", validation_node)
 builder.add_node("post_retrieval_analyst", post_retrieval_analyst_node)
 builder.add_node("generation", generation.generation_node)
 builder.add_node("memory_promotion", memory_promotion_node)
@@ -467,7 +525,8 @@ builder.add_conditional_edges(
 )
 
 builder.add_edge("hitl_clarification", "finalize_output")
-builder.add_edge("parallel_retrieval", "post_retrieval_analyst")
+builder.add_edge("parallel_retrieval", "validation")
+builder.add_edge("validation", "post_retrieval_analyst")
 builder.add_edge("post_retrieval_analyst", "generation")
 builder.add_edge("generation", "memory_promotion")
 builder.add_edge("memory_promotion", "quality_guard")

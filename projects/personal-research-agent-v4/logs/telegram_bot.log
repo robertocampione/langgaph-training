@@ -134,3 +134,34 @@ IsADirectoryError: [Errno 21] Is a directory: '.'
 2026-04-26 01:28:40,523 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=149
 2026-04-26 01:28:40,529 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
 2026-04-26 01:28:41,956 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=136
+2026-04-26 02:05:03,667 INFO __main__: telegram_bot_ready mode=auto max_results_per_query=2 fallback_to_stub=True db=/home/roberto/workspace/workspace-root-langgraph/projects/personal-research-agent-v4/db/personal_research_agent.sqlite
+2026-04-26 02:05:03,754 INFO telegram.ext.Application: Application started
+2026-04-26 02:05:49,538 INFO app.nodes.analysts: Pre-retrieval Analyst running for run_id 0
+2026-04-26 02:05:49,539 INFO app.nodes.retrieval: Starting async fan_out_topic_branches across 6 topics
+2026-04-26 02:05:49,539 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,540 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,540 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,541 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,541 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,542 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,542 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:05:49,542 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:05:49,542 INFO app.pipeline: Retrieval started mode=auto topics=['events']
+2026-04-26 02:05:49,543 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,543 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,543 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,543 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,545 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,544 INFO app.pipeline: Retrieval started mode=auto topics=['news']
+2026-04-26 02:05:49,545 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:05:49,545 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:05:49,545 INFO app.pipeline: Retrieval started mode=auto topics=['bitcoin']
+2026-04-26 02:05:52,604 INFO app.nodes.retrieval: Executing fan_in_merge_and_dedupe
+2026-04-26 02:05:52,606 INFO app.nodes.analysts: Post-retrieval Analyst running for run_id 111
+2026-04-26 02:05:52,609 INFO app.nodes.generation: Entering generation_node for chat_id=1290647256 run_id=111
+2026-04-26 02:05:52,611 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 02:05:53,772 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=155
+2026-04-26 02:05:53,777 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 02:05:54,938 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=148
+2026-04-26 02:05:54,943 INFO app.llm: Calling LLM role=utility provider=google model=gemini-2.5-flash-lite temp=0.2
+2026-04-26 02:05:56,127 INFO app.llm: LLM success provider=google model=gemini-2.5-flash-lite tokens_est=136
